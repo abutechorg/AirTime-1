@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/appWhite"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_below="@+id/label"
+        android:layout_above="@+id/footer"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/walletTabGroup"
+        android:stretchColumns="*">
+
+        <!-- Row 1 of table desc -->
+        <TableRow
+            android:layout_gravity="center_vertical"
+            android:gravity="center">
+            <LinearLayout
+                android:padding="4dip">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:id="@+id/lbltel"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="FROM ACCOUNT"
+                        android:textColor="@color/appGray"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:padding="4dip"
+                android:gravity="center">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text=" AMOUNT"
+                        android:textColor="@color/appGray"
+                        android:id="@+id/lblamount"
+                        android:gravity="right"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </TableRow>
+
+        <!-- Row 2 Start of table Content -->
+        <TableRow
+            android:background="@drawable/border_gray"
+            android:layout_gravity="center_vertical"
+            android:gravity="center">
+            <LinearLayout
+                android:padding="4dip">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:padding="3dp"
+                    android:gravity="left"
+                    android:text="Account: "
+                    android:id="@+id/accountlbl"
+                    android:textColor="@color/appGray"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:padding="4dip"
+                android:gravity="center">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:padding="3dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/appOrange"
+                        android:text="amount"
+                        android:gravity="right"
+                        android:id="@+id/amount" />
+                </RelativeLayout>
+
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:id="@+id/footer"
+        android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:id="@+id/tv"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Put your PIN To Confirm"
+                android:textColor="@color/appGray"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:maxLength="5"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:id="@+id/pin"
+                android:inputType="numberPassword"
+                android:hint="Enter your PIN"
+                android:gravity="center"
+                android:drawableLeft="@drawable/ic_icon_login_input_password"
+                android:background="@drawable/border_gray"/>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp">
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:id="@+id/cancel"
+                        android:background="@drawable/buttongray"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Cancel"
+                        android:textColor="@color/appGray"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Approve"
+                        android:textColor="@color/appGreen"
+                        android:background="@drawable/buttongreen"
+                        android:id="@+id/ok"/>
+                </RelativeLayout>
+            </TableRow>
+        </LinearLayout>
+    </TableRow>
+</LinearLayout>

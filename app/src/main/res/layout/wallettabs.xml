@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:id="@+id/walletTabs">
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/walletTabGroup"
+        android:stretchColumns="*">
+        <TableRow>
+            <LinearLayout
+                android:padding="0dip">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:padding="3dp"
+                    android:gravity="center"
+                    android:text="Add AirTime"
+                    android:id="@+id/addAirtime"
+                    android:onClick="onWalletTabClick"
+                    android:background="@drawable/buttonorange"
+                    android:textColor="@color/appWhite"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:padding="0dip"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:padding="3dp"
+                    android:gravity="center"
+                    android:background="@drawable/border_orange"
+                    android:textColor="@color/appOrange"
+                    android:text="View History"
+                    android:id="@+id/viewHistory"
+                    android:onClick="onWalletTabClick" />
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+
+</FrameLayout>

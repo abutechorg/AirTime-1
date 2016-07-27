@@ -1,0 +1,58 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appWhite"
+    android:padding="16dp"
+    tools:context="fragments.RechargeWallet">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/tv"
+            android:text="Enter Amount"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:drawableLeft="@drawable/ic_action_ic_icon_main_naira"
+            android:background="@drawable/border_gray"
+            android:inputType="number"
+            android:id="@+id/amount"
+            android:hint="Enter Amount"
+            android:layout_gravity="center_horizontal" />
+        <GridView
+            android:id="@+id/paymentGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/appTransparent"
+            android:listSelector="@drawable/imagebuttonorange"
+            android:layout_margin="5dp"
+            android:columnWidth="60dp"
+            android:drawSelectorOnTop="false"
+            android:gravity="center"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="5dp"
+            android:focusable="true"
+            android:clickable="true"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </LinearLayout>
+</FrameLayout>

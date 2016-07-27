@@ -1,0 +1,70 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="@color/appWhite"
+    android:padding="16dp"
+    tools:context="fragments.Login">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:maxLength="20"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:id="@+id/msisdn"
+                    android:inputType="phone"
+                    android:hint="Enter your Number"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/ic_icon_login_input_id"
+                    android:background="@drawable/border_gray"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    android:maxLength="5"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:id="@+id/pin"
+                    android:inputType="numberPassword"
+                    android:hint="Enter your PIN"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/ic_icon_login_input_password"
+                    android:background="@drawable/border_gray"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="S U B M I T"
+                    android:padding="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/appGreen"
+                    android:id="@+id/submit"
+                    android:background="@drawable/buttongreen"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </TableRow>
+    </LinearLayout>
+</ScrollView>
+</FrameLayout>

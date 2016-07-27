@@ -1,0 +1,94 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="4dp"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:paddingBottom="4dp"
+    android:background="@color/appWhite"
+    tools:context="fragments.SingleSell">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_gray"
+            android:gravity="center"
+            android:padding="10dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_call"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/tel"
+                android:padding="4dp"
+                android:inputType="phone"
+                android:gravity="center"
+                android:maxLength="20"
+                android:ellipsize="end"
+                android:hint="Enter A Phone Number"
+                android:textColor="@color/appBlue"
+                android:background="@color/appTransparent"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/getNumber"
+                android:background="@drawable/imagebuttonblue"
+                android:src="@drawable/ic_icon_main_contactbrowse"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_gray"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_icon_main_naira"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/amount"
+                android:padding="4dp"
+                android:inputType="phone"
+                android:gravity="center"
+                android:maxLength="20"
+                android:ellipsize="end"
+                android:textColor="@color/appBlue"
+                android:hint="Enter AirTime Amount"
+                android:background="@color/appTransparent"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_input_get"
+                android:visibility="invisible"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="S E N D"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/appGreen"
+                android:id="@+id/send"
+                android:background="@drawable/buttongreen"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1" />
+        </TableRow>
+
+</LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="46dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="4dp"
+    android:layout_gravity="right" >
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/notificationHolder"
+            android:clickable="true">
+            <ImageView
+                android:id="@+id/notificationBell"
+                android:src="@drawable/ic_action_icon_main_notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebuttonblue"
+                android:layout_gravity="top"
+                android:clickable="true"
+                android:gravity="center"
+
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="0dp"
+                android:contentDescription="Notification" />
+            <!-- Badge Count -->
+            <TextView
+                android:id="@+id/actionbar_notifcation_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:text="99"
+                android:background="@color/appOrange"
+                android:textColor="@color/appWhite" />
+        </RelativeLayout>
+    </TableRow>
+
+</LinearLayout>

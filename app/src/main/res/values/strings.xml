@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">AirTime</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_version">v 1.0.0</string>
+    <string name="app_build">build260616</string>
+    <string name="app_developper">www.oltranz.com</string>
+    <string name="copyright">Copyright © 2016 - All Rights Reserved.</string>
+    <string name="terms"><a href="#">Terms and Conditions</a></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_user_home">UserHome</string>
+    <string name="txt_done">Done</string>
+    <string name="txt_search">Search</string>
+
+    <!-- Menus -->
+    <string name="account">Account</string>
+    <string name="transactionsHistory">Transactions History</string>
+    <string name="notification">Notifications</string>
+    <string name="help">Help</string>
+    <string name="invite">Invite Friends</string>
+    <string name="about">About</string>
+    <string name="logout">Logout</string>
+
+    <!-- drawer open and close -->
+    <string name="openDrawer">1</string>
+    <string name="closeDrawer">0</string>
+    <string name="invitationTitle">AirTime Nigeria\n</string>
+    <string name="invitationMessage">Hello, buy yourself Airtime or buy for others anywhere or anytime in Nigeria Using AirTime application\n</string>
+    <string name="downloadUrl">http://www.oltranz.com</string>
+    <string name="sendTo">Invite Friends...</string>
+    <string name="title_activity_about">About</string>
+</resources>

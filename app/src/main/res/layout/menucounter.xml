@@ -1,0 +1,18 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="50dp"
+    android:layout_height="match_parent"
+    android:padding="4dp"
+    android:layout_gravity="right" >
+    <!-- Badge Count -->
+    <TextView
+        android:id="@+id/actionbar_notifcation_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="6dp"
+        android:clickable="true"
+        android:text="99"
+        android:background="@drawable/bage_circle"
+        android:textColor="@color/appWhite" />
+
+</RelativeLayout>

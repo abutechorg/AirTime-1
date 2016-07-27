@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:background="@color/appTransparent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/paymentIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_icon_main_naira"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/paymentName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Payment Name"
+        android:textColor="@color/appGray"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="marquee"
+        android:textSize="12sp" />
+    <TextView
+        android:id="@+id/paymentId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="marquee"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+
+</LinearLayout>
