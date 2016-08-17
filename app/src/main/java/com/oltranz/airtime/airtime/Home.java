@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import fragments.Login;
@@ -27,8 +29,8 @@ import simplebeans.registerbeans.RegisterResponse;
 public class Home extends AppCompatActivity implements Login.LoginInteractionListener, Register.RegisterInteractionListener {
     private String tag="AirTime: "+getClass().getSimpleName();
     private TextView titleBar;
-    private ImageButton register;
-    private ImageButton help;
+    private ImageView register;
+    private ImageView help;
     private TextView tv;
     private Typeface font;
     private Login loginFrag;
@@ -63,17 +65,17 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
             }
 
             fragmentManager=getSupportFragmentManager();
-            tv=(TextView) findViewById(R.id.tv);
-            tv.setTypeface(font);
-            tv.setVisibility(View.GONE);
+//            tv=(TextView) findViewById(R.id.tv);
+//            tv.setTypeface(font);
+//            tv.setVisibility(View.GONE);
             // Create the new Fragment to be placed in the activity layout
             loginFrag =new Login();
             registerFrag=new Register();
             // Add the fragment to the 'fragment_container' FrameLayout
             fragmentHandler(loginFrag);
             //fragmentManager.beginTransaction().add(R.id.fragment_container, loginFrag).addToBackStack(null).commit();
-            register=(ImageButton) findViewById(R.id.register);
-            help=(ImageButton) findViewById(R.id.help);
+            register=(ImageView) findViewById(R.id.register);
+            help=(ImageView) findViewById(R.id.help);
 
             register.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -81,11 +83,23 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                     if(!isRegisterClicked){
                         fragmentHandler(registerFrag);
                         isRegisterClicked=true;
-                        register.setImageResource(R.drawable.ic_icon_login_login);
+                        register.setImageResource(R.drawable.icon_login);
+                        try{
+                            TableRow headerLogo=(TableRow) findViewById(R.id.headerLogo);
+                            headerLogo.setVisibility(View.GONE);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }else{
                         fragmentHandler(loginFrag);
                         isRegisterClicked=false;
-                        register.setImageResource(R.drawable.ic_icon_login_register);
+                        register.setImageResource(R.drawable.icon_register);
+                        try{
+                            TableRow headerLogo=(TableRow) findViewById(R.id.headerLogo);
+                            headerLogo.setVisibility(View.VISIBLE);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -104,9 +118,9 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
 
     @Override
     public void onLoginInteraction(int statusCode, String message, String msisdn, LoginResponse loginResponse) {
-        if(statusCode != 400)
-            uiFeed(message);
-        else{
+        if(statusCode != 400) {
+            //uiFeed(message);
+        }else{
 
             try{
                 Intent intent=new Intent(this, UserHome.class);
@@ -125,7 +139,7 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                 startActivity(intent);
             }catch (Exception e){
                 e.printStackTrace();
-                uiFeed(e.getMessage());
+                //uiFeed(e.getMessage());
             }
         }
     }
@@ -134,9 +148,9 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
     public void onRegisterInteraction(int statusCode, String message, String msisdn, RegisterResponse registerResponse) {
         //fragmentHandler(loginFrag);
        // fragmentManager.beginTransaction().add(R.id.fragment_container, loginFrag).addToBackStack(null).commit();
-        if(statusCode !=400)
-            uiFeed(message);
-        else{
+        if(statusCode !=400){
+            //uiFeed(message);
+        }else{
             try {
                 Intent intent=new Intent(this, UserHome.class);
                 Bundle bundle=new Bundle();
@@ -154,7 +168,7 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                 startActivity(intent);
             }catch (Exception e){
                 e.printStackTrace();
-                uiFeed(e.getMessage());
+                //uiFeed(e.getMessage());
             }
         }
     }
@@ -180,12 +194,24 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
             Fragment currentFrag=fragmentManager.findFragmentById(R.id.fragment_container);
             if(currentFrag.getClass().getSimpleName().equals(Login.class.getSimpleName())){
                 isRegisterClicked=false;
-                register.setImageResource(R.drawable.ic_icon_login_register);
+                register.setImageResource(R.drawable.icon_register);
+                try{
+                    TableRow headerLogo=(TableRow) findViewById(R.id.headerLogo);
+                    headerLogo.setVisibility(View.VISIBLE);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             if(currentFrag.getClass().getSimpleName().equals(Register.class.getSimpleName())){
                 isRegisterClicked=true;
-                register.setImageResource(R.drawable.ic_icon_login_login);
+                register.setImageResource(R.drawable.icon_login);
+                try{
+                    TableRow headerLogo=(TableRow) findViewById(R.id.headerLogo);
+                    headerLogo.setVisibility(View.GONE);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -211,18 +237,6 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         titleBar.setText(fragmentTag);
     }
 
-    private void uiFeed(String feedBack){
-        if(!TextUtils.isEmpty(feedBack)){
-            tv.setVisibility(View.VISIBLE);
-            tv.setText(feedBack);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    tv.setVisibility(View.GONE);
-                }
-            }, 4000);
-        }
-    }
     private void endActivity(){
         finish();
     }

@@ -2,6 +2,8 @@ package simplebeans.balancebeans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Date;
+
 /**
  * Created by Owner on 7/18/2016.
  */
@@ -9,7 +11,7 @@ public class BalanceRespopnse {
     @JsonProperty("id")
     private Long id;
     @JsonProperty("transTime")
-    private String transTime;
+    private Date transTime;
     @JsonProperty("amount")
     private double amount;
     @JsonProperty("srcrefId")
@@ -29,7 +31,7 @@ public class BalanceRespopnse {
     @JsonProperty("token")
     private String token;
 
-    public BalanceRespopnse(Long id, String transTime, double amount, String srcrefId, int sourceType, String destRefId, int destType, double prevBalance, double newBalance, int transTypeId, String token) {
+    public BalanceRespopnse(Long id, Date transTime, double amount, String srcrefId, int sourceType, String destRefId, int destType, double prevBalance, double newBalance, int transTypeId, String token) {
         this.setId(id);
         this.setTransTime(transTime);
         this.setAmount(amount);
@@ -55,11 +57,11 @@ public class BalanceRespopnse {
         this.id = id;
     }
 
-    public String getTransTime() {
+    public Date getTransTime() {
         return transTime;
     }
 
-    public void setTransTime(String transTime) {
+    public void setTransTime(Date transTime) {
         this.transTime = transTime;
     }
 

@@ -314,14 +314,21 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     private void onTabChanged(int tabLabel, String currentTab){
         if(tabLabel == R.id.mainTabGroup){
             //check the tab holder
-            if(mainTabHolder.getChildCount() > 0){
-                if(mainTabHolder.getChildAt(0).getId()!= R.id.accountTabs){
+            try{
+                if(mainTabHolder.getChildCount() > 0){
+                    if(mainTabHolder.getChildAt(0).getId()!= R.id.accountTabs){
+                        mainTabHolder.removeAllViews();
+                        mainTabHolder.addView(accountTab);
+                    }
+                }else{
                     mainTabHolder.removeAllViews();
                     mainTabHolder.addView(accountTab);
                 }
-            }else{
-                mainTabHolder.addView(accountTab);
+            }catch (Exception e){
+                Log.e(tag,e.getMessage());
+                onHomeActivity();
             }
+
 
             TextView sendOne=(TextView) findViewById(R.id.sendOne);
             sendOne.setTypeface(font);
@@ -372,13 +379,19 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             }
         }else if(tabLabel == R.id.walletTabGroup){
             //check the tab holder
-            if(mainTabHolder.getChildCount() > 0){
-                if(mainTabHolder.getChildAt(0).getId()!= R.id.walletTabs){
+            try{
+                if(mainTabHolder.getChildCount() > 0){
+                    if(mainTabHolder.getChildAt(0).getId()!= R.id.walletTabs){
+                        mainTabHolder.removeAllViews();
+                        mainTabHolder.addView(walletTab);
+                    }
+                }else{
                     mainTabHolder.removeAllViews();
                     mainTabHolder.addView(walletTab);
                 }
-            }else{
-                mainTabHolder.addView(walletTab);
+            }catch (Exception e){
+                Log.e(tag,e.getMessage());
+                onHomeActivity();
             }
 
             TextView addAirtime=(TextView) findViewById(R.id.addAirtime);
@@ -449,7 +462,7 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     }
 
     private void walletTopUpFrag(){
-        onTabChanged(R.id.walletTabGroup, SingleSell.class.getSimpleName());
+        onTabChanged(R.id.walletTabGroup, RechargeWallet.class.getSimpleName());
         RechargeWallet rechargeWallet=new RechargeWallet();
         rechargeWallet.setArguments(setArgs());
         fragmentHandler(rechargeWallet, R.id.salesFrame);
@@ -576,7 +589,12 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     }
 
     private void menuLogout(){
+        mSession=null;
+        if(getIntent().getExtras() != null){
+            setIntent(null);
+        }
 
+        onHomeActivity();
     }
 
     private void menuNotifications(){
@@ -600,7 +618,7 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     private void onHomeActivity(){
         Intent intent=new Intent(this, Home.class);
         intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
         this.finish();
+        startActivity(intent);
     }
 }

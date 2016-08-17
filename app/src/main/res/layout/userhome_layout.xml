@@ -8,11 +8,14 @@
     android:fitsSystemWindows="true"
     tools:context="com.oltranz.airtime.airtime.UserHome">
 
-<LinearLayout
-    android:layout_width="match_parent"
+<RelativeLayout
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent">
 
+<RelativeLayout
+android:id="@+id/RelativeLayoutTopBar"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,78 +38,93 @@
                 android:textColor="@color/appBlue"
                 android:layout_gravity="center"
                 android:id="@+id/toolbar_title" />
-            </android.support.v7.widget.Toolbar>
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
+    </RelativeLayout>
 
-        <!--<android.support.design.widget.NavigationView-->
-            <!--android:id="@+id/navigation_view"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_gravity="start"-->
-            <!--app:headerLayout="@layout/menuheader"-->
-            <!--app:menu="@menu/drawer"-->
-            <!--<utilities.VerticalScrollview-->
-            <!--/>-->
+
+    <LinearLayout
+        android:id="@+id/LinearLayoutBottomBar"
+        android:layout_alignParentBottom = "true"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    <!-- **** Activity context main sales Frame **** -->
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity = "center"
+            android:gravity="center"
+            android:id="@+id/salesFrame">
+            <include layout="@layout/multiplesell_layout"/>
+        </FrameLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/middleHolder"
+        android:layout_above="@+id/LinearLayoutBottomBar"
+        android:layout_below="@+id/RelativeLayoutTopBar">
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/scrollView">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:id="@+id/mainBlock">
-            <!-- **** Welcome Frame **** -->
-            <FrameLayout
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/ScrollViewBackground">
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/welcomeHeaderFrame">
-                <!-- **** Welcome message **** -->
-                <include layout="@layout/welcomeheader"/>
-            </FrameLayout>
+                android:id="@+id/mainBlock">
+                <!-- **** Welcome Frame **** -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity = "center"
+                    android:layout_alignParentTop="true"
+                    android:id="@+id/welcomeHeaderFrame">
+                    <!-- **** Welcome message **** -->
+                    <include layout="@layout/welcomeheader"/>
+                </FrameLayout>
 
-            <!-- **** Check Balance Frame **** -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/checkBalanceFrame">
+                <!-- **** Check Balance Frame **** -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity = "center"
+                    android:layout_below="@+id/welcomeHeaderFrame"
+                    android:id="@+id/checkBalanceFrame">
+                </FrameLayout>
 
-            </FrameLayout>
+                <!-- **** Activity context main buttons Frame **** -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity = "center"
+                    android:layout_below="@+id/checkBalanceFrame"
+                    android:id="@+id/mainButtonFrame">
+                    <include layout="@layout/mainbuttons"/>
+                </FrameLayout>
 
-            <!-- **** Activity context main buttons Frame **** -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/mainButtonFrame">
-                <include layout="@layout/mainbuttons"/>
-            </FrameLayout>
+                <!-- **** Activity context main tabs Frame **** -->
 
-            <!-- **** Activity context main tabs Frame **** -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity = "center"
+                    android:layout_below="@+id/mainButtonFrame"
+                    android:id="@+id/mainTabFrame">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/mainTabFrame">
-
-            </FrameLayout>
-
-            <!-- **** Activity context main sales Frame **** -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/salesFrame">
-
-            </FrameLayout>
-        </LinearLayout>
+                </FrameLayout>
+            </RelativeLayout>
         </ScrollView>
     </LinearLayout>
 
- </LinearLayout>
+</RelativeLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"

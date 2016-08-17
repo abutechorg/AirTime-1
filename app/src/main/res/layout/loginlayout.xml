@@ -4,67 +4,92 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:background="@color/appWhite"
-    android:padding="16dp"
     tools:context="fragments.Login">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <LinearLayout
+        android:layout_height="wrap_content">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
+
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:gravity="center">
-
-            <LinearLayout
-                android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/headerLogo">
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:maxLength="20"
-                    android:singleLine="true"
-                    android:ellipsize="end"
-                    android:id="@+id/msisdn"
-                    android:inputType="phone"
-                    android:hint="Enter your Number"
-                    android:gravity="center"
-                    android:drawableLeft="@drawable/ic_icon_login_input_id"
-                    android:background="@drawable/border_gray"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="10dp"
-                    android:maxLength="5"
-                    android:singleLine="true"
-                    android:ellipsize="end"
-                    android:id="@+id/pin"
-                    android:inputType="numberPassword"
-                    android:hint="Enter your PIN"
-                    android:gravity="center"
-                    android:drawableLeft="@drawable/ic_icon_login_input_password"
-                    android:background="@drawable/border_gray"/>
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:text="S U B M I T"
-                    android:padding="10dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/appGreen"
-                    android:id="@+id/submit"
-                    android:background="@drawable/buttongreen"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1" />
-            </LinearLayout>
+                android:layout_height="120dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/airtime_logo"/>
         </TableRow>
-    </LinearLayout>
-</ScrollView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/loginElements"
+            android:layout_below="@+id/headerLogo"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:id="@+id/tv"/>
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:visibility="invisible"/>-->
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="12dp"
+                android:maxLength="20"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:id="@+id/msisdn"
+                android:inputType="phone"
+                android:hint="Enter your Number"
+                android:drawableLeft="@drawable/icon_phone"
+                android:drawablePadding="10dp"
+                android:background="@drawable/border_gray"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="12dp"
+                android:maxLength="5"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:id="@+id/pin"
+                android:inputType="numberPassword"
+                android:hint="Enter your PIN"
+                android:drawableLeft="@drawable/icon_password"
+                android:drawablePadding="10dp"
+                android:background="@drawable/border_gray"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="L O G I N"
+                android:padding="12dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/appGreen"
+                android:id="@+id/submit"
+                android:background="@drawable/buttongreen"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+    </ScrollView>
 </FrameLayout>

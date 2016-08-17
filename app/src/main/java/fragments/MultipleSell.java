@@ -255,7 +255,7 @@ public class MultipleSell extends Fragment {
 
                                         //handle the response from the server
                                         Log.d(tag, "Server Result:\n" + new ClientData().mapping(loginResponse));
-                                        if (loginResponse.getResponseStatusSimpleBean().getStatusCode() == 200) {
+                                        if (loginResponse.getResponseStatusSimpleBean().getStatusCode() == 400) {
 
                                             //making a transaction Request
                                             onTopUpRequest(topUpNumbers);
@@ -348,6 +348,7 @@ public class MultipleSell extends Fragment {
             }
         }else if(resultCode==500){
             Toast.makeText(getContext(),"Maximum Telephone Numbers Exceeded pick only (3)",Toast.LENGTH_LONG).show();
+            monitorLabel(buyList.getChildCount());
         }
     }
 
@@ -383,6 +384,7 @@ public class MultipleSell extends Fragment {
                     @Override
                     public void onClick(View v) {
                         buyList.removeView(row);
+                        monitorLabel(buyList.getChildCount());
                     }
                 });
 
@@ -437,6 +439,18 @@ public class MultipleSell extends Fragment {
 //                TextView tv = (TextView) getView().findViewById(R.id.tv);
 //                tv.setVisibility(View.INVISIBLE);
 //            }
+        }
+        monitorLabel(buyList.getChildCount());
+    }
+
+    private void monitorLabel(int count){
+        TextView tv=(TextView) getView().findViewById(R.id.tv);
+        int res=3-count;
+        if(res==0) {
+            tv.setText("Max Phone Number Reached");
+        }
+        else if(res<=3){
+            tv.setText("Add Max "+res+" Phone Numbers");
         }
     }
 

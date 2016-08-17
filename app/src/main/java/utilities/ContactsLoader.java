@@ -130,7 +130,7 @@ public class ContactsLoader extends AsyncTask<String,Void,Void> {
 
 
 
-        if(this.tempContactHolder.size()>=100) {
+        if(this.tempContactHolder.size()>=200) {
 
 
             contactsListAdapter.addContacts(tempContactHolder);

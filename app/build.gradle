@@ -9,6 +9,8 @@ android {
             storePassword 'KigaliToday@1'
         }
     }
+
+
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
@@ -18,6 +20,18 @@ android {
         versionCode 1
         versionName 'v 1.0.0'
     }
+
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -28,6 +42,12 @@ android {
     packagingOptions {
         exclude 'META-INF/NOTICE' // will not include NOTICE file
         exclude 'META-INF/LICENSE' // will not include LICENSE file
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
     }
     productFlavors {
         free {
@@ -36,17 +56,18 @@ android {
     }
 }
 
-
-
-
-
-
-
-
-
+repositories {
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
+    maven {
+        url  'http://dl.bintray.com/techquest/maven-repo'
+    }
+}
 
 dependencies {
-    //    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
@@ -55,4 +76,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.interswitchng:payment-android:0.0.6'
+    compile(name: 'deviceprint-release-2.2.0', ext: 'aar')
 }

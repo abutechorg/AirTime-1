@@ -1,11 +1,10 @@
 package fragments;
 
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
@@ -115,7 +114,7 @@ public class Register extends Fragment {
                         if(isValidMobile(tel.getText().toString())){
 
                             //validation completed
-                            proceed(fName.getText().toString(),lName.getText().toString(),tel.getText().toString(), mail.getText().toString(), pin.getText().toString());
+                            proceedRegistration(fName.getText().toString(),lName.getText().toString(),tel.getText().toString(), mail.getText().toString(), pin.getText().toString());
                         }else{
                             tel.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.appOrange));
                             tel.postDelayed(new Runnable() {
@@ -187,7 +186,7 @@ public class Register extends Fragment {
             return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
-    private void proceed(final String fName, final String lName, final String tel, final String mail, final String pin){
+    private void proceedRegistration(final String fName, final String lName, final String tel, final String mail, final String pin){
         final Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
         dialog.setContentView(R.layout.simplepopup);
@@ -262,7 +261,8 @@ public class Register extends Fragment {
                                         registerResponse);
                             }catch (Exception e){
                                 e.printStackTrace();
-                                registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
+                                uiFeed(e.getMessage());
+                                //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
                             }
                             dialog.dismiss();
                         }
@@ -271,12 +271,14 @@ public class Register extends Fragment {
                         public void onFailure(Call<RegisterResponse> call, Throwable t) {
                             // Log error here since request failed
                             Log.e(tag, t.toString());
-                            registerListener.onRegisterInteraction(500, t.getMessage(), tel, null);
+                            uiFeed("Server Error");
+                            //registerListener.onRegisterInteraction(500, t.getMessage(), tel, null);
                         }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
+                    uiFeed(e.getMessage());
+                    //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
                     dialog.dismiss();
                 }
             }
@@ -291,6 +293,24 @@ public class Register extends Fragment {
 
         //show the popUp
         dialog.show();
+    }
+
+    private void uiFeed(String feedBack){
+        try{
+            final TextView tv=(TextView) getView().findViewById(R.id.tv);
+            if(!TextUtils.isEmpty(feedBack)){
+                tv.setVisibility(View.VISIBLE);
+                tv.setText(feedBack);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv.setVisibility(View.GONE);
+                    }
+                }, 4000);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

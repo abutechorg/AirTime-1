@@ -200,7 +200,7 @@ public class SingleSell extends Fragment {
 
                                             //handle the response from the server
                                             Log.d(tag, "Server Result:\n" + new ClientData().mapping(loginResponse));
-                                            if(loginResponse.getResponseStatusSimpleBean().getStatusCode() == 200){
+                                            if(loginResponse.getResponseStatusSimpleBean().getStatusCode() == 400){
 
                                                 //making a transaction Request
                                                 onTopUpRequest(numbers);

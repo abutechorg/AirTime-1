@@ -13,6 +13,10 @@ import android.widget.TextView;
 
 import com.oltranz.airtime.airtime.R;
 
+import java.util.Date;
+import java.util.logging.SimpleFormatter;
+import java.text.SimpleDateFormat;
+
 import client.ClientData;
 import client.ClientServices;
 import client.ServerClient;
@@ -87,10 +91,14 @@ public class CheckBalance extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(tag, "View are finally inflated");
+        final TextView nSign=(TextView) view.findViewById(R.id.nairaSign);
+        nSign.setTypeface(font);
+        nSign.setTypeface(nSign.getTypeface(), Typeface.BOLD);
         final TextView lastHistory=(TextView) view.findViewById(R.id.lastHistory);
         lastHistory.setTypeface(font);
         final TextView balance=(TextView) view.findViewById(R.id.balance);
         balance.setTypeface(font);
+        balance.setTypeface(balance.getTypeface(), Typeface.BOLD);
 
         if(accountBalance != null)
             balance.setText(accountBalance);
@@ -100,7 +108,7 @@ public class CheckBalance extends Fragment {
         //Dummy data
         // loginListener.onLoginInteraction(200, "Success", null);
 
-        //making a Login request
+        //making a Balance request
         try {
             ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
             Call<BalanceRespopnse> callService = clientServices.getWalletBalance(msisdn);
@@ -114,7 +122,16 @@ public class CheckBalance extends Fragment {
                     try{
                         //handle the response from the server
                         balance.setText(String.valueOf(balanceRespopnse.getNewBalance()));
-                        lastHistory.append(balanceRespopnse.getTransTime());
+                        String mDate=balanceRespopnse.getTransTime().toString();
+                        try{
+
+                            SimpleDateFormat sdf=new SimpleDateFormat("E, dd-MM-yyyy, HH:mm:ss");
+                            mDate=sdf.format(balanceRespopnse.getTransTime());
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        lastHistory.append(mDate);
                         Log.d(tag, "Data from the server:\n" + new ClientData().mapping(balanceRespopnse));
                     }catch (Exception e){
                         e.printStackTrace();

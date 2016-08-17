@@ -3,6 +3,7 @@ package fragments;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.oltranz.airtime.airtime.R;
 
@@ -123,7 +125,7 @@ public class Login extends Fragment {
                     Log.d(tag, "Data to push to the server:\n" + new ClientData().mapping(loginRequest));
 
                     //Dummy data
-                   // loginListener.onLoginInteraction(200, "Success", null);
+                   // loginListener.onLoginInteraction(400, "Success", null);
 
                     //making a Login request
                     try {
@@ -145,7 +147,8 @@ public class Login extends Fragment {
                                             msisdn,
                                             loginResponse);
                                 }catch (Exception e){
-                                    loginListener.onLoginInteraction(500, e.getMessage(), msisdn, null);
+                                    uiFeed(e.getMessage());
+                                    //loginListener.onLoginInteraction(500, e.getMessage(), msisdn, null);
                                 }
                             }
 
@@ -153,15 +156,18 @@ public class Login extends Fragment {
                             public void onFailure(Call<LoginResponse> call, Throwable t) {
                                 // Log error here since request failed
                                 Log.e(tag, t.toString());
-                                loginListener.onLoginInteraction(500, t.getMessage(), msisdn, null);
+                                uiFeed("Server Error");
+                                //loginListener.onLoginInteraction(500, t.getMessage(), msisdn, null);
                             }
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
-                        loginListener.onLoginInteraction(500, e.getMessage(), msisdn, null);
+                        uiFeed(e.getMessage());
+                        //loginListener.onLoginInteraction(500, e.getMessage(), msisdn, null);
                     }
                 } else {
-                    loginListener.onLoginInteraction(500, "Invalid Credential.", msisdn, null);
+                    uiFeed("Invalid Credential.");
+                    //loginListener.onLoginInteraction(500, "Invalid Credential.", msisdn, null);
                 }
             }
         });
@@ -178,13 +184,31 @@ public class Login extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement LoginInteractionListener");
         }
-        Log.d(tag,"Fragment Attached");
+        Log.d(tag, "Fragment Attached");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         loginListener = null;
+    }
+
+    private void uiFeed(String feedBack){
+        try{
+            final TextView tv=(TextView) getView().findViewById(R.id.tv);
+            if(!TextUtils.isEmpty(feedBack)){
+                tv.setVisibility(View.VISIBLE);
+                tv.setText(feedBack);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv.setVisibility(View.GONE);
+                    }
+                }, 4000);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

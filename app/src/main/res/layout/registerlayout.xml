@@ -5,7 +5,9 @@
     android:background="#ffffff"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="4dp"
+    android:paddingTop="16dp"
+    android:layout_gravity="center_vertical"
+    android:foregroundGravity="center"
     tools:context="fragments.Register">
     <ScrollView
         android:layout_width="match_parent"
@@ -27,23 +29,21 @@
                 android:layout_height="wrap_content">
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
                     android:maxLines="1"
                     android:maxLength="20"
                     android:ellipsize="end"
                     android:id="@+id/fname"
                     android:inputType="text"
                     android:hint="Enter your First Name"
-                    android:gravity="center"
-                    android:drawableLeft="@android:drawable/ic_menu_info_details"
+                    android:drawableLeft="@drawable/icon_user"
+                    android:drawablePadding="10dp"
                     android:background="@drawable/border_gray"/>
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
                     android:maxLines="1"
                     android:maxLength="20"
                     android:ellipsize="end"
@@ -51,14 +51,13 @@
                     android:layout_marginTop="10dp"
                     android:id="@+id/lname"
                     android:hint="Enter your Last Name"
-                    android:gravity="center"
-                    android:drawableLeft="@android:drawable/ic_menu_info_details"
+                    android:drawableLeft="@drawable/icon_user"
+                    android:drawablePadding="10dp"
                     android:background="@drawable/border_gray"/>
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
                     android:maxLines="1"
                     android:maxLength="20"
                     android:ellipsize="end"
@@ -66,14 +65,13 @@
                     android:id="@+id/msisdn"
                     android:inputType="phone"
                     android:hint="Enter your Number"
-                    android:gravity="center"
-                    android:drawableLeft="@android:drawable/ic_menu_call"
+                    android:drawableLeft="@drawable/icon_phone"
+                    android:drawablePadding="10dp"
                     android:background="@drawable/border_gray"/>
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
                     android:maxLines="1"
                     android:maxLength="30"
                     android:ellipsize="end"
@@ -81,14 +79,13 @@
                     android:id="@+id/email"
                     android:inputType="textEmailAddress"
                     android:hint="Enter your mail"
-                    android:gravity="center"
-                    android:drawableLeft="@android:drawable/sym_action_email"
+                    android:drawableLeft="@drawable/icon_email"
+                    android:drawablePadding="10dp"
                     android:background="@drawable/border_gray"/>
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:maxLines="1"
                     android:maxLength="5"
@@ -97,14 +94,13 @@
                     android:id="@+id/pin"
                     android:inputType="numberPassword"
                     android:hint="Enter your PIN"
-                    android:gravity="center"
-                    android:drawableLeft="@android:drawable/ic_secure"
+                    android:drawableLeft="@drawable/icon_password"
+                    android:drawablePadding="10dp"
                     android:background="@drawable/border_gray"/>
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:maxLines="1"
                     android:maxLength="5"
@@ -113,8 +109,8 @@
                     android:id="@+id/repin"
                     android:inputType="numberPassword"
                     android:hint="Retype your PIN"
-                    android:gravity="center"
-                    android:drawableLeft="@android:drawable/ic_secure"
+                    android:drawableLeft="@drawable/icon_password"
+                    android:drawablePadding="10dp"
                     android:background="@drawable/border_gray"/>
 
                 <Button

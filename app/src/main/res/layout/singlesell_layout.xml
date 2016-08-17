@@ -2,16 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity = "center"
     android:paddingTop="4dp"
     android:paddingRight="16dp"
     android:paddingLeft="16dp"
-    android:paddingBottom="4dp"
+    android:paddingBottom="16dp"
     android:background="@color/appWhite"
     tools:context="fragments.SingleSell">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
         <TableRow
             android:layout_width="match_parent"
@@ -19,28 +21,47 @@
             android:background="@drawable/border_gray"
             android:gravity="center"
             android:padding="10dp">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_call"/>
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/tel"
-                android:padding="4dp"
-                android:inputType="phone"
-                android:gravity="center"
-                android:maxLength="20"
-                android:ellipsize="end"
-                android:hint="Enter A Phone Number"
-                android:textColor="@color/appBlue"
-                android:background="@color/appTransparent"/>
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/getNumber"
-                android:background="@drawable/imagebuttonblue"
-                android:src="@drawable/ic_icon_main_contactbrowse"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:id="@+id/caller"
+                    android:src="@android:drawable/ic_menu_call"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/caller"
+                    android:layout_toEndOf="@+id/caller"
+                    android:layout_toLeftOf="@+id/getNumber"
+                    android:layout_toStartOf="@+id/getNumber"
+                    android:id="@+id/tel"
+                    android:padding="4dp"
+                    android:inputType="phone"
+                    android:gravity="center"
+                    android:maxLength="20"
+                    android:ellipsize="end"
+                    android:hint="Enter A Phone Number"
+                    android:textColor="@color/appBlue"
+                    android:background="@color/appTransparent"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignBottom="@+id/tel"
+                    android:id="@+id/getNumber"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/imagebuttonblue"
+                    android:src="@drawable/ic_icon_main_contactbrowse"/>
+            </RelativeLayout>
+
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
@@ -49,27 +70,45 @@
             android:gravity="center"
             android:layout_marginTop="10dp"
             android:padding="10dp">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_icon_main_naira"/>
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/amount"
-                android:padding="4dp"
-                android:inputType="phone"
-                android:gravity="center"
-                android:maxLength="20"
-                android:ellipsize="end"
-                android:textColor="@color/appBlue"
-                android:hint="Enter AirTime Amount"
-                android:background="@color/appTransparent"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_input_get"
-                android:visibility="invisible"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:id="@+id/currency"
+                    android:src="@drawable/ic_icon_main_naira"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/currency"
+                    android:layout_toEndOf="@+id/currency"
+                    android:layout_toLeftOf="@+id/guide"
+                    android:layout_toStartOf="@+id/guide"
+                    android:id="@+id/amount"
+                    android:padding="4dp"
+                    android:inputType="phone"
+                    android:gravity="center"
+                    android:maxLength="20"
+                    android:ellipsize="end"
+                    android:textColor="@color/appBlue"
+                    android:hint="Enter AirTime Amount"
+                    android:background="@color/appTransparent"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/guide"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignBottom="@+id/amount"
+                    android:src="@android:drawable/ic_input_get"
+                    android:visibility="invisible"/>
+
+                </RelativeLayout>
+
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
@@ -90,5 +129,4 @@
         </TableRow>
 
 </LinearLayout>
-
 </FrameLayout>

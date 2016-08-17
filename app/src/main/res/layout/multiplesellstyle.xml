@@ -10,7 +10,7 @@
         android:paddingBottom="4dp"
         android:layout_gravity="center_vertical"
         android:id="@+id/tabGroup"
-        android:stretchColumns="*">
+        android:stretchColumns="0,1">
         <TableRow>
             <LinearLayout
                 android:paddingLeft="4dip">
@@ -32,7 +32,7 @@
                         android:id="@+id/tel"
                         android:padding="4dp"
                         android:inputType="phone"
-                        android:gravity="center"
+                        android:gravity="left|center"
                         android:maxLength="20"
                         android:singleLine="true"
                         android:ellipsize="end"
@@ -61,7 +61,6 @@
                         android:drawableLeft="@drawable/ic_icon_main_naira"
                         android:id="@+id/amount"
                         android:inputType="phone"
-                        android:gravity="center"
                         android:singleLine="true"
                         android:focusableInTouchMode="true"
                         android:maxLength="5"
