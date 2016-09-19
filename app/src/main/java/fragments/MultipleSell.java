@@ -4,30 +4,27 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Typeface;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -37,7 +34,6 @@ import android.widget.Toast;
 import com.oltranz.airtime.airtime.R;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,9 +51,7 @@ import simplebeans.loginbeans.LoginResponse;
 import simplebeans.topupbeans.TopUpBean;
 import simplebeans.topupbeans.TopUpRequest;
 import simplebeans.topupbeans.TopUpResponse;
-import utilities.Contact;
-import utilities.ContactsPickerActivity;
-import utilities.MultipleSellAdapter;
+import utilities.RecycleViewAdapter;
 import utilities.TopUpConfirmAdapter;
 import utilities.utilitiesbeans.TopUpNumber;
 
@@ -69,17 +63,23 @@ import utilities.utilitiesbeans.TopUpNumber;
  * Use the {@link MultipleSell#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MultipleSell extends Fragment {
+public class MultipleSell extends Fragment implements RecycleViewAdapter.RecycleClickListener {
+    static final int PICK_CONTACT_REQUEST = 1;
     private String tag="AirTime: "+getClass().getSimpleName();
-
     private Typeface font;
     private MultipleSellInteraction onMultipleSell;
-    private MultipleSellAdapter adapter;
+    //private MultipleSellAdapter adapter;
     private TableLayout buyList;
     private List<TopUpNumber> numbers;
-
+    private int populatePosition;
+    private View populateView;
+    private RecyclerView mRecycle;
+    private RecycleViewAdapter adapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private String msisdn;
     private String token;
+    private Button send;
+    private ImageButton addNumbers;
 
     public MultipleSell() {
         // Required empty public constructor
@@ -96,10 +96,16 @@ public class MultipleSell extends Fragment {
     public static MultipleSell newInstance(String param1, String param2) {
         MultipleSell fragment = new MultipleSell();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    //validate Phone Field
+    private final static boolean isValidMobile(String phone) {
+        if (TextUtils.isEmpty(phone))
+            return false;
+        else
+            return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
     @Override
@@ -127,180 +133,160 @@ public class MultipleSell extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(tag, "View are finally inflated");
-        Button send=(Button) view.findViewById(R.id.send);
-        send.setTypeface(font);
-        ImageButton addNumbers=(ImageButton) view.findViewById(R.id.addnumber);
-        buyList=(TableLayout) view.findViewById(R.id.buyTable);
-//        setListViewHeightBasedOnChildren(buyList);
-//        buyList.setOnTouchListener(new View.OnTouchListener() {
-//            // Setting on Touch Listener for handling the touch inside ScrollView
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                // Disallow the touch request for parent scroll on touch of child view
-//                v.getParent().requestDisallowInterceptTouchEvent(true);
-//                return false;
-//            }
-//        });
-        numbers=new ArrayList<TopUpNumber>();
-        addNumbers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //pick the numbers
-                if (buyList.getChildCount() == 3) {
-                    buyList.removeAllViews();
-//                    TextView tv=(TextView) getView().findViewById(R.id.tv);
-//                    tv.setVisibility(View.VISIBLE);
-                }
-                Intent intentContactPick = new Intent(getContext(), ContactsPickerActivity.class);
-                startActivityForResult(intentContactPick, 1000);
-            }
-        });
 
+        mRecycle = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mRecycle.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecycle.setLayoutManager(mLayoutManager);
+        adapter = new RecycleViewAdapter(getContext(), initRecycler());
+        mRecycle.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(this);
+
+        send = (Button) view.findViewById(R.id.send);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                final List<TopUpNumber> topUpNumbers = new ArrayList<TopUpNumber>();
-                for (int i = 0; i < buyList.getChildCount(); i++) {
-                    View rowView = buyList.getChildAt(i);
-                    if (rowView.findViewById(R.id.tel) != null) {
-                        TextView tel = (TextView) rowView.findViewById(R.id.tel);
-                        EditText amount = (EditText) rowView.findViewById(R.id.amount);
-                        Log.d(tag, tel.getText().toString() + " : " + amount.getText().toString());
-                        String formattedAmount = "0";
-                        try {
-                            if (!TextUtils.isEmpty(amount.getText().toString()))
-                                formattedAmount = new DecimalFormat("#").format(Double.valueOf(amount.getText().toString()));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(getContext(), "Invalid Amount Entry", Toast.LENGTH_SHORT).show();
-                        }
+            public void onClick(View v) {
 
-                        TopUpNumber topUpNumber = new TopUpNumber(tel.getText().toString(), Double.valueOf(formattedAmount));
-
-                        if (!TextUtils.isEmpty(topUpNumber.getMsisdn()) &&
-                                (topUpNumber.getAmount() > 0) &&
-                                (isValidMobile(topUpNumber.getMsisdn()))) {
-
-                            // TopUpNumber topUpNumber = new TopUpNumber(tel.getText().toString(), Double.valueOf(amount.getText().toString()));
-                            topUpNumbers.add(topUpNumber);
+                if (adapter.getItemCount() > 0) {
+                    EditText tel;
+                    EditText amount;
+                    final List<TopUpNumber> numbers = new ArrayList<TopUpNumber>();
+                    for (int i = 0; i < adapter.getItemCount(); i++) {
+                        View view = mRecycle.getChildAt(i);
+                        tel = (EditText) view.findViewById(R.id.tel);
+                        amount = (EditText) view.findViewById(R.id.amount);
+                        if (!TextUtils.isEmpty(tel.getText().toString()) &&
+                                (!TextUtils.isEmpty(amount.getText().toString())) &&
+                                (TextUtils.isDigitsOnly(amount.getText().toString())) &&
+                                (isValidMobile(tel.getText().toString()))) {
+                            TopUpNumber topUpNumber = new TopUpNumber(tel.getText().toString(), Double.valueOf(amount.getText().toString()));
+                            numbers.add(topUpNumber);
                         }
                     }
-                }
+                    if (numbers.size() > 0) {
+                        final Dialog dialog = new Dialog(getContext());
+                        dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
+                        dialog.setContentView(R.layout.confirmtopup);
+                        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                        dialog.setCancelable(false);
+                        dialog.setCanceledOnTouchOutside(false);
 
-                if (topUpNumbers.size() <= 0) {
-                    Toast.makeText(getContext(), "Invalid Amount Entry", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+                        if (dividerId != 0) {
+                            View divider = dialog.findViewById(dividerId);
+                            if (divider != null)
+                                divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.appOrange));
+                        }
+                        dialog.setTitle(Html.fromHtml("<font color='" + ContextCompat.getColor(getContext(), R.color.appOrange) + "'>Confirm...</font>"));
+                        dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
 
-                final Dialog dialog = new Dialog(getContext());
-                dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
-                dialog.setContentView(R.layout.confirmtopup);
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                dialog.setCancelable(false);
-                dialog.setCanceledOnTouchOutside(false);
+                        final ListView telList = (ListView) dialog.findViewById(R.id.telList);
+                        final TextView tv = (TextView) dialog.findViewById(R.id.tv);
+                        final EditText pin = (EditText) dialog.findViewById(R.id.pin);
+                        final Button cancel = (Button) dialog.findViewById(R.id.cancel);
+                        final Button ok = (Button) dialog.findViewById(R.id.ok);
 
-                int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
-                if (dividerId != 0) {
-                    View divider = dialog.findViewById(dividerId);
-                    if(divider != null)
-                        divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.appOrange));
+                        TopUpConfirmAdapter adapter = new TopUpConfirmAdapter(getActivity(), numbers);
+                        telList.setAdapter(adapter);
 
-                }
-                dialog.setTitle(Html.fromHtml("<font color='" + ContextCompat.getColor(getContext(), R.color.appOrange) + "'>Confirm...</font>"));
-                dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
+                        ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (!TextUtils.isEmpty(pin.getText().toString())) {
 
-                final ListView telList = (ListView) dialog.findViewById(R.id.telList);
-                final TextView tv = (TextView) dialog.findViewById(R.id.tv);
-                final EditText pin = (EditText) dialog.findViewById(R.id.pin);
-                final Button cancel = (Button) dialog.findViewById(R.id.cancel);
-                final Button ok = (Button) dialog.findViewById(R.id.ok);
+                                    //get current Time
+                                    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                                    String currentTime = df.format(Calendar.getInstance().getTime());
 
-                final TopUpConfirmAdapter adapter = new TopUpConfirmAdapter(getActivity(), topUpNumbers);
-                telList.setAdapter(adapter);
-
-                ok.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (!TextUtils.isEmpty(pin.getText().toString())) {
-
-                            //get current Time
-                            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-                            String currentTime = df.format(Calendar.getInstance().getTime());
-
-                            //get device Identity
-                            DeviceIdentity deviceIdentity = new DeviceIdentity(getContext());
-                            //get user Identity
-                            LoginRequest loginRequest = new LoginRequest(pin.getText().toString(),
-                                    msisdn,
-                                    currentTime,
-                                    deviceIdentity.getSerialNumber(),
-                                    deviceIdentity.getImei(),
-                                    deviceIdentity.getVersion());
+                                    //get device Identity
+                                    DeviceIdentity deviceIdentity = new DeviceIdentity(getContext());
+                                    //get user Identity
+                                    LoginRequest loginRequest = new LoginRequest(pin.getText().toString(),
+                                            msisdn,
+                                            currentTime,
+                                            deviceIdentity.getSerialNumber(),
+                                            deviceIdentity.getImei(),
+                                            deviceIdentity.getVersion());
 
 
-                            //Client data to send to the Sever
-                            Log.d(tag, "Data to push to the server:\n" + new ClientData().mapping(loginRequest));
+                                    //Client data to send to the Sever
+                                    Log.d(tag, "Data to push to the server:\n" + new ClientData().mapping(loginRequest));
 
-                            //making a Login request
-                            try {
-                                ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-                                Call<LoginResponse> callService = clientServices.loginUser(loginRequest);
-                                callService.enqueue(new Callback<LoginResponse>() {
-                                    @Override
-                                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                                    //making a Login request
+                                    try {
+                                        ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
+                                        Call<LoginResponse> callService = clientServices.loginUser(loginRequest);
+                                        callService.enqueue(new Callback<LoginResponse>() {
+                                            @Override
+                                            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
-                                        //HTTP status code
-                                        int statusCode = response.code();
-                                        LoginResponse loginResponse = response.body();
+                                                //HTTP status code
+                                                int statusCode = response.code();
+                                                LoginResponse loginResponse = response.body();
 
-                                        //handle the response from the server
-                                        Log.d(tag, "Server Result:\n" + new ClientData().mapping(loginResponse));
-                                        if (loginResponse.getResponseStatusSimpleBean().getStatusCode() == 400) {
+                                                //handle the response from the server
+                                                Log.d(tag, "Server Result:\n" + new ClientData().mapping(loginResponse));
+                                                if (loginResponse.getResponseStatusSimpleBean().getStatusCode() == 400) {
 
-                                            //making a transaction Request
-                                            onTopUpRequest(topUpNumbers);
+                                                    //making a transaction Request
+                                                    onTopUpRequest(numbers);
 
-                                            //Clear List data
-                                            adapter.clear();
-                                            adapter.notifyDataSetChanged();
-                                            TextView tv = (TextView) getView().findViewById(R.id.tv);
-                                            tv.setVisibility(View.VISIBLE);
-                                            dialog.dismiss();
+                                                    //Clear Amount list
+                                                    final EditText amount = (EditText) getView().findViewById(R.id.amount);
+                                                    amount.setText("");
 
-                                        } else {
-                                            tv.setText(loginResponse.getResponseStatusSimpleBean().getMessage());
-                                            pin.setText("");
-                                        }
+                                                    final EditText tel = (EditText) getView().findViewById(R.id.tel);
+                                                    tel.setText("");
+                                                    tel.append(msisdn);//default owner number
+
+                                                    dialog.dismiss();
+                                                } else {
+                                                    tv.setText(loginResponse.getResponseStatusSimpleBean().getMessage());
+                                                    pin.setText("");
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                                                // Log error here since request failed
+                                                Log.e(tag, t.toString());
+                                                tv.setText(t.toString());
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        tv.setText(e.getMessage());
                                     }
-
-                                    @Override
-                                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                                        // Log error here since request failed
-                                        Log.e(tag, t.toString());
-                                        tv.setText(t.toString());
-                                    }
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                tv.setText(e.getMessage());
+                                } else {
+                                    //Empty Pin
+                                    tv.setText("Fill your PIN");
+                                }
                             }
-                        } else {
-                            //Empty Pin
-                            tv.setText("Fill your PIN");
-                        }
-                    }
-                });
+                        });
 
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
+                        cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
 
-                dialog.show();
+                        dialog.show();
+                    } else {
+                        Toast.makeText(getContext(), "Invalid Data", Toast.LENGTH_LONG).show();
+                    }
+                }
+
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        adapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -315,6 +301,20 @@ public class MultipleSell extends Fragment {
         }
     }
 
+    private List<TopUpNumber> initRecycler() {
+        List<TopUpNumber> mData = new ArrayList<>();
+        TopUpNumber data = new TopUpNumber("", 0);
+        mData.add(data);
+
+        data = new TopUpNumber("", 0);
+        mData.add(data);
+
+        data = new TopUpNumber("", 0);
+        mData.add(data);
+
+        return mData;
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -324,31 +324,38 @@ public class MultipleSell extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Check which request it is that we're responding to
+        if (requestCode == PICK_CONTACT_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                // Get the URI that points to the selected contact
+                Uri contactUri = data.getData();
 
-        if(requestCode == 1000 && resultCode == Activity.RESULT_OK){
+                //experimenting
 
-            ArrayList<Contact> selectedContacts = data.getParcelableArrayListExtra("SelectedContacts");
-            List<TopUpNumber> numbers=new ArrayList<>();
-            for(Contact contact: selectedContacts){
+                // We only need the NUMBER column, because there will be only one row in the result
+                String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER};
 
-                String number = contact.phone.trim();
+                // Perform the query on the contact to get the NUMBER column
+                // We don't need a selection or sort order (there's only one result for the given URI)
+                // CAUTION: The query() method should be called from a separate thread to avoid blocking
+                // your app's UI thread. (For simplicity of the sample, this code doesn't do that.)
+                // Consider using CursorLoader to perform the query.
+                Cursor cursor = getContext().getContentResolver().query(contactUri, null, null, null, null);
+                cursor.moveToFirst();
+
+                // Retrieve the phone number from the NUMBER column
+                int column = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                String number = cursor.getString(column).trim();
                 number=number.replaceAll("\\W", "");
                 number=number.replace("[^a-zA-Z]", "");
 
-                TopUpNumber topUpNumber=new TopUpNumber(number,0);
-                numbers.add(topUpNumber);
-                Log.d(tag,"Selected Number: "+number);
-            }
+                Log.d(tag, "Picked Number: " + number + " Of: " + name);
+                // Do something with the phone number...
 
-            int sumItems=buyList.getChildCount()+numbers.size();
-            if(sumItems>3){
-                Toast.makeText(getContext(),"Maximum Telephone Numbers Exceeded pick only (3)",Toast.LENGTH_LONG).show();
-            }else{
-                buyListHandle(numbers);
+                populateData(populatePosition, populateView, number);
             }
-        }else if(resultCode==500){
-            Toast.makeText(getContext(),"Maximum Telephone Numbers Exceeded pick only (3)",Toast.LENGTH_LONG).show();
-            monitorLabel(buyList.getChildCount());
         }
     }
 
@@ -370,75 +377,15 @@ public class MultipleSell extends Fragment {
                 TopUpNumber item= mList.get(rowCounter);
 
                 TextView telNumber = (TextView) row.findViewById(R.id.tel);
-                telNumber.setTypeface(font);
+                telNumber.setTypeface(font, Typeface.BOLD);
 
                 EditText fillAmount=(EditText) row.findViewById(R.id.amount);
-                fillAmount.setTypeface(font);
+                fillAmount.setTypeface(font, Typeface.BOLD);
 
                 telNumber.setText(item.getMsisdn());
 
-                ImageView remove = (ImageView) row.findViewById(R.id.remove);
-
-                final int finalRowCounter = rowCounter;
-                remove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        buyList.removeView(row);
-                        monitorLabel(buyList.getChildCount());
-                    }
-                });
-
-//                // inner for loop
-//                for (int j = 1; j <= 1; j++) {
-//                    final LinearLayout col = (LinearLayout) LayoutInflater.from(
-//                            getContext()).inflate(
-//                            R.layout.multiplesellstyle, null);
-//
-//                    row.addView(col);
-//                    TopUpNumber item= mList.get(rowCounter);
-//
-//                    TextView telNumber = (TextView) row.findViewById(R.id.tel);
-//                    telNumber.setTypeface(font);
-//
-//                    EditText fillAmount=(EditText) row.findViewById(R.id.amount);
-//                    fillAmount.setTypeface(font);
-//
-//                    telNumber.setText(item.getMsisdn());
-//
-//                    final int finalRowCounter = rowCounter;
-//
-//
-////                    row.setClickable(true);
-////                    col.setClickable(true);
-////                    col.setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View v) {
-////                            int col_id = row.indexOfChild(col);
-////                            int row_id = buyList.indexOfChild(row);
-////                            Toast.makeText(getContext(), " "+col_id + " "+row_id, Toast.LENGTH_SHORT).show();
-////
-////                        }
-////                    });
-//
-//                }
                 buyList.addView(row);
             }
-
-//            for(int i=0; i<buyList.getChildCount();i++){
-//                View row=buyList.getChildAt(i);
-//                ImageView remove = (ImageView) row.findViewById(R.id.remove);
-//                remove.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        buyList.removeViewAt(i);
-//                    }
-//                });
-//            }
-
-//            if(buyList.getChildCount()>0) {
-//                TextView tv = (TextView) getView().findViewById(R.id.tv);
-//                tv.setVisibility(View.INVISIBLE);
-//            }
         }
         monitorLabel(buyList.getChildCount());
     }
@@ -447,20 +394,22 @@ public class MultipleSell extends Fragment {
         TextView tv=(TextView) getView().findViewById(R.id.tv);
         int res=3-count;
         if(res==0) {
+            try {
+                addNumbers.setVisibility(View.GONE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             tv.setText("Max Phone Number Reached");
         }
         else if(res<=3){
+            try {
+                if (addNumbers.getVisibility() == View.GONE)
+                    addNumbers.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             tv.setText("Add Max "+res+" Phone Numbers");
         }
-    }
-
-    //validate Phone Field
-    private final static boolean isValidMobile(String phone)
-    {
-        if (TextUtils.isEmpty(phone))
-            return false;
-        else
-            return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
     private void onTopUpRequest(List<TopUpNumber> numbers){
@@ -474,7 +423,7 @@ public class MultipleSell extends Fragment {
         //make a request of topUp Object
         TopUpRequest topUpRequest=new TopUpRequest(msisdn,to,token);
 
-        Log.d(tag, "Server Result:\n" + new ClientData().mapping(topUpRequest));
+        Log.d(tag, "To to be posted on server:\n" + new ClientData().mapping(topUpRequest));
 
         //making a Login request
         try {
@@ -513,25 +462,38 @@ public class MultipleSell extends Fragment {
 
     }
 
-//    public static void setListViewHeightBasedOnChildren(ListView listView) {
-//        ListAdapter listAdapter = listView.getAdapter();
-//        if (listAdapter == null) {
-//            return;
-//        }
-//
-//        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
-//        for (int i = 0; i < listAdapter.getCount(); i++) {
-//            View listItem = listAdapter.getView(i, null, listView);
-//            if (listItem instanceof ViewGroup)
-//                listItem.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT));
-//            listItem.measure(0, 0);
-//            totalHeight += listItem.getMeasuredHeight();
-//        }
-//
-//        ViewGroup.LayoutParams params = listView.getLayoutParams();
-//        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-//        listView.setLayoutParams(params);
-//    }
+    //recycle view item clicked handling method
+    @Override
+    public void onRecycleItemClick(int position, View v) {
+        Log.d(tag, "Clicked Item Position: " + position);
+        populatePosition = position;
+        populateView = v;
+
+        if (v.getId() == R.id.reset) {
+            //do reset
+            View view = mRecycle.getChildAt(position);
+            EditText tel = (EditText) view.findViewById(R.id.tel);
+            tel.setText("");
+            EditText amount = (EditText) view.findViewById(R.id.amount);
+            amount.setText("");
+        } else if (v.getId() == R.id.getNumber) {
+            Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+            pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+            startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+        }
+    }
+
+    public void populateData(int position, View v, String msisdn) {
+        try {
+            View view = mRecycle.getChildAt(position);
+            EditText tel = (EditText) view.findViewById(R.id.tel);
+            tel.setText("");
+            tel.append(msisdn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

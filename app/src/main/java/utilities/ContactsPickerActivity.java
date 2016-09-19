@@ -3,8 +3,8 @@ package utilities;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -36,6 +36,7 @@ public class ContactsPickerActivity extends AppCompatActivity {
 
         contactsChooser = (ListView) findViewById(R.id.lst_contacts_chooser);
         btnDone = (Button) findViewById(R.id.btn_done);
+        btnDone.setTypeface(font, Typeface.BOLD);
         txtFilter = (EditText) findViewById(R.id.txt_filter);
         txtFilter.setTypeface(font);
         txtLoadInfo = (TextView) findViewById(R.id.txt_load_progress);

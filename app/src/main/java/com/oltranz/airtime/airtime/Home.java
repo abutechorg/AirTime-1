@@ -1,32 +1,39 @@
 package com.oltranz.airtime.airtime;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.IntentCompat;
-import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.vistrav.ask.Ask;
+import com.vistrav.ask.annotations.AskDenied;
+import com.vistrav.ask.annotations.AskGranted;
+
+import config.BaseUrl;
 import fragments.Login;
 import fragments.Register;
 import simplebeans.loginbeans.LoginResponse;
 import simplebeans.registerbeans.RegisterResponse;
 
 public class Home extends AppCompatActivity implements Login.LoginInteractionListener, Register.RegisterInteractionListener {
+    //experimenting
+    static final int PICK_CONTACT_REQUEST = 1;
     private String tag="AirTime: "+getClass().getSimpleName();
     private TextView titleBar;
     private ImageView register;
@@ -37,17 +44,19 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
     private Register registerFrag;
     private FragmentManager fragmentManager;
     private boolean isRegisterClicked=false;
-
-    //experimenting
-    static final int PICK_CONTACT_REQUEST = 1;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setContentView(R.layout.home_layout);
+        //request Permission
+        rightManager();
+
         font = Typeface.createFromAsset(this.getAssets(), "font/ubuntu.ttf");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.VISIBLE);
         toolbar.setTitle("");
         titleBar=(TextView) toolbar.findViewById(R.id.toolbar_title);
         titleBar.setTypeface(font);
@@ -64,6 +73,11 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                 return;
             }
 
+            try {
+                getSupportActionBar().hide();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             fragmentManager=getSupportFragmentManager();
 //            tv=(TextView) findViewById(R.id.tv);
 //            tv.setTypeface(font);
@@ -77,6 +91,16 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
             register=(ImageView) findViewById(R.id.register);
             help=(ImageView) findViewById(R.id.help);
 
+            final Context cont = this;
+            help.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(tag, "Help triggered");
+                    showDialog("HELP", BaseUrl.helpUrl);
+
+                }
+            });
+
             register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -85,6 +109,7 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                         isRegisterClicked=true;
                         register.setImageResource(R.drawable.icon_login);
                         try{
+                            getSupportActionBar().show();
                             TableRow headerLogo=(TableRow) findViewById(R.id.headerLogo);
                             headerLogo.setVisibility(View.GONE);
                         }catch (Exception e){
@@ -95,6 +120,7 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                         isRegisterClicked=false;
                         register.setImageResource(R.drawable.icon_register);
                         try{
+                            getSupportActionBar().hide();
                             TableRow headerLogo=(TableRow) findViewById(R.id.headerLogo);
                             headerLogo.setVisibility(View.VISIBLE);
                         }catch (Exception e){
@@ -103,19 +129,61 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                     }
                 }
             });
-
-            help.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
         }else{
             //popup window
 
         }
     }
 
+    private void showDialog(String mTitle, String url) {
+        TextView close;
+        TextView title;
+        WebView mWeb;
+
+        final Dialog dialog = new Dialog(Home.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.web_dialog);
+
+        close = (TextView) dialog.findViewById(R.id.close);
+        close.setTypeface(font, Typeface.BOLD);
+        title = (TextView) dialog.findViewById(R.id.title);
+        title.setTypeface(font, Typeface.BOLD);
+        mWeb = (WebView) dialog.findViewById(R.id.webView);
+
+        title.setText(mTitle);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mWeb.getSettings().setJavaScriptEnabled(true);
+        mWeb.loadUrl(url);
+
+        dialog.show();
+    }
+
+    private void rightManager() {
+        int currentVersion = 0;
+        try {
+            currentVersion = android.os.Build.VERSION.SDK_INT;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (currentVersion > 0 && currentVersion >= 23) {
+            Ask.on(this)
+                    .forPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_PHONE_STATE)
+                    .withRationales("In order to save useful session data, storage Permission is needed.",
+                            "To properly identify your session and establish a secured connection Phone State permission is needed.") //optional
+                    .go();
+        } else {
+            return;
+        }
+    }
     @Override
     public void onLoginInteraction(int statusCode, String message, String msisdn, LoginResponse loginResponse) {
         if(statusCode != 400) {
@@ -173,6 +241,33 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         }
     }
 
+    //optional
+    @AskGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    public void fileAccessGranted() {
+        Log.i(tag, "FILE  GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    public void fileAccessDenied() {
+        Log.i(tag, "FILE  DENiED");
+        finish();
+    }
+
+    //optional
+    @AskGranted(Manifest.permission.READ_PHONE_STATE)
+    public void phoneStateAllowed() {
+        Log.i(tag, "PHONE SATE GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.READ_PHONE_STATE)
+    public void phoneStateDenied() {
+        Log.i(tag, "PHONE SATE DENIED");
+        Toast.makeText(this, "Sorry, Without This Permission the application security can easily be compromised", Toast.LENGTH_LONG).show();
+        finish();
+    }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -207,8 +302,16 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                 isRegisterClicked=true;
                 register.setImageResource(R.drawable.icon_login);
                 try{
+                    getSupportActionBar().show();
+                    toolbar.setVisibility(View.VISIBLE);
                     TableRow headerLogo=(TableRow) findViewById(R.id.headerLogo);
                     headerLogo.setVisibility(View.GONE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    getSupportActionBar().hide();
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -57,11 +58,13 @@ import utilities.utilitiesbeans.TopUpNumber;
  * create an instance of this fragment.
  */
 public class SingleSell extends Fragment {
-    private String tag=getClass().getSimpleName();
     static final int PICK_CONTACT_REQUEST = 1;
+    private String tag = getClass().getSimpleName();
     private SingleSellInteractionListener onSingleSell;
     private String msisdn;
     private String token;
+
+    private Typeface font;
 
     public SingleSell() {
         // Required empty public constructor
@@ -85,6 +88,14 @@ public class SingleSell extends Fragment {
         return fragment;
     }
 
+    //validate Phone Field
+    private final static boolean isValidMobile(String phone) {
+        if (TextUtils.isEmpty(phone))
+            return false;
+        else
+            return android.util.Patterns.PHONE.matcher(phone).matches();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,16 +117,20 @@ public class SingleSell extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.singlesell_layout, container, false);
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(tag, "View are finally inflated");
         final EditText tel=(EditText) view.findViewById(R.id.tel);
+        tel.setTypeface(font, Typeface.BOLD);
         tel.setText("");
         tel.append(msisdn);//default owner number
         final EditText amount=(EditText) view.findViewById(R.id.amount);
+        amount.setTypeface(font, Typeface.BOLD);
         final ImageView getNumber=(ImageView) view.findViewById(R.id.getNumber);
         final Button send=(Button) view.findViewById(R.id.send);
+        send.setTypeface(font, Typeface.BOLD);
         getNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -307,12 +322,12 @@ public class SingleSell extends Fragment {
 
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof SingleSellInteractionListener) {
             onSingleSell = (SingleSellInteractionListener) context;
+            font = Typeface.createFromAsset(context.getAssets(), "font/ubuntu.ttf");
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement SingleSellInteractionListener");
@@ -364,15 +379,6 @@ public class SingleSell extends Fragment {
                 tel.append(number);
             }
         }
-    }
-
-    //validate Phone Field
-    private final static boolean isValidMobile(String phone)
-    {
-        if (TextUtils.isEmpty(phone))
-            return false;
-        else
-            return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
     /**

@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.oltranz.airtime.airtime.R;
@@ -36,7 +34,6 @@ public class TopUpConfirmAdapter extends ArrayAdapter<TopUpNumber> {
         View rowView = view;
         // reuse views
         if (rowView == null) {
-            Log.d(tag, "Row Number Initiated: " + numbers.get(position));
             LayoutInflater inflater = context.getLayoutInflater();
             rowView = inflater.inflate(R.layout.topupconfirm_style, null);
             // configure view holder
@@ -59,8 +56,8 @@ public class TopUpConfirmAdapter extends ArrayAdapter<TopUpNumber> {
         holder.fillAmount.setText(String.valueOf(topUpNumber.getAmount()));
         Log.d(tag,"Row Number: "+topUpNumber.getMsisdn());
 
-        TextView tv=(TextView) rowView.findViewById(R.id.tel);
-        Log.d(tag,"UI Number: "+tv.getText().toString());
+//        TextView tv=(TextView) rowView.findViewById(R.id.tel);
+        Log.d(tag, "UI Number: " + holder.telNumber.getText().toString());
         return rowView;
     }
 

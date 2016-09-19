@@ -2,7 +2,6 @@ package fragments;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,8 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ListView;
 
 import com.oltranz.airtime.airtime.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import simplebeans.ResponseStatusSimpleBean;
+import simplebeans.notifications.NotificationBean;
+import utilities.NotificationAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,13 +29,15 @@ import com.oltranz.airtime.airtime.R;
  * create an instance of this fragment.
  */
 public class Notifications extends Fragment {
-    private String tag="AirTime: "+getClass().getSimpleName();
     private static final String msisdn_param = "msisdn";
     private static final String token_param = "token";
-
+    private String tag = "AirTime: " + getClass().getSimpleName();
     private String msisdn;
     private String token;
     private Typeface font;
+
+    private ListView nList;
+    private NotificationAdapter adapter;
 
     private NotificationInteraction onNotification;
 
@@ -79,6 +88,22 @@ public class Notifications extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(tag, "View are finally inflated");
+
+        nList = (ListView) view.findViewById(R.id.notificationList);
+
+        //____________Dummy Datas______________\\
+        List<NotificationBean> mNotification = new ArrayList<>();
+
+        ResponseStatusSimpleBean status = new ResponseStatusSimpleBean("success", 400);
+        NotificationBean nBean = new NotificationBean("10/09/2016 10:00", "Your AirTime TopUp Transaction Is Successfully Passed. Thank You!", status);
+        mNotification.add(nBean);
+
+        nBean = new NotificationBean("10/10/2016 10:00", "Wallet Credit Transaction Failed, Cause: Not Sufficient Funds On Main Account, Please Try Again. Thank You!", status);
+        mNotification.add(nBean);
+
+        adapter = new NotificationAdapter(getActivity(), mNotification);
+
+        nList.setAdapter(adapter);
     }
 
     @Override

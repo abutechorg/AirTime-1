@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:paddingTop="16dp"
+    android:id="@+id/walletTabs"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:id="@+id/walletTabs">
+    android:paddingTop="6dp">
     <TableLayout
+        android:id="@+id/walletTabGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:id="@+id/walletTabGroup"
         android:stretchColumns="*">
         <TableRow>
             <LinearLayout
                 android:padding="0dip">
                 <TextView
+                    android:id="@+id/addAirtime"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:padding="3dp"
-                    android:gravity="center"
-                    android:text="Add AirTime"
-                    android:id="@+id/addAirtime"
-                    android:onClick="onWalletTabClick"
                     android:background="@drawable/buttonorange"
+                    android:gravity="center"
+                    android:onClick="onWalletTabClick"
+                    android:padding="3dp"
+                    android:text="Add AirTime"
                     android:textColor="@color/appWhite"/>
             </LinearLayout>
 
 
             <LinearLayout
-                android:padding="0dip"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="0dip">
                 <TextView
+                    android:id="@+id/viewHistory"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:padding="3dp"
-                    android:gravity="center"
                     android:background="@drawable/border_orange"
-                    android:textColor="@color/appOrange"
+                    android:gravity="center"
+                    android:onClick="onWalletTabClick"
+                    android:padding="3dp"
                     android:text="View History"
-                    android:id="@+id/viewHistory"
-                    android:onClick="onWalletTabClick" />
+                    android:textColor="@color/appOrange" />
             </LinearLayout>
         </TableRow>
     </TableLayout>

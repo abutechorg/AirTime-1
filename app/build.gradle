@@ -62,20 +62,25 @@ repositories {
         dirs 'libs'
     }
     maven {
-        url  'http://dl.bintray.com/techquest/maven-repo'
+        url 'http://dl.bintray.com/techquest/maven-repo'
     }
 }
+
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile(name: 'deviceprint-release-2.2.0', ext: 'aar')
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:support-v4:23.3.0'
+    compile 'com.android.support:recyclerview-v7:23.3.0'
+    compile 'com.android.support:cardview-v7:23.3.0'
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.interswitchng:payment-android:0.0.6'
-    compile(name: 'deviceprint-release-2.2.0', ext: 'aar')
+    compile 'com.vistrav:ask:2.4'
 }

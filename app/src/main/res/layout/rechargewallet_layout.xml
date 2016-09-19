@@ -5,127 +5,128 @@
     android:background="@color/appWhite"
     android:padding="16dp"
     tools:context="fragments.RechargeWallet">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/customerid"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:hint="Customer Id"
-        android:text="250785534672"
-        android:inputType="text"/>
-
-    <EditText
-        android:id="@+id/amount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:hint="Amount"
-        android:text="10"
-        android:inputType="numberDecimal"/>
-
-    <EditText
-        android:id="@+id/cardpan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:hint="Card No"
-        android:text="4713810000682064"
-        android:inputType="number"/>
-
-    <EditText
-        android:id="@+id/cardpin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:hint="Card Pin"
-        android:text="2573"
-        android:inputType="number"/>
-
-    <EditText
-        android:id="@+id/expirydate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:hint="Expiry"
-        android:text="2005"
-        android:inputType="date"/>
-
-    <EditText
-        android:id="@+id/cardCvv2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:hint="CVV"
-        android:text="368"
-        android:inputType="date"/>
-
-    <Button
-        android:id="@+id/payButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Pay"/>
+        android:orientation="vertical">
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/border_gray"
+            android:hint="Enter Amount"
+            android:inputType="number"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Proceed Payment with..." />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <TableLayout
+                android:id="@+id/tabGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:stretchColumns="*">
+
+                <TableRow>
+
+                    <LinearLayout android:paddingLeft="4dip">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/visaButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp"
+                                android:adjustViewBounds="true"
+                                android:clickable="true"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_icon_payment_visa" />
+                        </TableRow>
+                    </LinearLayout>
+
+                    <LinearLayout android:paddingLeft="4dip">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/mcButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp"
+                                android:adjustViewBounds="true"
+                                android:clickable="true"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_icon_payment_mastercard" />
+                        </TableRow>
+                    </LinearLayout>
 
 
-    <!--<LinearLayout-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="center">-->
+                    <LinearLayout
+                        android:gravity="center"
+                        android:paddingLeft="4dip">
 
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:id="@+id/tv"-->
-            <!--android:text="Enter Amount"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:visibility="gone"/>-->
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/border_gray"
+                            android:gravity="center">
 
-        <!--<EditText-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:drawableLeft="@drawable/ic_action_ic_icon_main_naira"-->
-            <!--android:background="@drawable/border_gray"-->
-            <!--android:inputType="number"-->
-            <!--android:id="@+id/amount"-->
-            <!--android:hint="Enter Amount"-->
-            <!--android:layout_gravity="center_horizontal" />-->
-        <!--<GridView-->
-            <!--android:id="@+id/paymentGrid"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/appTransparent"-->
-            <!--android:listSelector="@drawable/imagebuttonorange"-->
-            <!--android:layout_margin="5dp"-->
-            <!--android:columnWidth="60dp"-->
-            <!--android:drawSelectorOnTop="false"-->
-            <!--android:gravity="center"-->
-            <!--android:numColumns="auto_fit"-->
-            <!--android:stretchMode="columnWidth"-->
-            <!--android:verticalSpacing="5dp"-->
-            <!--android:focusable="true"-->
-            <!--android:clickable="true"/>-->
+                            <ImageView
+                                android:id="@+id/verveButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp"
+                                android:adjustViewBounds="true"
+                                android:clickable="true"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_icon_payment_verve" />
+                        </TableRow>
+                    </LinearLayout>
 
-        <!--<ProgressBar-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/progressBar"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:visibility="gone"/>-->
-    <!--</LinearLayout>-->
-    <!--<WebView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/mWeb"-->
-        <!--android:layout_gravity="center" />-->
+                    <LinearLayout
+                        android:gravity="right"
+                        android:orientation="vertical"
+                        android:padding="0dip">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/otherButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp"
+                                android:adjustViewBounds="true"
+                                android:clickable="true"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_icon_payment_others" />
+
+                        </TableRow>
+                    </LinearLayout>
+                </TableRow>
+            </TableLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
 </FrameLayout>

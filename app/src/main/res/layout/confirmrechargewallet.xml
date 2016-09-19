@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/appWhite"
+    android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin">
 
     <TableLayout
+        android:id="@+id/walletTabGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/footer"
         android:layout_alignParentTop="true"
         android:layout_below="@+id/label"
-        android:layout_above="@+id/footer"
         android:layout_gravity="center_vertical"
-        android:id="@+id/walletTabGroup"
         android:stretchColumns="*">
 
         <!-- Row 1 of table desc -->
@@ -25,35 +26,35 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
                     <TextView
+                        android:id="@+id/lbltel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
-                        android:id="@+id/lbltel"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_alignParentStart="true"
                         android:text="FROM ACCOUNT"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/appGray"/>
                 </RelativeLayout>
             </LinearLayout>
 
 
             <LinearLayout
-                android:padding="4dip"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="4dip">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <TextView
+                        android:id="@+id/lblamount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:gravity="right"
                         android:text=" AMOUNT"
-                        android:textColor="@color/appGray"
-                        android:id="@+id/lblamount"
-                        android:gravity="right"/>
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/appGray" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -61,8 +62,8 @@
 
         <!-- Row 2 Start of table Content -->
         <TableRow
-            android:background="@drawable/border_gray"
             android:layout_gravity="center_vertical"
+            android:background="@drawable/border_gray"
             android:gravity="center">
             <LinearLayout
                 android:padding="4dip">
@@ -70,39 +71,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp">
                 <TextView
+                    android:id="@+id/accountlbl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:padding="3dp"
                     android:gravity="left"
+                    android:padding="3dp"
                     android:text="Account: "
-                    android:id="@+id/accountlbl"
                     android:textColor="@color/appGray"/>
                 </RelativeLayout>
             </LinearLayout>
 
 
             <LinearLayout
-                android:padding="4dip"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="4dip">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <TextView
+                        android:id="@+id/amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:padding="3dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/appOrange"
-                        android:text="amount"
                         android:gravity="right"
-                        android:id="@+id/amount" />
+                        android:padding="3dp"
+                        android:text="amount"
+                        android:textColor="@color/appOrange"
+                        android:textStyle="bold" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -110,37 +111,37 @@
     </TableLayout>
 
     <TableRow
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:id="@+id/footer"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="2dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:id="@+id/tv"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Put your PIN To Confirm"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/appGray"/>
             <EditText
+                android:id="@+id/pin"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="10dp"
-                android:maxLength="5"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:id="@+id/pin"
-                android:inputType="numberPassword"
-                android:hint="Enter your PIN"
-                android:gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/border_gray"
                 android:drawableLeft="@drawable/ic_icon_login_input_password"
-                android:background="@drawable/border_gray"/>
+                android:ellipsize="end"
+                android:gravity="center"
+                android:hint="Enter your PIN"
+                android:inputType="numberPassword"
+                android:maxLength="5"
+                android:singleLine="true" />
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -149,26 +150,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp">
                     <Button
+                        android:id="@+id/cancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
-                        android:id="@+id/cancel"
+                        android:layout_alignParentStart="true"
                         android:background="@drawable/buttongray"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Cancel"
-                        android:textColor="@color/appGray"/>
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@drawable/text_button_gray" />
 
                     <Button
+                        android:id="@+id/ok"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Approve"
-                        android:textColor="@color/appGreen"
                         android:background="@drawable/buttongreen"
-                        android:id="@+id/ok"/>
+                        android:text="Approve"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@drawable/text_button_green" />
                 </RelativeLayout>
             </TableRow>
         </LinearLayout>

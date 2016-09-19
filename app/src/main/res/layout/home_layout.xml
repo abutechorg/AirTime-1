@@ -3,18 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.oltranz.airtime.airtime.Home"
     android:layout_gravity="top"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.oltranz.airtime.airtime.Home">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
+        android:id="@+id/titleBar"
         android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/titleBar"
+        android:layout_alignParentTop="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -22,34 +22,57 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/appOrange"
+            android:visibility="gone"
             app:popupTheme="@style/AppTheme.PopupOverlay">
             <TextView
+                android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:text="Login"
-                android:textColor="@color/appWhite"
                 android:layout_gravity="center"
-                android:id="@+id/toolbar_title" />
+                android:text=""
+                android:textColor="@color/appWhite"
+                android:textSize="20sp"
+                android:textStyle="bold" />
             </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/appWhite"
+        android:layout_above="@+id/bottomLine"
         android:layout_below="@+id/titleBar"
-        android:layout_above="@+id/bottomLine">
-        <FrameLayout
+        android:fillViewport="true">
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:foregroundGravity="center"
-            android:id="@+id/fragment_container"/>
-    </RelativeLayout>
+            android:background="@color/appWhite">
 
+            <TableRow
+                android:id="@+id/headerLogo"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@color/appOrange"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/airtime_logo" />
+            </TableRow>
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/headerLogo"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:foregroundGravity="center"></FrameLayout>
+    </RelativeLayout>
+    </ScrollView>
         <!--<ScrollView-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent"-->
@@ -76,42 +99,42 @@
 
 
     <TableRow
+        android:id="@+id/bottomLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/bottomLine"
-        android:background="@color/appWhite"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:background="@color/appWhite"
+        android:gravity="center">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="16dp"
             android:background="@color/appWhite"
-            android:paddingLeft="16dp">
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
                 android:id="@+id/register"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
                 android:background="@drawable/imagebuttonorange"
+                android:scaleType="centerCrop"
                 android:src="@drawable/icon_register"/>
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/help"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:id="@+id/help"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
                 android:background="@drawable/imagebuttonorange"
+                android:scaleType="centerCrop"
                 android:src="@drawable/icon_help"/>
 
             <!--<ImageButton-->

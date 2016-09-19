@@ -47,8 +47,8 @@ public class MultipleSellAdapter extends ArrayAdapter<TopUpNumber>  {
             viewHolder.fillAmount=(EditText) rowView.findViewById(R.id.amount);
             viewHolder.fillAmount.setTypeface(font);
 
-            viewHolder.remove = (ImageView) rowView.findViewById(R.id.remove);
-            rowView.setTag(viewHolder);
+//            viewHolder.remove = (ImageView) rowView.findViewById(R.id.remove);
+//            rowView.setTag(viewHolder);
         }
 
         ViewHolder holder = (ViewHolder) rowView.getTag();

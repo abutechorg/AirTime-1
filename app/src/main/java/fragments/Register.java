@@ -71,6 +71,22 @@ public class Register extends Fragment {
         return fragment;
     }
 
+    //validate Email Field
+    private final static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target))
+            return false;
+        else
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    //validate Phone Field
+    private final static boolean isValidMobile(String phone) {
+        if (TextUtils.isEmpty(phone))
+            return false;
+        else
+            return android.util.Patterns.PHONE.matcher(phone).matches();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +97,12 @@ public class Register extends Fragment {
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
+//    public void onButtonPressed(Uri uri) {
+//        if (registerListener != null) {
+//            registerListener.onLoginInteraction(uri);
+//        }
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,15 +117,23 @@ public class Register extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d(tag,"View are created");
         final EditText fName=(EditText) view.findViewById(R.id.fname);
+        fName.setTypeface(font);
         final EditText lName=(EditText) view.findViewById(R.id.lname);
-        final EditText tel=(EditText) view.findViewById(R.id.msisdn);
+        lName.setTypeface(font);
+        final EditText tel = (EditText) view.findViewById(R.id.welcomeUser);
+        tel.setTypeface(font);
         final EditText mail=(EditText) view.findViewById(R.id.email);
+        mail.setTypeface(font);
         final EditText pin=(EditText) view.findViewById(R.id.pin);
+        pin.setTypeface(font);
         final EditText rePin=(EditText) view.findViewById(R.id.repin);
+        rePin.setTypeface(font);
         final Button register=(Button) view.findViewById(R.id.register);
+        register.setTypeface(font, Typeface.BOLD);
         register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(pin.getText().toString()) &&
+                        (pin.getText().toString().equals(rePin.getText().toString())) &&
                         !TextUtils.isEmpty(tel.getText().toString()) &&
                         (pin.getText().toString().equals(rePin.getText().toString())) &&
                         !TextUtils.isEmpty(fName.getText().toString()) &&
@@ -111,43 +141,25 @@ public class Register extends Fragment {
                         !TextUtils.isEmpty(mail.getText().toString())) {
                     //show pop up to confirm Data
                     if (isValidEmail(mail.getText().toString().trim())) {
-                        if(isValidMobile(tel.getText().toString())){
+                        if (isValidMobile(tel.getText().toString().trim())) {
 
                             //validation completed
-                            proceedRegistration(fName.getText().toString(),lName.getText().toString(),tel.getText().toString(), mail.getText().toString(), pin.getText().toString());
+                            proceedRegistration(fName.getText().toString(), lName.getText().toString(), tel.getText().toString().trim(), mail.getText().toString().trim(), pin.getText().toString());
                         }else{
-                            tel.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.appOrange));
-                            tel.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tel.setBackgroundResource(R.drawable.border_gray);
-                                }
-                            }, 2000);
+                            tel.setError("Invalid Telephone");
 
                             Toast.makeText(getContext(), "Invalid Telephone", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        mail.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.appOrange));
-                        mail.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mail.setBackgroundResource(R.drawable.border_gray);
-                            }
-                        }, 2000);
+                        mail.setError("Invalid Mail");
                         Toast.makeText(getContext(), "Invalid Mail", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    registerListener.onRegisterInteraction(201, "Invalid Data.", tel.getText().toString(), null);
+                    uiFeed("Invalid Data");
                 }
             }
         });
     }
-
-//    public void onButtonPressed(Uri uri) {
-//        if (registerListener != null) {
-//            registerListener.onLoginInteraction(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {
@@ -167,23 +179,6 @@ public class Register extends Fragment {
         super.onDetach();
         Log.d(tag, "Fragment is Detaching");
         registerListener = null;
-    }
-
-    //validate Email Field
-    private final static boolean isValidEmail(CharSequence target) {
-        if (TextUtils.isEmpty(target))
-            return false;
-        else
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
-
-    //validate Phone Field
-    private final static boolean isValidMobile(String phone)
-    {
-        if (TextUtils.isEmpty(phone))
-            return false;
-         else
-            return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
     private void proceedRegistration(final String fName, final String lName, final String tel, final String mail, final String pin){

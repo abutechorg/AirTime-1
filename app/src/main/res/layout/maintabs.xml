@@ -1,50 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:paddingTop="6dp"
+    android:id="@+id/accountTabs"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:id="@+id/accountTabs">
+    android:paddingTop="10dp">
 
     <TableLayout
+        android:id="@+id/mainTabGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:id="@+id/mainTabGroup"
-        android:stretchColumns="1" >
+        android:stretchColumns="*">
         <TableRow>
             <LinearLayout
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:padding="3dp"
-                    android:gravity="center"
-                    android:text="Send To One"
                     android:id="@+id/sendOne"
-                    android:onClick="onAccountTabClick"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
                     android:background="@drawable/buttonorange"
-                    android:textColor="@color/appWhite"/>
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:padding="3dp"
                     android:gravity="center"
-                    android:background="@drawable/border_orange"
-                    android:textColor="@color/appOrange"
-                    android:text="Send To Many"
+                    android:onClick="onAccountTabClick"
+                    android:padding="3dp"
+                    android:text="SEND TO ONE"
+                    android:textColor="@color/appWhite"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
                     android:id="@+id/sendMany"
-                    android:onClick="onAccountTabClick" />
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@drawable/border_orange"
+                    android:gravity="center"
+                    android:onClick="onAccountTabClick"
+                    android:padding="3dp"
+                    android:text="SEND TO MANY"
+                    android:textColor="@color/appBlue"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -52,15 +55,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
                 <TextView
+                    android:id="@+id/favorites"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:padding="3dp"
                     android:background="@drawable/border_orange"
-                    android:textColor="@color/appOrange"
-                    android:text="Favorites"
-                    android:id="@+id/favorites"
+                    android:gravity="center"
                     android:onClick="onAccountTabClick"
-                    android:gravity="center" />
+                    android:padding="3dp"
+                    android:text="FAVORITES"
+                    android:textColor="@color/appBlue"
+                    android:textSize="12sp" />
             </LinearLayout>
         </TableRow>
     </TableLayout>

@@ -1,70 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:paddingTop="6dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingRight="16dp"
+    android:paddingTop="10dp">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/addAmountHolder"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:id="@+id/addAmountHolder"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/addAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/addAmount"
-                android:background="@drawable/imagebuttonblue"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
+                android:background="@drawable/imagebuttonblue"
                 android:onClick="walletAddAmount"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_main_paymenthistory"
                 android:tint="@color/appBlue" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/appBlue"
                 android:gravity="center"
-                android:textSize="12sp"
-                android:text="Add AirTime"/>
+                android:text="Add Amount"
+                android:textColor="@color/appBlue"
+                android:textSize="12sp" />
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/addAmountHolder"
             android:orientation="vertical">
             <ImageView
+                android:id="@+id/viewHistoryBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/viewHistoryBtn"
-                android:background="@drawable/imagebuttonblue"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
+                android:background="@drawable/imagebuttonblue"
                 android:onClick="walletViewHistory"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_main_paymenthistory"
                 android:tint="@color/appBlue" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/appBlue"
                 android:gravity="center"
-                android:textSize="12sp"
-                android:text="View History"/>
+                android:text="View History"
+                android:textColor="@color/appBlue"
+                android:textSize="12sp" />
         </LinearLayout>
     </RelativeLayout>
 

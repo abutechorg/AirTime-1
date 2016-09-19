@@ -1,8 +1,8 @@
 package fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,18 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.oltranz.airtime.airtime.R;
 
-import client.ClientData;
-import client.ClientServices;
-import client.ServerClient;
 import config.BaseUrl;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import simplebeans.balancebeans.BalanceRespopnse;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,13 +26,14 @@ import simplebeans.balancebeans.BalanceRespopnse;
  * create an instance of this fragment.
  */
 public class About extends Fragment {
-    private String tag="AirTime: "+getClass().getSimpleName();
     private static final String msisdn_param = "msisdn";
     private static final String token_param = "token";
-
+    private String tag = "AirTime: " + getClass().getSimpleName();
     private String msisdn;
     private String token;
     private Typeface font;
+
+    private TextView terms;
 
     private AboutListener aboutListener;
 
@@ -88,7 +83,47 @@ public class About extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        terms = (TextView) view.findViewById(R.id.terms);
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog("TERMS & CONDITIONS", BaseUrl.termsUrl);
+            }
+        });
+
         Log.d(tag, "View are finally inflated");
+    }
+
+    private void showDialog(String mTitle, String url) {
+        TextView close;
+        TextView title;
+        WebView mWeb;
+
+        final Dialog dialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.web_dialog);
+
+        close = (TextView) dialog.findViewById(R.id.close);
+        close.setTypeface(font, Typeface.BOLD);
+        title = (TextView) dialog.findViewById(R.id.title);
+        title.setTypeface(font, Typeface.BOLD);
+        mWeb = (WebView) dialog.findViewById(R.id.webView);
+
+        title.setText(mTitle);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mWeb.getSettings().setJavaScriptEnabled(true);
+        mWeb.loadUrl(url);
+
+        dialog.show();
     }
 
     @Override

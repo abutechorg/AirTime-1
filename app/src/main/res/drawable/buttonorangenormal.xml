@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_pressed="true" >
-        <shape android:shape="rectangle"  >
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
             <!--<corners-->
             <!--android:bottomRightRadius="10dp"-->
             <!--android:bottomLeftRadius="10dp"-->
             <!--android:topLeftRadius="10dp"-->
             <!--android:topRightRadius="10dp"-->
             <!--/>-->
-            <stroke android:width="2dip" android:color="@color/darkGray" />
-            <!--<gradient android:angle="-90" android:startColor="@color/appWhite" android:endColor="@color/darkGray"  />-->
-            <solid android:color="@color/darkGray" />
+            <stroke android:width="2dip" android:color="@color/appOrange" />
+            <!--<gradient android:angle="-90" android:startColor="@color/appWhite" android:endColor="@color/appGreen"  />-->
+            <solid android:color="@color/appOrange" />
         </shape>
     </item>
     <item android:state_focused="true">
-        <shape android:shape="rectangle"  >
+        <shape android:shape="rectangle">
             <!--<corners-->
             <!--android:bottomRightRadius="10dp"-->
             <!--android:bottomLeftRadius="10dp"-->
             <!--android:topLeftRadius="10dp"-->
             <!--android:topRightRadius="10dp" />-->
-            <stroke android:width="2dip" android:color="@color/darkGray" />
-            <solid android:color="#5b888888"/>
+            <stroke android:width="2dip" android:color="@color/appOrange" />
+            <solid android:color="#5cff5700" />
         </shape>
     </item>
-    <item >
-        <shape android:shape="rectangle"  >
+    <item>
+        <shape android:shape="rectangle">
             <solid android:color="@color/appWhite" />
-            <stroke android:width="2dip" android:color="@color/darkGray" />
+            <stroke android:width="2dip" android:color="@color/appOrange" />
         </shape>
     </item>
 </selector>

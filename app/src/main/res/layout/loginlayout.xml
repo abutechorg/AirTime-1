@@ -2,94 +2,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_vertical"
     android:background="@color/appWhite"
     tools:context="fragments.Login">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/headerLogo">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/airtime_logo"/>
-        </TableRow>
-
-
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
         <LinearLayout
+            android:id="@+id/loginElements"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/loginElements"
-            android:layout_below="@+id/headerLogo"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:id="@+id/tv"/>
+                android:textColor="@color/appRed" />
             <!--<TextView-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_alignParentTop="true"-->
                 <!--android:layout_height="60dp"-->
                 <!--android:visibility="invisible"/>-->
             <EditText
+                android:id="@+id/welcomeUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:padding="12dp"
-                android:maxLength="20"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:id="@+id/msisdn"
-                android:inputType="phone"
-                android:hint="Enter your Number"
+                android:background="@drawable/border_gray"
                 android:drawableLeft="@drawable/icon_phone"
                 android:drawablePadding="10dp"
-                android:background="@drawable/border_gray"/>
+                android:drawableTint="@null"
+                android:ellipsize="end"
+                android:hint="Enter your Number"
+                android:inputType="phone"
+                android:maxLength="20"
+                android:padding="12dp"
+                android:singleLine="true" />
 
             <EditText
+                android:id="@+id/pin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:padding="12dp"
-                android:maxLength="5"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:id="@+id/pin"
-                android:inputType="numberPassword"
-                android:hint="Enter your PIN"
+                android:background="@drawable/border_gray"
                 android:drawableLeft="@drawable/icon_password"
                 android:drawablePadding="10dp"
-                android:background="@drawable/border_gray"/>
+                android:drawableTint="@null"
+                android:ellipsize="end"
+                android:hint="Enter your PIN"
+                android:inputType="numberPassword"
+                android:maxLength="5"
+                android:padding="12dp"
+                android:singleLine="true" />
 
             <Button
+                android:id="@+id/submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="L O G I N"
-                android:padding="12dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:textColor="@color/appGreen"
-                android:id="@+id/submit"
                 android:background="@drawable/buttongreen"
-                android:layout_gravity="center_horizontal"/>
+                android:padding="15dp"
+                android:shadowRadius="0"
+                android:stateListAnimator="@null"
+                android:text="L O G I N"
+                android:textColor="@drawable/text_button_green"
+                android:textSize="25sp" />
 
+            <TextView
+                android:id="@+id/recoverPin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:gravity="right"
+                android:text="Forgot your PIN?"
+                android:textSize="15sp" />
         </LinearLayout>
-    </RelativeLayout>
-    </ScrollView>
+    <!--</RelativeLayout>-->
 </FrameLayout>

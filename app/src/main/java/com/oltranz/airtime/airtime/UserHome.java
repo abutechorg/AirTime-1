@@ -1,5 +1,6 @@
 package com.oltranz.airtime.airtime;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -15,23 +16,24 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vistrav.ask.Ask;
+import com.vistrav.ask.annotations.AskDenied;
+import com.vistrav.ask.annotations.AskGranted;
+
+import config.BaseUrl;
 import fragments.About;
 import fragments.CheckBalance;
 import fragments.Favorite;
@@ -39,36 +41,42 @@ import fragments.MultipleSell;
 import fragments.Notifications;
 import fragments.RechargeWallet;
 import fragments.SingleSell;
+import fragments.TransactionHistory;
+import fragments.WalletHistory;
 import utilities.Extra;
 import utilities.utilitiesbeans.MySessionData;
 
-public class UserHome extends AppCompatActivity implements CheckBalance.CheckBalanceInteraction, SingleSell.SingleSellInteractionListener, MultipleSell.MultipleSellInteraction, RechargeWallet.RechargeWalletListener, Favorite.FavoriteInteraction {
+public class UserHome extends AppCompatActivity implements CheckBalance.CheckBalanceInteraction, SingleSell.SingleSellInteractionListener, MultipleSell.MultipleSellInteraction, RechargeWallet.RechargeWalletListener, WalletHistory.WalletHistoryInteraction, Favorite.FavoriteInteraction {
+    private static final String sessionData = "sessionData";
     private String tag="AirTime: "+getClass().getSimpleName();
-
     private FragmentManager fragmentManager;
     private Typeface font;
     private TextView titleBar;
     private MySessionData mSession;
-
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-
     private Toolbar toolbar;
     private TextView mainBadge, sideBadge;
-    private FrameLayout mainTabHolder;
+    private LinearLayout mainTabHolder;
     private View accountTab;
     private View walletTab;
+    private TextView welcomeUser;
+    private TextView lblWelcome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setContentView(R.layout.userhome_layout);
+
+        //request Permission
+        rightManager();
+
         font = Typeface.createFromAsset(this.getAssets(), "font/ubuntu.ttf");
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         titleBar=(TextView) toolbar.findViewById(R.id.toolbar_title);
-        titleBar.setTypeface(font);
+        titleBar.setTypeface(font, Typeface.BOLD);
         setSupportActionBar(toolbar);
 
         //adding a menu
@@ -76,8 +84,7 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
-        if (findViewById(R.id.welcomeHeaderFrame) != null &&
-                findViewById(R.id.checkBalanceFrame) != null &&
+        if (findViewById(R.id.checkBalanceFrame) != null &&
                 findViewById(R.id.mainButtonFrame) != null &&
                 findViewById(R.id.mainTabFrame) != null &&
                 findViewById(R.id.salesFrame) != null) {
@@ -86,23 +93,29 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             // then we don't need to do anything and should return or else
             // we could end up with overlapping fragments.
             if (savedInstanceState != null) {
+
+                // Restore value of members from saved state
+                Log.e(tag, "Activity Create Restoring session data");
+                mSession = savedInstanceState.getParcelable(sessionData);
+                //mCurrentLevel = savedInstanceState.getInt(STATE_LEVEL);
                 return;
             }
 
             //initiate my session data;
             Bundle bundle=getIntent().getExtras();
             mSession=new MySessionData(bundle.getString("token"),bundle.getString("msisdn"),bundle.getString("userName"));
-            TextView wlcmLabel=(TextView) findViewById(R.id.welcomeLabel);
-            wlcmLabel.setTypeface(font);
-            wlcmLabel.append(mSession.getUserName());
+//            TextView wlcmLabel=(TextView) findViewById(R.id.welcomeLabel);
+//            wlcmLabel.setTypeface(font);
+//            Log.d(tag,"Logged user "+mSession.getUserName());
+//            wlcmLabel.append(mSession.getUserName());
+
+            //Activity tab holder initialisation
+            mainTabHolder = (LinearLayout) findViewById(R.id.mainTabFrame);
 
             //Activity tabs initiation
             accountTab=View.inflate(this, R.layout.maintabs, null);
 
             walletTab=View.inflate(this, R.layout.wallettabs, null);
-
-            //Activity tab holder initialisation
-            mainTabHolder =(FrameLayout) findViewById(R.id.mainTabFrame);
 
             fragmentManager = getSupportFragmentManager();
 
@@ -116,16 +129,59 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
     }
 
+    private void rightManager() {
+        int currentVersion = 0;
+        try {
+            currentVersion = android.os.Build.VERSION.SDK_INT;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (currentVersion > 0 && currentVersion >= 23) {
+            Ask.on(this)
+                    .forPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.READ_CONTACTS,
+                            Manifest.permission.RECEIVE_SMS,
+                            Manifest.permission.SEND_SMS)
+                    .withRationales("In order to save useful session data, storage Permission is needed.",
+                            "To properly identify your session and establish a secured connection Phone State right is needed.",
+                            "In Order to make your life easy for contact pick up application needs Read Contact permission",
+                            "For some sophisticated data validation in the app Receive SMS permission is needed",
+                            "For some sophisticated data validation in the app Send SMS permission is needed") //optional
+                    .go();
+        } else {
+            return;
+        }
+    }
     private void menuHandle(){
         //Initializing NavigationView
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        Menu menu = navigationView.getMenu();
-        MenuItem item = menu.findItem(R.id.notifications);
+        Menu menu = null;
+        MenuItem item = null;
+        try {
+            menu = navigationView.getMenu();
+            item = menu.findItem(R.id.notifications);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         MenuItemCompat.setActionView(item, R.layout.menucounter);
         RelativeLayout notifCount = (RelativeLayout) MenuItemCompat.getActionView(item);
 
         sideBadge = (TextView) notifCount.findViewById(R.id.actionbar_notifcation_textview);
         counter(sideBadge);
+
+        //setting user name for the header
+        View header = navigationView.getHeaderView(0);
+        try {
+            lblWelcome = (TextView) header.findViewById(R.id.lblWelcome);
+            lblWelcome.setTypeface(font);
+
+            welcomeUser = (TextView) header.findViewById(R.id.welcomeUser);
+            welcomeUser.setTypeface(font);
+            welcomeUser.setText(mSession.getUserName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -175,7 +231,7 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     }
 
     public void walletViewHistory(View v){
-        Log.d(tag, "Wallet History View Clicked");
+        walletHistoryFrag();
     }
 
     public void onAccountTabClick(View v){
@@ -195,7 +251,7 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             walletTopUpFrag();
         }
         if(v.getId() == R.id.viewHistory){
-            //wallet history
+            walletHistoryFrag();
         }
     }
 
@@ -248,6 +304,125 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(tag, "Resumed the app check");
+        try {
+            //Activity tab holder initialisation
+            mainTabHolder = (LinearLayout) findViewById(R.id.mainTabFrame);
+
+            //Activity tabs initiation
+            accountTab = View.inflate(this, R.layout.maintabs, null);
+
+            walletTab = View.inflate(this, R.layout.wallettabs, null);
+
+            fragmentManager = getSupportFragmentManager();
+
+            //Initializing NavigationView
+            navigationView = (NavigationView) findViewById(R.id.navigation_view);
+            //setting user name for the header
+            View header = navigationView.getHeaderView(0);
+            try {
+                lblWelcome = (TextView) header.findViewById(R.id.lblWelcome);
+                lblWelcome.setTypeface(font);
+
+                welcomeUser = (TextView) header.findViewById(R.id.welcomeUser);
+                welcomeUser.setTypeface(font);
+                welcomeUser.setText(mSession.getUserName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+//            TextView wlcmLabel=(TextView) findViewById(R.id.welcomeLabel);
+//            wlcmLabel.setTypeface(font);
+//            Log.d(tag,"Logged user "+mSession.getUserName());
+//            wlcmLabel.setText("Welcome ");
+//            wlcmLabel.append(mSession.getUserName());
+
+            Log.d(tag, "current tab ");
+            currentFrag();
+
+            //refreshBalance();
+
+        } catch (Exception e) {
+            Log.e(tag, Log.getStackTraceString(e));
+            e.printStackTrace();
+            onHomeActivity();
+        }
+    }
+
+    //optional
+    @AskGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    public void fileAccessGranted() {
+        Log.i(tag, "FILE  GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    public void fileAccessDenied() {
+        Log.i(tag, "FILE  DENiED");
+        Toast.makeText(this, "Sorry, Without READ_PHONE_STATE Permission the application security can easily be compromised", Toast.LENGTH_LONG).show();
+        onHomeActivity();
+    }
+
+    //optional
+    @AskGranted(Manifest.permission.READ_PHONE_STATE)
+    public void phoneStateAllowed() {
+        Log.i(tag, "PHONE SATE GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.READ_PHONE_STATE)
+    public void phoneStateDenied() {
+        Log.i(tag, "PHONE SATE DENIED");
+        Toast.makeText(this, "Sorry, Without READ_PHONE_STATE Permission the application security can easily be compromised", Toast.LENGTH_LONG).show();
+        onHomeActivity();
+    }
+
+    //optional
+    @AskGranted(Manifest.permission.READ_CONTACTS)
+    public void readContactAllowed() {
+        Log.i(tag, "READ CONTACTS GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.READ_CONTACTS)
+    public void readContactDenied() {
+        Log.i(tag, "READ CONTACTS DENIED");
+        Toast.makeText(this, "Sorry, Without READ_CONTACTS Permission the application workflow can be easily compromised", Toast.LENGTH_LONG).show();
+        onHomeActivity();
+    }
+
+    //optional
+    @AskGranted(Manifest.permission.RECEIVE_SMS)
+    public void receiveMessageAllowed() {
+        Log.i(tag, "RECEIVE SMS GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.RECEIVE_SMS)
+    public void receiveMessageDenied() {
+        Log.i(tag, "RECEIVE SMS DENIED");
+        Toast.makeText(this, "Sorry, Without This Permission the application workflow can be easily compromised", Toast.LENGTH_LONG).show();
+        //onHomeActivity();
+    }
+
+    //optional
+    @AskGranted(Manifest.permission.SEND_SMS)
+    public void sendMessageAllowed() {
+        Log.i(tag, "SEND SMS GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.SEND_SMS)
+    public void sendMessageDenied() {
+        Log.i(tag, "SEND SMS DENIED");
+        Toast.makeText(this, "Sorry, Without SEND_SMS Permission the application workflow can be easily compromised", Toast.LENGTH_LONG).show();
+        //onHomeActivity();
+    }
+
     @Override
     public void onBackPressed(){
         try{
@@ -260,9 +435,14 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             }
 
         }catch (Exception e){
+            Log.e(tag, Log.getStackTraceString(e));
             onHomeActivity();
         }
 
+        currentFrag();
+    }
+
+    private void currentFrag() {
         try{
 
             Fragment currentFrag=fragmentManager.findFragmentById(R.id.salesFrame);
@@ -282,10 +462,30 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             if(currentFrag.getClass().getSimpleName().equals(RechargeWallet.class.getSimpleName())){
                 onTabChanged(R.id.walletTabGroup, RechargeWallet.class.getSimpleName());
             }
+            if (currentFrag.getClass().getSimpleName().equals(WalletHistory.class.getSimpleName())) {
+                onTabChanged(R.id.walletTabGroup, WalletHistory.class.getSimpleName());
+            }
         }catch (Exception e){
-            e.printStackTrace();
+            Log.e(tag, Log.getStackTraceString(e));
+            onHomeActivity();
         }
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d(tag, "Activity Storing session data");
+        // Save the user's current game state
+        savedInstanceState.putParcelable(sessionData, mSession);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Log.d(tag, "Activity Recreate Restoring session data");
+        // Restore state members from saved instance
+        mSession = savedInstanceState.getParcelable(sessionData);
     }
 
     @Override
@@ -315,109 +515,114 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         if(tabLabel == R.id.mainTabGroup){
             //check the tab holder
             try{
-                if(mainTabHolder.getChildCount() > 0){
-                    if(mainTabHolder.getChildAt(0).getId()!= R.id.accountTabs){
-                        mainTabHolder.removeAllViews();
-                        mainTabHolder.addView(accountTab);
-                    }
-                }else{
-                    mainTabHolder.removeAllViews();
-                    mainTabHolder.addView(accountTab);
+
+                mainTabHolder.removeAllViews();
+                mainTabHolder.addView(accountTab);
+
+                TextView sendOne = (TextView) findViewById(R.id.sendOne);
+                sendOne.setTypeface(font, Typeface.BOLD);
+                TextView sendMany = (TextView) findViewById(R.id.sendMany);
+                sendMany.setTypeface(font, Typeface.BOLD);
+                TextView favorites = (TextView) findViewById(R.id.favorites);
+                favorites.setTypeface(font, Typeface.BOLD);
+
+                if (SingleSell.class.getSimpleName().equals(currentTab)) {
+
+                    //Single sell is active
+                    sendOne.setBackgroundResource(R.drawable.buttonorange);
+                    sendOne.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
+
+                    //mark others as no active
+                    sendMany.setBackgroundResource(R.drawable.border_orange);
+                    sendMany.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
+
+                    favorites.setBackgroundResource(R.drawable.border_orange);
+                    favorites.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
+                } else if (MultipleSell.class.getSimpleName().equals(currentTab)) {
+
+                    //Multiple sell is active
+                    sendMany.setBackgroundResource(R.drawable.buttonorange);
+                    sendMany.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
+
+                    //mark others as no active
+                    sendOne.setBackgroundResource(R.drawable.border_orange);
+                    sendOne.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
+
+                    favorites.setBackgroundResource(R.drawable.border_orange);
+                    favorites.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
+                } else if (Favorite.class.getSimpleName().equals(currentTab)) {
+
+                    //Multiple sell is active
+                    favorites.setBackgroundResource(R.drawable.buttonorange);
+                    favorites.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
+
+                    //mark others as no active
+                    sendOne.setBackgroundResource(R.drawable.border_orange);
+                    sendOne.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
+
+                    sendMany.setBackgroundResource(R.drawable.border_orange);
+                    sendMany.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
                 }
-            }catch (Exception e){
-                Log.e(tag,e.getMessage());
+
+//                if(mainTabHolder.getChildCount() > 0){
+//                    if(mainTabHolder.getChildAt(0).getId()!= R.id.accountTabs){
+//                        mainTabHolder.removeAllViews();
+//                        mainTabHolder.addView(accountTab);
+//                    }
+//                }else{
+//                    mainTabHolder.removeAllViews();
+//                    mainTabHolder.addView(accountTab);
+//                }
+            } catch (Exception e) {
+                Log.e(tag, " " + e.getMessage());
                 onHomeActivity();
             }
 
-
-            TextView sendOne=(TextView) findViewById(R.id.sendOne);
-            sendOne.setTypeface(font);
-            TextView sendMany=(TextView) findViewById(R.id.sendMany);
-            sendMany.setTypeface(font);
-            TextView favorites=(TextView) findViewById(R.id.favorites);
-            favorites.setTypeface(font);
-
-            if(SingleSell.class.getSimpleName().equals(currentTab)){
-
-                //single topup sell is active
-                sendOne.setBackgroundResource(R.drawable.buttonorange);
-                sendOne.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
-
-                //mark others as no active
-                sendMany.setBackgroundResource(R.drawable.border_orange);
-                sendMany.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-
-                favorites.setBackgroundResource(R.drawable.border_orange);
-                favorites.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-
-            }else if(MultipleSell.class.getSimpleName().equals(currentTab)){
-
-                //multiple topup is active
-                sendMany.setBackgroundResource(R.drawable.buttonorange);
-                sendMany.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
-
-                //mark others as no active
-                sendOne.setBackgroundResource(R.drawable.border_orange);
-                sendOne.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-
-                favorites.setBackgroundResource(R.drawable.border_orange);
-                favorites.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-
-            }else if(Favorite.class.getSimpleName().equals(currentTab)){
-
-                //favorite is active
-                favorites.setBackgroundResource(R.drawable.buttonorange);
-                favorites.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
-
-                //mark others as no active
-                sendMany.setBackgroundResource(R.drawable.border_orange);
-                sendMany.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-
-                sendOne.setBackgroundResource(R.drawable.border_orange);
-                sendOne.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-
-            }
         }else if(tabLabel == R.id.walletTabGroup){
             //check the tab holder
             try{
-                if(mainTabHolder.getChildCount() > 0){
-                    if(mainTabHolder.getChildAt(0).getId()!= R.id.walletTabs){
-                        mainTabHolder.removeAllViews();
-                        mainTabHolder.addView(walletTab);
-                    }
-                }else{
-                    mainTabHolder.removeAllViews();
-                    mainTabHolder.addView(walletTab);
+                mainTabHolder.removeAllViews();
+                mainTabHolder.addView(walletTab);
+
+                TextView addAirtime = (TextView) findViewById(R.id.addAirtime);
+                addAirtime.setTypeface(font);
+                TextView viewHistory = (TextView) findViewById(R.id.viewHistory);
+                viewHistory.setTypeface(font);
+
+                if (RechargeWallet.class.getSimpleName().equals(currentTab)) {
+
+                    //Recharge wallet is active
+                    addAirtime.setBackgroundResource(R.drawable.buttonorange);
+                    addAirtime.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
+
+                    //mark others as no active
+                    viewHistory.setBackgroundResource(R.drawable.border_orange);
+                    viewHistory.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
+                } else if (WalletHistory.class.getSimpleName().equals(currentTab)) {
+
+                    //Recharge wallet is active
+                    viewHistory.setBackgroundResource(R.drawable.buttonorange);
+                    viewHistory.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
+
+                    //mark others as no active
+                    addAirtime.setBackgroundResource(R.drawable.border_orange);
+                    addAirtime.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appBlue));
                 }
-            }catch (Exception e){
-                Log.e(tag,e.getMessage());
+//                if(mainTabHolder.getChildCount() > 0){
+//                    if(mainTabHolder.getChildAt(0).getId()!= R.id.walletTabs){
+//                        mainTabHolder.removeAllViews();
+//                        mainTabHolder.addView(walletTab);
+//                    }
+//                }else{
+//                    mainTabHolder.removeAllViews();
+//                    mainTabHolder.addView(walletTab);
+//                }
+            } catch (Exception e) {
+                Log.e(tag, " " + e.getMessage());
                 onHomeActivity();
             }
 
-            TextView addAirtime=(TextView) findViewById(R.id.addAirtime);
-            addAirtime.setTypeface(font);
-            TextView viewHistory=(TextView) findViewById(R.id.viewHistory);
-            viewHistory.setTypeface(font);
 
-            if(RechargeWallet.class.getSimpleName().equals(currentTab)){
-
-                //Recharge wallet is active
-                addAirtime.setBackgroundResource(R.drawable.buttonorange);
-                addAirtime.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
-
-                //mark others as no active
-                viewHistory.setBackgroundResource(R.drawable.border_orange);
-                viewHistory.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-            }else if(RechargeWallet.class.getSimpleName().equals(currentTab)){
-
-                //Recharge wallet is active
-                viewHistory.setBackgroundResource(R.drawable.buttonorange);
-                viewHistory.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appWhite));
-
-                //mark others as no active
-                addAirtime.setBackgroundResource(R.drawable.border_orange);
-                addAirtime.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-            }
         }
     }
 
@@ -474,8 +679,20 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         fragmentHandler(checkBalance,R.id.checkBalanceFrame);
     }
 
-    private void walletHistoryFrag(){
+    private void refreshBalance() {
+        Fragment frg = null;
+        frg = getSupportFragmentManager().findFragmentByTag(CheckBalance.class.getSimpleName());
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commit();
+    }
 
+    private void walletHistoryFrag() {
+        onTabChanged(R.id.walletTabGroup, WalletHistory.class.getSimpleName());
+        WalletHistory walletHistory = new WalletHistory();
+        walletHistory.setArguments(setArgs());
+        fragmentHandler(walletHistory, R.id.salesFrame);
     }
 
     private void transactionHistoryFrag(){
@@ -483,11 +700,19 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     }
 
     private Bundle setArgs(){
-        Bundle bundle=new Bundle();
-        bundle.putString("token", mSession.getToken());
-        bundle.putString("msisdn", mSession.getMsisdn());
+        try {
+            Bundle bundle = new Bundle();
+            bundle.putString("token", mSession.getToken());
+            bundle.putString("msisdn", mSession.getMsisdn());
 
-        return bundle;
+            int i = 0;
+            int b = 1 + i;
+            return bundle;
+        } catch (Exception e) {
+            e.printStackTrace();
+            onHomeActivity();
+            return null;
+        }
     }
 
     //__________Menu Item Click handling_____________\\
@@ -545,11 +770,13 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     }
 
     private void menuTransaction(){
-
+        Intent intent = new Intent(this, Extra.class);
+        intent.putExtras(extraBundle(new TransactionHistory()));
+        startActivity(intent);
     }
 
     private void menuHelp(){
-
+        showDialog("HELP", BaseUrl.helpUrl);
     }
 
     private void menuInvite(){
@@ -563,29 +790,8 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
     private void menuAbout(){
         Intent intent=new Intent(this, Extra.class);
-        Bundle bundle=new Bundle();
-        bundle.putString("msisdn",mSession.getMsisdn());
-        bundle.putString("token",mSession.getToken());
-        bundle.putString("what", About.class.getSimpleName());
-
-        intent.putExtras(bundle);
+        intent.putExtras(extraBundle(new About()));
         startActivity(intent);
-//        final Dialog dialog = new Dialog(this);
-//        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
-//        if (dividerId != 0) {
-//            View divider = dialog.findViewById(dividerId);
-//            if(divider != null)
-//                divider.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.appOrange));
-//
-//        }
-//        dialog.setTitle(Html.fromHtml("<font color='" + ContextCompat.getColor(getApplicationContext(), R.color.appOrange) + "'>About</font>"));
-//
-//        dialog.setContentView(R.layout.about_layout);
-//        final Window window = dialog.getWindow();
-//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-//        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-////        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        dialog.show();
     }
 
     private void menuLogout(){
@@ -593,7 +799,6 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         if(getIntent().getExtras() != null){
             setIntent(null);
         }
-
         onHomeActivity();
     }
 
@@ -602,15 +807,25 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         sideBadge.setVisibility(View.INVISIBLE);
 
         Intent intent=new Intent(this, Extra.class);
-        Bundle bundle=new Bundle();
-        bundle.putString("msisdn",mSession.getMsisdn());
-        bundle.putString("token",mSession.getToken());
-        bundle.putString("what", Notifications.class.getSimpleName());
-
-        intent.putExtras(bundle);
+        intent.putExtras(extraBundle(new Notifications()));
         startActivity(intent);
     }
 
+    private Bundle extraBundle(Object object) {
+        try {
+            Bundle bundle = new Bundle();
+            bundle.putString("msisdn", mSession.getMsisdn());
+            bundle.putString("token", mSession.getToken());
+            bundle.putString("userName", mSession.getUserName());
+            bundle.putString("what", object.getClass().getSimpleName());
+
+            return bundle;
+        } catch (Exception e) {
+            e.printStackTrace();
+            onHomeActivity();
+            return null;
+        }
+    }
     private void counter(TextView tv){
         tv.setText("12");
     }
@@ -620,5 +835,41 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
         this.finish();
         startActivity(intent);
+    }
+
+    private void showDialog(String mTitle, String url) {
+        TextView close;
+        TextView title;
+        WebView mWeb;
+
+        final Dialog dialog = new Dialog(UserHome.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.web_dialog);
+
+        close = (TextView) dialog.findViewById(R.id.close);
+        close.setTypeface(font, Typeface.BOLD);
+        title = (TextView) dialog.findViewById(R.id.title);
+        title.setTypeface(font, Typeface.BOLD);
+        mWeb = (WebView) dialog.findViewById(R.id.webView);
+
+        title.setText(mTitle);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mWeb.getSettings().setJavaScriptEnabled(true);
+        mWeb.loadUrl(url);
+
+        dialog.show();
+    }
+
+    @Override
+    public void onWalletHistoryInteraction(int statusCode, String message, Object object) {
+
     }
 }

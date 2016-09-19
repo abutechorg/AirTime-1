@@ -2,20 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
     android:background="#ffffff"
+    android:foregroundGravity="center"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    android:layout_gravity="center_vertical"
-    android:foregroundGravity="center"
     tools:context="fragments.Register">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
         <TableRow
             android:layout_width="match_parent"
@@ -24,108 +21,115 @@
             android:gravity="center">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:maxLines="1"
-                    android:maxLength="20"
-                    android:ellipsize="end"
                     android:id="@+id/fname"
-                    android:inputType="text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_gray"
+                    android:drawableLeft="@drawable/icon_user"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@null"
+                    android:ellipsize="end"
                     android:hint="Enter your First Name"
-                    android:drawableLeft="@drawable/icon_user"
-                    android:drawablePadding="10dp"
-                    android:background="@drawable/border_gray"/>
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:maxLines="1"
+                    android:inputType="textPersonName|text"
                     android:maxLength="20"
-                    android:ellipsize="end"
-                    android:inputType="text"
-                    android:layout_marginTop="10dp"
+                    android:maxLines="1"
+                    android:padding="10dp" />
+                <EditText
                     android:id="@+id/lname"
-                    android:hint="Enter your Last Name"
-                    android:drawableLeft="@drawable/icon_user"
-                    android:drawablePadding="10dp"
-                    android:background="@drawable/border_gray"/>
-                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:maxLines="1"
-                    android:maxLength="20"
-                    android:ellipsize="end"
                     android:layout_marginTop="10dp"
-                    android:id="@+id/msisdn"
-                    android:inputType="phone"
-                    android:hint="Enter your Number"
+                    android:background="@drawable/border_gray"
+                    android:drawableLeft="@drawable/icon_user"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@null"
+                    android:ellipsize="end"
+                    android:hint="Enter your Last Name"
+                    android:inputType="textPersonName|text"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:padding="10dp" />
+                <EditText
+                    android:id="@+id/welcomeUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/border_gray"
                     android:drawableLeft="@drawable/icon_phone"
                     android:drawablePadding="10dp"
-                    android:background="@drawable/border_gray"/>
+                    android:drawableTint="@null"
+                    android:ellipsize="end"
+                    android:hint="Enter your Number"
+                    android:inputType="phone"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:padding="10dp" />
                 <EditText
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:maxLines="1"
-                    android:maxLength="30"
-                    android:ellipsize="end"
                     android:layout_marginTop="10dp"
-                    android:id="@+id/email"
-                    android:inputType="textEmailAddress"
-                    android:hint="Enter your mail"
+                    android:background="@drawable/border_gray"
                     android:drawableLeft="@drawable/icon_email"
                     android:drawablePadding="10dp"
-                    android:background="@drawable/border_gray"/>
+                    android:drawableTint="@null"
+                    android:ellipsize="end"
+                    android:hint="Enter your mail"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:padding="10dp" />
 
                 <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:maxLines="1"
-                    android:maxLength="5"
-                    android:ellipsize="end"
-                    android:layout_marginTop="5dp"
                     android:id="@+id/pin"
-                    android:inputType="numberPassword"
-                    android:hint="Enter your PIN"
-                    android:drawableLeft="@drawable/icon_password"
-                    android:drawablePadding="10dp"
-                    android:background="@drawable/border_gray"/>
-
-                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:maxLines="1"
-                    android:maxLength="5"
-                    android:ellipsize="end"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/repin"
-                    android:inputType="numberPassword"
-                    android:hint="Retype your PIN"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/border_gray"
                     android:drawableLeft="@drawable/icon_password"
                     android:drawablePadding="10dp"
-                    android:background="@drawable/border_gray"/>
+                    android:drawableTint="@null"
+                    android:ellipsize="end"
+                    android:hint="Enter your PIN"
+                    android:inputType="numberPassword"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/repin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/border_gray"
+                    android:drawableLeft="@drawable/icon_password"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@null"
+                    android:ellipsize="end"
+                    android:hint="Retype your PIN"
+                    android:inputType="numberPassword"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="10dp" />
 
                 <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:text="R E G I S T E R"
-                    android:padding="10dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/appGreen"
                     android:id="@+id/register"
-                    android:background="@drawable/buttongreen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1" />
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/buttongreen"
+                    android:padding="15dp"
+                    android:shadowRadius="0"
+                    android:stateListAnimator="@null"
+                    android:text="R E G I S T E R"
+                    android:textColor="@drawable/text_button_green"
+                    android:textSize="25sp" />
             </LinearLayout>
         </TableRow>
     </LinearLayout>
-    </ScrollView>
 </FrameLayout>

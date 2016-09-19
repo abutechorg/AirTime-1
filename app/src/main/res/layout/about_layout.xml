@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="25dp"
+        android:layout_height="150dp"
         android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
         android:src="@drawable/airtime_logo"/>
 
     <TableLayout
+        android:id="@+id/tabGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:id="@+id/tabGroup"
         android:stretchColumns="*">
         <TableRow>
             <LinearLayout
@@ -27,10 +38,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:ellipsize="end"
                         android:gravity="right"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:ellipsize="end"
                         android:text="App Name"
                         android:textColor="@color/appGray"/>
                 </TableRow>
@@ -38,8 +49,8 @@
 
 
             <LinearLayout
-                android:paddingLeft="0dip"
-                android:gravity="center">
+                android:gravity="center"
+                android:paddingLeft="0dip">
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -47,15 +58,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="10dp"
-                        android:inputType="phone"
-                        android:gravity="left"
-                        android:maxLength="20"
-                        android:singleLine="true"
+                        android:background="@color/appTransparent"
                         android:ellipsize="end"
+                        android:gravity="left"
+                        android:inputType="phone"
+                        android:maxLength="20"
+                        android:padding="10dp"
+                        android:singleLine="true"
                         android:text="@string/app_name"
-                        android:textColor="@color/appBlue"
-                        android:background="@color/appTransparent"/>
+                        android:textColor="@color/appBlue" />
                 </TableRow>
             </LinearLayout>
         </TableRow>
@@ -72,10 +83,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:ellipsize="end"
                         android:gravity="right"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:ellipsize="end"
                         android:text="App Version"
                         android:textColor="@color/appGray"/>
                 </TableRow>
@@ -83,8 +94,8 @@
 
 
             <LinearLayout
-                android:paddingLeft="0dip"
-                android:gravity="center">
+                android:gravity="center"
+                android:paddingLeft="0dip">
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,15 +103,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="10dp"
-                        android:inputType="phone"
-                        android:gravity="left"
-                        android:maxLength="20"
-                        android:singleLine="true"
+                        android:background="@color/appTransparent"
                         android:ellipsize="end"
+                        android:gravity="left"
+                        android:inputType="phone"
+                        android:maxLength="20"
+                        android:padding="10dp"
+                        android:singleLine="true"
                         android:text="@string/app_version"
-                        android:textColor="@color/appBlue"
-                        android:background="@color/appTransparent"/>
+                        android:textColor="@color/appBlue" />
                 </TableRow>
             </LinearLayout>
         </TableRow>
@@ -117,10 +128,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:ellipsize="end"
                         android:gravity="right"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:ellipsize="end"
                         android:text="App Build"
                         android:textColor="@color/appGray"/>
                 </TableRow>
@@ -128,8 +139,8 @@
 
 
             <LinearLayout
-                android:paddingLeft="0dip"
-                android:gravity="center">
+                android:gravity="center"
+                android:paddingLeft="0dip">
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -137,15 +148,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="10dp"
-                        android:inputType="phone"
-                        android:gravity="left"
-                        android:maxLength="20"
-                        android:singleLine="true"
+                        android:background="@color/appTransparent"
                         android:ellipsize="end"
+                        android:gravity="left"
+                        android:inputType="phone"
+                        android:maxLength="20"
+                        android:padding="10dp"
+                        android:singleLine="true"
                         android:text="@string/app_build"
-                        android:textColor="@color/appBlue"
-                        android:background="@color/appTransparent"/>
+                        android:textColor="@color/appBlue" />
                 </TableRow>
             </LinearLayout>
         </TableRow>
@@ -162,10 +173,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:ellipsize="end"
                         android:gravity="right"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:ellipsize="end"
                         android:text="Developer"
                         android:textColor="@color/appGray"/>
                 </TableRow>
@@ -173,8 +184,8 @@
 
 
             <LinearLayout
-                android:paddingLeft="0dip"
-                android:gravity="center">
+                android:gravity="center"
+                android:paddingLeft="0dip">
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -182,15 +193,14 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="10dp"
-                        android:inputType="phone"
+                        android:background="@color/appTransparent"
+                        android:ellipsize="end"
                         android:gravity="left"
                         android:maxLength="20"
+                        android:padding="10dp"
                         android:singleLine="true"
-                        android:ellipsize="end"
                         android:text="@string/app_developper"
-                        android:textColor="@color/appBlue"
-                        android:background="@color/appTransparent"/>
+                        android:textColor="@color/appBlue" />
                 </TableRow>
             </LinearLayout>
         </TableRow>
@@ -200,19 +210,22 @@
         android:layout_height="match_parent"
         android:padding="20dp">
         <TextView
+            android:id="@+id/terms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:clickable="true"
             android:gravity="center"
-            android:textColor="@color/appBlue"
-            android:text="@string/terms"/>
+            android:text="@string/terms"
+            android:textColor="@color/appBlue" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:gravity="center"
-            android:textColor="@color/appGray"
-            android:text="@string/copyright"/>
+            android:text="@string/copyright"
+            android:textColor="@color/appGray" />
     </RelativeLayout>
-
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

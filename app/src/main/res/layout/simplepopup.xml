@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/dialogContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Content"
         android:layout_centerVertical="true"
-        android:id="@+id/dialogContent"
+        android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:layout_gravity="center_horizontal" />
+        android:text="Content"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="16dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:padding="16dp">
         <RelativeLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <Button
                 android:id="@+id/cancel"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text=" Cancel "
-                android:background="@drawable/buttongray"
-                android:textColor="@color/darkGray"
+                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"/>
+                android:background="@drawable/buttongray"
+                android:text=" Cancel "
+                android:textColor="@drawable/text_button_gray" />
             <Button
                 android:id="@+id/ok"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text=" Ok "
-                android:background="@drawable/buttongreen"
-                android:textColor="@color/appGreen"
+                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"/>
+                android:background="@drawable/buttongreen"
+                android:text=" Ok "
+                android:textColor="@drawable/text_button_green" />
 
         </RelativeLayout>
     </TableRow>

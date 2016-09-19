@@ -4,11 +4,13 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF5700</color>
     <color name="appOrange">#FF5700</color>
-    <color name="darkGray">#888888</color>
+    <color name="darkGray">#6a6a6a</color>
     <color name="appGreen">#00b31b</color>
     <color name="appWhite">#ffffff</color>
     <color name="appBlue">#323b96</color>
     <color name="appGray">#888888</color>
-    <!--<color name="appGray">#888888</color>-->
+    <color name="iron">#bdd3d3d3</color>
+    <color name="appRed">#f70000</color>
+    <color name="appHybrid">#21ff5700</color>
     <color name="appTransparent">#00000000</color>
 </resources>

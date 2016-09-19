@@ -1,30 +1,30 @@
 package utilities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.oltranz.airtime.airtime.R;
+import com.oltranz.airtime.airtime.UserHome;
 
 import fragments.About;
 import fragments.Notifications;
-import fragments.RechargeWallet;
-import fragments.SingleSell;
+import fragments.TransactionHistory;
 import utilities.utilitiesbeans.MySessionData;
 
-public class Extra extends AppCompatActivity implements About.AboutListener, Notifications.NotificationInteraction {
+public class Extra extends AppCompatActivity implements About.AboutListener, Notifications.NotificationInteraction, TransactionHistory.TransactionHistoryInteraction {
+    private static final String sessionData = "sessionData";
     private final String tag="AirTime: "+getClass().getSimpleName();
     private TextView titleBar;
     private MySessionData mSession;
@@ -59,6 +59,10 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
             // then we don't need to do anything and should return or else
             // we could end up with overlapping fragments.
             if (savedInstanceState != null) {
+                // Restore value of members from saved state
+                Log.e(tag, "Activity Create Restoring session data");
+                mSession = savedInstanceState.getParcelable(sessionData);
+
                 return;
             }
 
@@ -73,6 +77,10 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
                 //notifications
                 titleBar.setText("Notifications");
                 notifFrag();
+            } else if (bundle.getString("what").equals(TransactionHistory.class.getSimpleName())) {
+                //TransactionHistory
+                titleBar.setText("Transactions History");
+                transactionHistoryFrag();
             }
         }
     }
@@ -108,6 +116,12 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
         fragmentHandler(notifications, R.id.extra);
     }
 
+    private void transactionHistoryFrag() {
+        TransactionHistory transactionHistory = new TransactionHistory();
+        transactionHistory.setArguments(setArgs());
+        fragmentHandler(transactionHistory, R.id.extra);
+    }
+
     private Bundle setArgs(){
         Bundle bundle=new Bundle();
         bundle.putString("token", mSession.getToken());
@@ -129,6 +143,109 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(tag, "Resumed the activity");
+        try {
+            currentFrag();
+
+            titleBar = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            titleBar.setTypeface(font);
+            Log.d(tag, "Logged user " + mSession.getUserName());
+        } catch (Exception e) {
+            Log.e(tag, Log.getStackTraceString(e));
+            e.printStackTrace();
+            onHomeActivity();
+        }
+    }
+
+    private void setFragment() {
+        //initiate my session data;
+        Bundle bundle = getIntent().getExtras();
+        mSession = new MySessionData(bundle.getString("token"), bundle.getString("msisdn"), bundle.getString("userName"));
+        if (bundle.getString("what").equals(About.class.getSimpleName())) {
+            //about
+            titleBar.setText("About");
+            aboutFrag();
+        } else if (bundle.getString("what").equals(Notifications.class.getSimpleName())) {
+            //notifications
+            titleBar.setText("Notifications");
+            notifFrag();
+        } else if (bundle.getString("what").equals(TransactionHistory.class.getSimpleName())) {
+            //TransactionHistory
+            titleBar.setText("Transactions History");
+            transactionHistoryFrag();
+        }
+    }
+
+    private void currentFrag() {
+        try {
+
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.extra);
+            if (currentFragment == null)
+                setFragment();
+
+            if (currentFragment.getClass().getSimpleName().equals(About.class.getSimpleName())) {
+                //about
+                titleBar.setText("About");
+            }
+
+            if (currentFragment.getClass().getSimpleName().equals(TransactionHistory.class.getSimpleName())) {
+                //TransactionHistory
+                titleBar.setText("Transactions History");
+            }
+
+
+            if (currentFragment.getClass().getSimpleName().equals(Notifications.class.getSimpleName())) {
+                //notifications
+                titleBar.setText("Notifications");
+            }
+
+            Log.d(tag, "Current Fragment " + currentFragment.getClass().getSimpleName());
+        } catch (Exception e) {
+            Log.e(tag, Log.getStackTraceString(e));
+            onHomeActivity();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d(tag, "Activity Storing session data");
+        // Save the user's current game state
+        savedInstanceState.putParcelable(sessionData, mSession);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Log.d(tag, "Activity Recreate Restoring session data");
+        // Restore state members from saved instance
+        mSession = savedInstanceState.getParcelable(sessionData);
+    }
+
+    private void onHomeActivity() {
+        try {
+            Intent intent = new Intent(this, UserHome.class);
+            Bundle bundle = new Bundle();
+
+            bundle.putString("userName", mSession.getUserName());
+            bundle.putString("token", mSession.getToken());
+            bundle.putString("msisdn", mSession.getMsisdn());
+            intent.putExtras(bundle);
+
+            intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //uiFeed(e.getMessage());
+            this.finish();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         finish();
         //finishAndRemoveTask();
@@ -139,6 +256,11 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
     }
     @Override
     public void onNotificationInteraction(int statusCode, String message, Object object) {
+
+    }
+
+    @Override
+    public void onTransactionHistoryInteraction(int statusCode, String message, Object object) {
 
     }
 }

@@ -9,9 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.oltranz.airtime.airtime.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import simplebeans.favorite.FavoriteResponseBean;
+import utilities.FavoriteAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +34,7 @@ public class Favorite extends Fragment {
     private Typeface font;
     private String token;
     private String msisdn;
+    private FavoriteAdapter adapter;
 
     public Favorite() {
         // Required empty public constructor
@@ -74,10 +81,26 @@ public class Favorite extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //__________Initialize List______________\\
+        List<FavoriteResponseBean> mFavorite = new ArrayList<>();
+        FavoriteResponseBean favorite = new FavoriteResponseBean("+2500788838634", 20000);
+        mFavorite.add(favorite);
+        favorite = new FavoriteResponseBean("+2500785534672", 400);
+        mFavorite.add(favorite);
+        favorite = new FavoriteResponseBean("+2500786077903", 200);
+        mFavorite.add(favorite);
+        favorite = new FavoriteResponseBean("+2500736864662", 50);
+        mFavorite.add(favorite);
+        favorite = new FavoriteResponseBean("+2500788764888", 1000);
+        mFavorite.add(favorite);
+
+        adapter = new FavoriteAdapter(getActivity(), mFavorite);
+
+        ListView mList = (ListView) view.findViewById(R.id.favList);
+        mList.setAdapter(adapter);
+
         Log.d(tag, "View are finally inflated");
-        TextView test=(TextView) view.findViewById(R.id.test);
-        test.setTypeface(font);
-        test.setText("Test Message Ubuntu, and y");
     }
 
     @Override

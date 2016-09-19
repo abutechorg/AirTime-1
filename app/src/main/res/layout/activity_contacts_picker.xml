@@ -7,42 +7,43 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ContactsPickerActivity">
+    tools:context="utilities.ContactsPickerActivity">
     <EditText
+        android:id="@+id/txt_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/txt_filter"
-        android:hint="@string/txt_search"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:hint="@string/txt_search" />
 
 
     <TextView
+        android:id="@+id/txt_load_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/txt_load_progress"
         android:layout_below="@+id/txt_filter"
         android:text="Loading..."
         />
 
 
     <ListView
+        android:id="@+id/lst_contacts_chooser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_load_progress"
         android:layout_above="@+id/btn_done"
+        android:layout_below="@+id/txt_load_progress"
         android:padding="4dp"
-        android:id="@+id/lst_contacts_chooser"
     />
     <Button
+        android:id="@+id/btn_done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_done"
-        android:textColor="@color/appGreen"
-        android:background="@drawable/buttongreen"
         android:layout_alignParentBottom="true"
+        android:background="@drawable/buttongreen"
         android:text="@string/txt_done"
+        android:textColor="@drawable/text_button_green"
+        android:textSize="25sp"
         />
 
 

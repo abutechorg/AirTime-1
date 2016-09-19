@@ -11,4 +11,8 @@ public class BaseUrl {
     public static final String checkBalanceUrl="wallettransactions/balance";
     public static final String topUpUrl="purchase/airtime";
     public static final String paymentModes="topupmodes/alltypes";
+    public static final String initiateWalletRecharge = "interswitch/initiation";
+    public static final String confirmWalletRecharge = "interswitch/newpayment";
+    public static final String helpUrl = "http://41.74.172.132:8080/AirtimeWebPortal/faces/how.xhtml";
+    public static final String termsUrl = "http://41.74.172.132:8080/AirtimeWebPortal/faces/term.xhtml";
 }

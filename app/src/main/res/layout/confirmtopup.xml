@@ -1,112 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/appWhite"
+    android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin">
 
     <TableRow
+        android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/label"
         android:layout_alignParentTop="true">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
             <TextView
+                android:id="@+id/lbltel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:id="@+id/lbltel"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="PHONE NUMBER "
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="TELEPHONE NUMBER "
-                android:textColor="@color/appGray"/>
+                android:textColor="@color/appGray"
+                android:textSize="15sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/lblamount"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_toEndOf="@+id/lbltel"
+                android:layout_toRightOf="@+id/lbltel"
+                android:gravity="end"
                 android:text=" AMOUNT"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/appGray"
-                android:id="@+id/lblamount"
-                android:gravity="right"/>
+                android:textSize="15sp" />
         </RelativeLayout>
     </TableRow>
 
     <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/label"
-        android:layout_above="@+id/footer"
         android:id="@+id/telList"
-        android:background="@color/appTransparent"
-        android:divider="@color/appTransparent"
-        android:layout_weight="1" />
-    <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/label"
+        android:layout_weight="1"
+        android:background="@color/appTransparent"
+        android:divider="@color/appTransparent" />
+    <TableRow
         android:id="@+id/footer"
-        android:layout_alignParentBottom="true">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="2dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:id="@+id/tv"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Put your PIN To Confirm"
                 android:textColor="@color/appGray"/>
             <EditText
+                android:id="@+id/pin"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="10dp"
-                android:maxLength="5"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:id="@+id/pin"
-                android:inputType="numberPassword"
-                android:hint="Enter your PIN"
-                android:gravity="center"
-                android:focusableInTouchMode="true"
-                android:focusable="true"
+                android:layout_weight="1"
+                android:background="@drawable/border_gray"
                 android:drawableLeft="@drawable/ic_icon_login_input_password"
-                android:background="@drawable/border_gray"/>
+                android:drawableTint="@null"
+                android:ellipsize="end"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:hint="Enter your PIN"
+                android:inputType="numberPassword"
+                android:maxLength="5"
+                android:singleLine="true" />
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp">
+                    android:layout_marginTop="15dp">
                     <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
                         android:id="@+id/cancel"
-                        android:background="@drawable/buttongray"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:background="@drawable/buttonred"
+                        android:text="CANCEL"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Cancel"
-                        android:textColor="@color/appGray"/>
+                        android:textColor="@drawable/text_button_red" />
 
                     <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/ok"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Approve"
-                        android:textColor="@color/appGreen"
                         android:background="@drawable/buttongreen"
-                        android:id="@+id/ok"/>
+                        android:text="APPROVE"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@drawable/text_button_green" />
                 </RelativeLayout>
             </TableRow>
         </LinearLayout>

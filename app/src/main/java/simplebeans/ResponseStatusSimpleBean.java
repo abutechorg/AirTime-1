@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ResponseStatusSimpleBean {
     @JsonProperty("statusCode")
-    private Integer statusCode;
+    private int statusCode;
     @JsonProperty("statusDesc")
     private String statusDesc;
 

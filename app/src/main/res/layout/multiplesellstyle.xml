@@ -1,87 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <TableLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:layout_gravity="center_vertical"
-        android:id="@+id/tabGroup"
-        android:stretchColumns="0,1">
-        <TableRow>
+        android:layout_gravity="center"
+        android:layout_margin="3dp"
+        android:elevation="3dp"
+        card_view:cardCornerRadius="3dp"
+        card_view:cardPreventCornerOverlap="true"
+        card_view:contentPadding="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
             <LinearLayout
-                android:paddingLeft="4dip">
-                <TableRow
-                    android:layout_width="match_parent"
+                android:id="@+id/leftHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/tel"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:background="@drawable/border_gray"
-                    android:id="@+id/telRow"
-                    android:gravity="center">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@android:drawable/ic_menu_call"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/tel"
-                        android:padding="4dp"
-                        android:inputType="phone"
-                        android:gravity="left|center"
-                        android:maxLength="20"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        android:hint="Phone Number"
-                        android:textColor="@color/appBlue"
-                        android:background="@color/appTransparent"/>
-                </TableRow>
-            </LinearLayout>
+                    android:background="@drawable/border_hybrid"
+                    android:drawableLeft="@android:drawable/ic_menu_call"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@null"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:hint="Phone Number   "
+                    android:inputType="phone"
+                    android:maxLength="15"
+                    android:paddingRight="3dp"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="15sp" />
 
-
-            <LinearLayout
-                android:paddingLeft="4dip"
-                android:gravity="center">
-                <TableRow
-                    android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/amount"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/border_gray"
-                    android:gravity="center">
-                    <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:src="@drawable/ic_icon_main_naira"/>-->
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableLeft="@drawable/ic_icon_main_naira"
-                        android:id="@+id/amount"
-                        android:inputType="phone"
-                        android:singleLine="true"
-                        android:focusableInTouchMode="true"
-                        android:maxLength="5"
-                        android:ellipsize="end"
-                        android:textColor="@color/appBlue"
-                        android:hint="Amount"
-                        android:background="@color/appTransparent"/>
-                     </TableRow>
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/border_hybrid"
+                    android:drawableLeft="@drawable/ic_icon_main_naira"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/darkGray"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:hint="Enter Amount"
+                    android:inputType="phone"
+                    android:maxLength="7"
+                    android:paddingRight="8dp"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="15sp" />
             </LinearLayout>
-
             <LinearLayout
-                android:padding="0dip"
-                android:gravity="right">
-                <ImageView
+                android:id="@+id/middleHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/leftHolder"
+                android:layout_toLeftOf="@+id/rightHolder"
+                android:layout_toRightOf="@+id/leftHolder"
+                android:layout_toStartOf="@+id/rightHolder"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="4dp">
+
+                <ImageButton
+                    android:id="@+id/getNumber"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/remove"
-                    android:background="@drawable/imagebuttonorange"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"/>
-
+                    android:layout_height="50dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/imagebuttonblue"
+                    android:cropToPadding="true"
+                    android:src="@drawable/ic_icon_main_contactbrowse" />
             </LinearLayout>
-        </TableRow>
-    </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/rightHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="4dp">
+
+                <TextView
+                    android:id="@+id/reset"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/buttonhybrid"
+                    android:clickable="true"
+                    android:drawableTint="@drawable/text_button_orange"
+                    android:drawableTop="@android:drawable/ic_menu_revert"
+                    android:ellipsize="marquee"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="2dp"
+                    android:singleLine="true"
+                    android:text="RESET"
+                    android:textColor="@drawable/text_button_orange"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>
