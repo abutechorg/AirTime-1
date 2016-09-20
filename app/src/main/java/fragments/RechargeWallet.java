@@ -213,6 +213,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
             }
         } catch (Exception e) {
             e.printStackTrace();
+
             return false;
         }
     }
@@ -232,12 +233,12 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
             @Override
             public void onError(Exception error) {
                 Util.notify(context, "Error", error.getMessage(), "Close", false);
-                try {
-                    confirmRecharge(null, initiator, new ResponseStatusSimpleBean(error.getMessage(), 503));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    uiFeed(e.getMessage());
-                }
+//                try {
+//                    confirmRecharge(null, initiator, new ResponseStatusSimpleBean(error.getMessage(), 503));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    uiFeed(e.getMessage());
+//                }
             }
 
             @Override
@@ -307,152 +308,17 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
 //
 //                } else {
                 Util.notify(context, "Success", "Ref: " + transactionIdentifier, "Close", false);
-                try {
-                    confirmRecharge(response, initiator, new ResponseStatusSimpleBean("Successfull Transaction", 400));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    uiFeed(e.getMessage());
-                }
+//                try {
+//                    confirmRecharge(response, initiator, new ResponseStatusSimpleBean("Successfull Transaction", 400));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    uiFeed(e.getMessage());
+//                }
 //                }
             }
         });
         payWithCard.start();
     }
-
-//    public void executePay() {
-//        Payment.overrideApiBase(Payment.QA_API_BASE); // used to override the payment api base url.
-//        Passport.overrideApiBase(Passport.QA_API_BASE); //used to override the payment api base url.
-//        List<EditText> fields = new ArrayList<>();
-//        fields.clear();
-//
-//        fields.add(customerID);
-//        fields.add(amount);
-//        fields.add(pan);
-//        fields.add(pin);
-//        fields.add(expiry);
-//        fields.add(cvv2);
-//        if (Validation.isValidEditboxes(fields)) {
-//            if (Util.isNetworkAvailable(getContext())) {
-//                final PurchaseRequest request = new PurchaseRequest();
-//                request.setCustomerId(customerID.getText().toString());
-//                request.setAmount("200");
-//                request.setPan(pan.getText().toString());
-//                request.setPinData(pin.getText().toString());
-//                request.setExpiryDate(expiry.getText().toString());
-//                request.setRequestorId("11179920172");
-//                request.setCurrency("NGN");
-//                request.setTransactionRef(RandomString.numeric(12));
-//                request.setCvv2(cvv2.getText().toString());
-//                Util.hide_keyboard(getActivity());
-//                Util.showProgressDialog(context, "Sending Payment");
-//                new PaymentSDK(context, options).purchase(request, new IswCallback<PurchaseResponse>() {
-//                    @Override
-//                    public void onError(Exception error) {
-//                        Util.hideProgressDialog();
-//                        Util.notify(context, "Error", error.getLocalizedMessage(), "Close", false);
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(final PurchaseResponse response) {
-//                        Util.hideProgressDialog();
-//                        transactionIdentifier = response.getTransactionIdentifier();
-//                        if (StringUtils.hasText(response.getResponseCode())) {
-//                            if (PaymentSDK.SAFE_TOKEN_RESPONSE_CODE.equals(response.getResponseCode())) {
-//                                paymentId = response.getPaymentId();
-//                                authData = request.getAuthData();
-//                                Util.prompt(getActivity(), "OTP", response.getMessage(), "Close", "Continue", true, 1L);
-//                            }
-//                            if (PaymentSDK.CARDINAL_RESPONSE_CODE.equals(response.getResponseCode())) {
-//                                final Dialog cardinalDialog = new Dialog(context) {
-//                                    @Override
-//                                    public void onBackPressed() {
-//                                        super.onBackPressed();
-//                                    }
-//                                };
-//                                webView = new AuthorizeWebView(context, response) {
-//                                    @Override
-//                                    public void onPageDone() {
-//                                        Util.showProgressDialog(context, "Processing...");
-//                                        AuthorizePurchaseRequest cardinalRequest = new AuthorizePurchaseRequest();
-//                                        cardinalRequest.setAuthData(request.getAuthData());
-//                                        cardinalRequest.setPaymentId(response.getPaymentId());
-//                                        cardinalRequest.setTransactionId(response.getTransactionId());
-//                                        cardinalRequest.setEciFlag(response.getEciFlag());
-//                                        new PaymentSDK(context, options).authorizePurchase(cardinalRequest, new IswCallback<AuthorizePurchaseResponse>() {
-//                                            @Override
-//                                            public void onError(Exception error) {
-//                                                Util.hideProgressDialog();
-//                                                cardinalDialog.dismiss();
-//                                                Util.notify(context, "Error", error.getMessage(), "Close", false);
-//                                            }
-//
-//                                            @Override
-//                                            public void onSuccess(AuthorizePurchaseResponse response) {
-//                                                Util.hideProgressDialog();
-//                                                cardinalDialog.dismiss();
-//                                                Util.notify(context, "Success", response.getMessage(), "Close", false);
-//                                            }
-//                                        });
-//                                    }
-//
-//                                    @Override
-//                                    public void onPageError(Exception error) {
-//                                        Util.notify(context, "Error", error.getMessage(), "Close", false);
-//                                    }
-//                                };
-//                                cardinalDialog.setContentView(webView);
-//                                cardinalDialog.show();
-//                                cardinalDialog.setCancelable(true);
-//                                webView.requestFocus(View.FOCUS_DOWN);
-//                                webView.getSettings().setJavaScriptEnabled(true);
-//                                webView.setVerticalScrollBarEnabled(true);
-//                                WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//                                Display display = wm.getDefaultDisplay();
-//                                Point size = new Point();
-//                                //display.getSize(size);
-//                                DisplayMetrics dsp=getContext().getResources().getDisplayMetrics();
-//                                int width = dsp.widthPixels;//size.x;
-//                                int height =dsp.heightPixels; //size.y;
-//                                Window window = cardinalDialog.getWindow();
-//                                window.setLayout(width, height);
-//                            }
-//
-//                        } else {
-//                            Util.notify(context, "Success", "Ref: " + transactionIdentifier, "Close", false);
-//                        }
-//                    }
-//                });
-//            } else {
-//                Util.notifyNoNetwork(getContext());
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void promptResponse(String response, long requestId) {
-//        if (requestId == 1 && StringUtils.hasText(response)) {
-//            AuthorizePurchaseRequest request = new AuthorizePurchaseRequest();
-//            request.setPaymentId(paymentId);
-//            request.setOtp(response);
-//            request.setAuthData(authData);
-//            Util.hide_keyboard(getActivity());
-//            Util.showProgressDialog(context, "Verifying OTP");
-//            new PaymentSDK(context, options).authorizePurchase(request, new IswCallback<AuthorizePurchaseResponse>() {
-//                @Override
-//                public void onError(Exception error) {
-//                    Util.hideProgressDialog();
-//                    Util.notify(context, "Error", error.getLocalizedMessage(), "Close", false);
-//                }
-//
-//                @Override
-//                public void onSuccess(AuthorizePurchaseResponse otpResponse) {
-//                    Util.hideProgressDialog();
-//                    Util.notify(context, "Success", "Ref: " + transactionIdentifier, "Close", false);
-//                }
-//            });
-//        }
-//
-//    }
 
     private void initiateRecharge(final long amount) {
 
