@@ -120,12 +120,12 @@ public class TransactionHistory extends Fragment implements TransactionHistoryAd
         progressDialog.setIndeterminate(true);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
+        progressDialog.setMessage("Loading History...");
         progressDialog.show();
 
         try {
             ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-            Call<TransactionHistoryResponse> callService = clientServices.getTransactionHistory(token, 0);
+            Call<TransactionHistoryResponse> callService = clientServices.getTransactionHistory(token, 10);
             callService.enqueue(new Callback<TransactionHistoryResponse>() {
                 @Override
                 public void onResponse(Call<TransactionHistoryResponse> call, Response<TransactionHistoryResponse> response) {

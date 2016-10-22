@@ -55,4 +55,9 @@ public interface ClientServices {
     //confirm wallet recharge
     @POST(BaseUrl.confirmWalletRecharge)
     Call<StatusUsage> confWalletRecharge(@Body ConfirmWalletPayment confirmWalletPayment);
+
+    //getTopup favorites
+    @GET(BaseUrl.transactionHistory+"{number}")
+    Call<TransactionHistoryResponse> getFavorites(@Header(BaseUrl.headerToken) String token, @Path("number") int number);
+
 }

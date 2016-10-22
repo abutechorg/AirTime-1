@@ -1,5 +1,6 @@
 package fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
     private String msisdn;
     private String accountBalance;
     private CheckWalletBalance checkWalletBalance;
+    private ProgressDialog progressDialog;
 
     public CheckBalance() {
         // Required empty public constructor
@@ -74,9 +76,11 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
                 token = getArguments().getString("token");
             if (getArguments().getString("msisdn") != null)
                 msisdn = getArguments().getString("msisdn");
-            if (getArguments().getString("accountBalance") != null)
-                accountBalance = getArguments().getString("accountBalance");
         }
+        progressDialog = new ProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
         checkWalletBalance = new CheckWalletBalance(this, getContext(), token);
         Log.d(tag, "The fragment is created");
     }
@@ -102,9 +106,6 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
         final TextView label = (TextView) view.findViewById(R.id.label);
         label.setTypeface(font, Typeface.BOLD);
 
-        if (accountBalance != null)
-            balance.setText(accountBalance);
-
         Log.d(tag, "Data to push to the server:\n" + BaseUrl.checkBalanceUrl + "/" + msisdn);
 
         //Dummy data
@@ -112,12 +113,17 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
 
         //making a Balance request
         try {
+            progressDialog.setMessage("Checking wallet balance...");
+            progressDialog.show();
+
             ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
             Call<BalanceResponse> callService = clientServices.getWalletBalance(token);
             callService.enqueue(new Callback<BalanceResponse>() {
                 @Override
                 public void onResponse(Call<BalanceResponse> call, Response<BalanceResponse> response) {
-
+                    if(progressDialog != null)
+                        if(progressDialog.isShowing())
+                            progressDialog.dismiss();
                     //HTTP status code
                     int statusCode = response.code();
                     Log.d(tag, "Data from the server:\n" + new ClientData().mapping(response.body()));
@@ -128,15 +134,15 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
                             if (balanceResponse.getBalance() != null) {
                                 balance.setText(String.valueOf(balanceResponse.getBalance()));
                                 balanceInteraction.onCheckBalanceInteraction(200, balanceResponse.getStatus().getMessage(), balanceResponse);
-
                             } else {
+                                progressDialog.dismiss();
                                 balanceResponse.setBalance("0");
                                 balanceInteraction.onCheckBalanceInteraction(201, "Faillure", balanceResponse);
                                 balance.setText("0");
                             }
                         } else {
                             balanceResponse.setBalance("0");
-                            checkBalance();
+                            checkBalanceComponent();
                             balance.setText("0");
                         }
                         String mDate;
@@ -154,28 +160,27 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
                         //lastHistory.append(mDate);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        checkBalance();
+                        checkBalanceComponent();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<BalanceResponse> call, Throwable t) {
-                    // Log error here since request failed
+                    if(progressDialog != null)
+                        if(progressDialog.isShowing())
+                            progressDialog.dismiss();
                     Log.e(tag, t.toString());
-                    checkBalance();
+                    checkBalanceComponent();
                 }
             });
         } catch (Exception e) {
+            if(progressDialog != null)
+                if(progressDialog.isShowing())
+                    progressDialog.dismiss();
             e.printStackTrace();
-            checkBalance();
+            checkBalanceComponent();
         }
     }
-
-//    public void onButtonPressed(Uri uri) {
-//        if (balanceInteraction != null) {
-//            balanceInteraction.onFavoriteInteraction(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {
@@ -187,23 +192,36 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
             throw new RuntimeException(context.toString()
                     + " must implement FavoriteInteraction");
         }
+        if(progressDialog != null)
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        if(progressDialog != null)
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
         balanceInteraction = null;
     }
 
-    private void checkBalance() {
+    private void checkBalanceComponent() {
+        if(progressDialog != null)
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
         checkWalletBalance.getBalance();
     }
 
     @Override
     public void onWalletBalanceCheck(String balance) {
+        if(progressDialog != null)
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
+
         if (!TextUtils.isEmpty(balance))
             if (Double.valueOf(balance) > 0) {
-                BalanceResponse balResponse=new BalanceResponse(balance,"00/00/000 00:00", new SimpleStatusBean("Success", 400));
+                BalanceResponse balResponse = new BalanceResponse(balance, "00/00/000 00:00", new SimpleStatusBean("Success", 400));
                 balanceInteraction.onCheckBalanceInteraction(200, balResponse.getStatus().getMessage(), balResponse);
                 try {
                     final TextView lastHistory = (TextView) getView().findViewById(R.id.lastHistory);
@@ -213,7 +231,7 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
                     final TextView balanceView = (TextView) getView().findViewById(R.id.balance);
                     balanceView.setTypeface(font, Typeface.BOLD);
                     balanceView.setText(balance);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else
@@ -225,7 +243,7 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

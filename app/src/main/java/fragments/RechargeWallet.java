@@ -6,8 +6,11 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,7 @@ import com.interswitchng.sdk.payment.model.PurchaseResponse;
 import com.oltranz.mobilea.mobilea.R;
 
 import java.util.List;
+import java.util.Locale;
 
 import client.ClientData;
 import client.PaymentInterface;
@@ -153,9 +157,46 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
 
         amount = (EditText) view.findViewById(R.id.amount);
         amount.setTypeface(font);
+        amount.addTextChangedListener(new TextWatcher() {
 
-        TextView label=(TextView) view.findViewById(R.id.label);
-        label.setTypeface(font,Typeface.BOLD);
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                //WalletHistory.this.adapter.getFilter().filter(cs);
+                try {
+                    if (amount.getText().toString().length() > 0) {
+                        if (Double.valueOf(amount.getText().toString().trim().toLowerCase(Locale.getDefault())) < 50) {
+                            amount.setBackgroundResource(R.drawable.border_orange);
+                            amount.setTextColor(ContextCompat.getColor(getContext(),R.color.appOrange));
+                        } else {
+                            amount.setBackgroundResource(R.drawable.border_gray);
+                            amount.setTextColor(ContextCompat.getColor(getContext(),R.color.darkGray));
+                        }
+                    }else{
+                        amount.setBackgroundResource(R.drawable.border_gray);
+                        amount.setTextColor(ContextCompat.getColor(getContext(),R.color.darkGray));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    amount.requestFocus();
+                    amount.setError("Revise the amount");
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
+
+
+        TextView label = (TextView) view.findViewById(R.id.label);
+        label.setTypeface(font, Typeface.BOLD);
 
         visa = (ImageView) view.findViewById(R.id.visaButton);
         mc = (ImageView) view.findViewById(R.id.mcButton);
@@ -223,7 +264,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                 if (!progressDialog.isShowing()) {
                     progressDialog.setMessage("Reporting Failure...");
                     progressDialog.show();
-                }else{
+                } else {
                     progressDialog.setMessage("Reporting Failure...");
                 }
                 failedPaymentMethod(failedPayment);
@@ -246,7 +287,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                 if (!progressDialog.isShowing()) {
                     progressDialog.setMessage("Recharging Wallet...");
                     progressDialog.show();
-                }else{
+                } else {
                     progressDialog.setMessage("Recharging Wallet...");
                 }
                 confirmRecharge(confirmWalletPayment);
@@ -479,9 +520,10 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                 Log.d(tag, "Element is not a payment button");
         }
 
-        EditText amount;
+        final EditText amount;
         if (getView().findViewById(R.id.amount) != null) {
             amount = (EditText) getView().findViewById(R.id.amount);
+
             if (!TextUtils.isEmpty(amount.getText().toString()) && isNumeric(amount.getText().toString())) {
                 try {
                     amount.requestFocus();

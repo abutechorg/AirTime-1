@@ -23,4 +23,5 @@ public class BaseUrl {
     public static final String appVersion = "Version";
     public static final String serverDateUrl = "Payment/serverDate";
     public static final String transactionHistory = "airtimetopup/getlatest/";
+    public static final String getFavorites = "airtimetopup/getfavorites/";
 }

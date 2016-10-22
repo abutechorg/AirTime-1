@@ -19,7 +19,7 @@
             android:gravity="center"
             android:onClick="onAccountTabClick"
             android:padding="3dp"
-            android:text="Send Airtime"
+            android:text="Buy Airtime"
             android:textColor="@color/appOrange"
             android:textSize="20sp" />
 

@@ -27,6 +27,7 @@
             android:id="@+id/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/border_gray"
             android:hint="Enter Amount"
@@ -37,7 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Payment with(Only OTP enabled card are supported)..." />
+            android:gravity="bottom"
+            android:text="Proceed payment with..." />
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"

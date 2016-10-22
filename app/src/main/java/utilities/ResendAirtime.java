@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
@@ -51,6 +52,7 @@ public class ResendAirtime implements CheckWalletBalance.CheckWalletBalanceInter
     private String tag = getClass().getSimpleName();
     private ProgressDialog progressDialog;
     private CheckWalletBalance checkWalletBalance;
+    private Typeface font;
 
     public ResendAirtime(ResendAirtimeInteraction resendAirtimeInteraction, Activity context, String token, String msisdn) {
         this.context = context;
@@ -64,6 +66,7 @@ public class ResendAirtime implements CheckWalletBalance.CheckWalletBalanceInter
         progressDialog.setIndeterminate(true);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
+        font = Typeface.createFromAsset(context.getAssets(), "font/ubuntu.ttf");
 
         checkWalletBalance = new CheckWalletBalance(this, context, token);
         appVersion = "versionCode: " + BuildConfig.VERSION_CODE + " versionName: " + BuildConfig.VERSION_NAME;
@@ -97,11 +100,21 @@ public class ResendAirtime implements CheckWalletBalance.CheckWalletBalanceInter
         dialog.setTitle(Html.fromHtml("<font color='" + ContextCompat.getColor(context, R.color.appOrange) + "'>Confirm...</font>"));
         dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
 
+        TextView topLabel=(TextView) dialog.findViewById(R.id.topLabel);
+        topLabel.setTypeface(font, Typeface.BOLD);
+        TextView telLabel=(TextView) dialog.findViewById(R.id.lbltel);
+        telLabel.setTypeface(font,Typeface.BOLD);
+        TextView amountLabel=(TextView) dialog.findViewById(R.id.lblamount);
+        amountLabel.setTypeface(font,Typeface.BOLD);
         final ListView telList = (ListView) dialog.findViewById(R.id.telList);
         final TextView tv = (TextView) dialog.findViewById(R.id.tv);
+        tv.setTypeface(font);
         final EditText pin = (EditText) dialog.findViewById(R.id.pin);
+        pin.setTypeface(font);
         final Button cancel = (Button) dialog.findViewById(R.id.cancel);
+        cancel.setTypeface(font, Typeface.BOLD);
         final Button ok = (Button) dialog.findViewById(R.id.ok);
+        ok.setTypeface(font, Typeface.BOLD);
 
         TopUpConfirmAdapter adapter = new TopUpConfirmAdapter(context, numbers);
         telList.setAdapter(adapter);
