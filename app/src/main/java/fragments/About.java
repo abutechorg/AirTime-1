@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.R;
 
 import config.BaseUrl;
 

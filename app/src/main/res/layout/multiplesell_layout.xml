@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     android:layout_gravity = "center"
     android:background="@color/appWhite"
-    android:paddingBottom="4dp"
+    android:paddingBottom="2dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="4dp"
     tools:context="fragments.MultipleSell">
 
     <LinearLayout
@@ -33,7 +32,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/buttongreen"
-                android:padding="15dp"
+                android:padding="10dp"
                 android:shadowRadius="0"
                 android:stateListAnimator="@null"
                 android:text="S E N D"

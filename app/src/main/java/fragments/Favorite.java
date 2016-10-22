@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -11,7 +11,7 @@
         android:layout_alignParentRight="true"
         android:padding="6dp"
         android:clickable="true"
-        android:text="99"
+        android:text="0"
         android:background="@drawable/bage_circle"
         android:textColor="@color/appWhite" />
 

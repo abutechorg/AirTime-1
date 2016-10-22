@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-import simplebeans.ResponseStatusSimpleBean;
+import simplebeans.SimpleStatusBean;
 
 /**
  * Created by Owner on 7/25/2016.
  */
 public class PaymentModesResponse {
     @JsonProperty("status")
-    private ResponseStatusSimpleBean responseStatusSimpleBean;
+    private SimpleStatusBean simpleStatusBean;
     @JsonProperty("topupmodes")
     private List<PaymentModeBean> paymentModeBeanList;
 
-    public PaymentModesResponse(ResponseStatusSimpleBean responseStatusSimpleBean, List<PaymentModeBean> paymentModeBeanList) {
-        this.setResponseStatusSimpleBean(responseStatusSimpleBean);
+    public PaymentModesResponse(SimpleStatusBean simpleStatusBean, List<PaymentModeBean> paymentModeBeanList) {
+        this.setSimpleStatusBean(simpleStatusBean);
         this.setPaymentModeBeanList(paymentModeBeanList);
     }
 
@@ -24,12 +24,12 @@ public class PaymentModesResponse {
 
     }
 
-    public ResponseStatusSimpleBean getResponseStatusSimpleBean() {
-        return responseStatusSimpleBean;
+    public SimpleStatusBean getSimpleStatusBean() {
+        return simpleStatusBean;
     }
 
-    public void setResponseStatusSimpleBean(ResponseStatusSimpleBean responseStatusSimpleBean) {
-        this.responseStatusSimpleBean = responseStatusSimpleBean;
+    public void setSimpleStatusBean(SimpleStatusBean simpleStatusBean) {
+        this.simpleStatusBean = simpleStatusBean;
     }
 
     public List<PaymentModeBean> getPaymentModeBeanList() {

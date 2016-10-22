@@ -6,7 +6,7 @@
     android:layout_gravity="top"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.oltranz.airtime.airtime.Home">
+    tools:context="com.oltranz.mobilea.mobilea.Home">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/titleBar"
@@ -70,7 +70,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/headerLogo"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:foregroundGravity="center"></FrameLayout>
+            android:foregroundGravity="center"/>
     </RelativeLayout>
     </ScrollView>
         <!--<ScrollView-->
@@ -122,9 +122,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
-                android:background="@drawable/imagebuttonorange"
-                android:scaleType="centerCrop"
-                android:src="@drawable/icon_register"/>
+                android:background="@drawable/register_selector"
+                android:scaleType="centerCrop"/>
             <ImageView
                 android:id="@+id/help"
                 android:layout_width="100dp"
@@ -133,9 +132,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
-                android:background="@drawable/imagebuttonorange"
-                android:scaleType="centerCrop"
-                android:src="@drawable/icon_help"/>
+                android:background="@drawable/help_selector"
+                android:scaleType="centerCrop"/>
 
             <!--<ImageButton-->
                 <!--android:layout_width="wrap_content"-->

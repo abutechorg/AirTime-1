@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,12 @@ public class TransactionHistoryAdapter extends ArrayAdapter<TransactionHistoryBe
     private Activity context;
     private List<TransactionHistoryBean> mHistory;
     private List<TransactionHistoryBean> tempList;
+    private boolean addedList=false;
+    private TransactionHistoryAdapterInteraction onResendClick;
 
-    public TransactionHistoryAdapter(Activity context, List<TransactionHistoryBean> mHistory) {
+    public TransactionHistoryAdapter(TransactionHistoryAdapterInteraction onResendClick, Activity context, List<TransactionHistoryBean> mHistory) {
         super(context, R.layout.transactionhistory_style, mHistory);
-
+        this.onResendClick=onResendClick;
         this.context = context;
         this.mHistory = mHistory;
         this.tempList = new ArrayList<>();
@@ -46,7 +47,6 @@ public class TransactionHistoryAdapter extends ArrayAdapter<TransactionHistoryBe
     @TargetApi(Build.VERSION_CODES.M)
     public View getView(final int position, View view, ViewGroup parent) {
         View rowView = view;
-        Log.d(tag, "Row Number Initiated: " + mHistory.get(position).getTransactionId());
         // reuse views
         if (rowView == null) {
             LayoutInflater inflater = context.getLayoutInflater();
@@ -72,7 +72,7 @@ public class TransactionHistoryAdapter extends ArrayAdapter<TransactionHistoryBe
             viewHolder.lblMsisdn = (TextView) rowView.findViewById(R.id.lblMsisdn);
             viewHolder.lblMsisdn.setTypeface(font, Typeface.BOLD);
 
-            viewHolder.msisdn = (TextView) rowView.findViewById(R.id.welcomeUser);
+            viewHolder.msisdn = (TextView) rowView.findViewById(R.id.histMsisdn);
             viewHolder.msisdn.setTypeface(font, Typeface.BOLD);
 
 //            viewHolder.actionIcon=(ImageView) rowView.findViewById(R.id.actionIcon);
@@ -93,9 +93,8 @@ public class TransactionHistoryAdapter extends ArrayAdapter<TransactionHistoryBe
         }
 
         final ViewHolder holder = (ViewHolder) rowView.getTag();
-        TransactionHistoryBean hist = mHistory.get(position);
+        final TransactionHistoryBean hist = mHistory.get(position);
 
-        holder.trans.setText(String.valueOf(hist.getTransactionId()));
         holder.date.setText(hist.getDate());
         holder.msisdn.setText(hist.getMsisdn());
         holder.amount.setText("₦" + String.valueOf(hist.getAmount()));
@@ -127,6 +126,12 @@ public class TransactionHistoryAdapter extends ArrayAdapter<TransactionHistoryBe
             holder.status.setBackgroundResource(R.color.appGreen);
             holder.status.setText("SUCCEEDED");
         }
+        holder.lblAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onResendClick.onResendAirtimeAdapter(hist.getMsisdn(),String.valueOf(hist.getAmount()));
+            }
+        });
 
         return rowView;
     }
@@ -143,14 +148,23 @@ public class TransactionHistoryAdapter extends ArrayAdapter<TransactionHistoryBe
 
     // Filter Class
     public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
+        if(! addedList){
+            this.tempList = new ArrayList<>();
+            this.tempList.addAll(mHistory);
+            addedList=true;
+        }
+
+        charText = charText.toLowerCase();
         mHistory.clear();
         if (charText.length() == 0) {
             mHistory.addAll(tempList);
-        } else {
-            for (TransactionHistoryBean wHB : tempList) {
-                if (wHB.getPayName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    mHistory.add(wHB);
+            addedList=false;
+        }
+        else
+        {
+            for (TransactionHistoryBean transactionBean : tempList) {
+                if (transactionBean.getSearchChain().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mHistory.add(transactionBean);
                 }
             }
         }
@@ -173,5 +187,9 @@ public class TransactionHistoryAdapter extends ArrayAdapter<TransactionHistoryBe
 
         public LinearLayout rightHolder;
         public RelativeLayout parent;
+    }
+
+    public interface TransactionHistoryAdapterInteraction {
+        void onResendAirtimeAdapter(String tel, String amount);
     }
 }

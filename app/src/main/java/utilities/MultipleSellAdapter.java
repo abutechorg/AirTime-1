@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.R;
 
 import java.util.List;
 

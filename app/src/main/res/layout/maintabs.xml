@@ -5,12 +5,28 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="10dp">
+    android:paddingTop="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:onClick="onAccountTabClick"
+            android:padding="3dp"
+            android:text="Send Airtime"
+            android:textColor="@color/appOrange"
+            android:textSize="20sp" />
 
     <TableLayout
         android:id="@+id/mainTabGroup"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
         android:stretchColumns="*">
@@ -68,4 +84,5 @@
             </LinearLayout>
         </TableRow>
     </TableLayout>
+    </LinearLayout>
 </FrameLayout>

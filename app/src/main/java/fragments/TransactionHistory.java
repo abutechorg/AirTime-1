@@ -1,10 +1,14 @@
 package fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,15 +18,24 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.R;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import simplebeans.ResponseStatusSimpleBean;
+import client.ClientServices;
+import client.ServerClient;
+import entity.NotificationTable;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import simplebeans.transactionhistory.TransactionHistoryBean;
+import simplebeans.transactionhistory.TransactionHistoryResponse;
+import utilities.GetCurrentDate;
+import utilities.ResendAirtime;
 import utilities.TransactionHistoryAdapter;
 
 /**
@@ -33,7 +46,8 @@ import utilities.TransactionHistoryAdapter;
  * Use the {@link TransactionHistory#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TransactionHistory extends Fragment {
+public class TransactionHistory extends Fragment implements TransactionHistoryAdapter.TransactionHistoryAdapterInteraction, ResendAirtime.ResendAirtimeInteraction {
+    private ProgressDialog progressDialog;
     private static final String msisdn_param = "msisdn";
     private static final String token_param = "token";
     private String tag = "AirTime: " + getClass().getSimpleName();
@@ -97,25 +111,67 @@ public class TransactionHistory extends Fragment {
         mHistoryList = (ListView) view.findViewById(R.id.mHistory);
         searchText = (EditText) view.findViewById(R.id.searchTerm);
         searchButton = (ImageView) view.findViewById(R.id.searchIcon);
+        final List<TransactionHistoryBean> mHistory = new ArrayList<>();
 
-        //______________DUMMY DATA________________\\
-        List<TransactionHistoryBean> mHistory = new ArrayList<>();
-
-        ResponseStatusSimpleBean status1 = new ResponseStatusSimpleBean("failed", 401);
-        ResponseStatusSimpleBean status2 = new ResponseStatusSimpleBean("success", 400);
-        TransactionHistoryBean wHistoryBean = new TransactionHistoryBean(1111, "10/08/2016 10:00", "Credit Card", "VISA", 500, "0785534672", status2);
-        mHistory.add(wHistoryBean);
-        wHistoryBean = new TransactionHistoryBean(2222, "10/09/2016 10:00", "Credit Card", "MC", 800, "0788838634", status1);
-        mHistory.add(wHistoryBean);
-        wHistoryBean = new TransactionHistoryBean(3333, "10/10/2016 10:00", "Credit Card", "VISA", 200, "0786077903", status1);
-        mHistory.add(wHistoryBean);
-        wHistoryBean = new TransactionHistoryBean(4444, "10/11/2016 10:00", "Credit Card", "VERVE", 1000, "0786077903", status2);
-        mHistory.add(wHistoryBean);
-        wHistoryBean = new TransactionHistoryBean(5555, "10/12/2016 10:00", "Credit Card", "VISA", 200, "0785534672", status1);
-        mHistory.add(wHistoryBean);
-
-        adapter = new TransactionHistoryAdapter(getActivity(), mHistory);
+        adapter = new TransactionHistoryAdapter(this, getActivity(), mHistory);
         mHistoryList.setAdapter(adapter);
+
+        progressDialog = new ProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        try {
+            ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
+            Call<TransactionHistoryResponse> callService = clientServices.getTransactionHistory(token, 0);
+            callService.enqueue(new Callback<TransactionHistoryResponse>() {
+                @Override
+                public void onResponse(Call<TransactionHistoryResponse> call, Response<TransactionHistoryResponse> response) {
+
+                    //HTTP status code
+                    int statusCode = response.code();
+                    if(statusCode==200){
+                        TransactionHistoryResponse transactionHistoryResponse=response.body();
+                        try{
+                            if(transactionHistoryResponse.getStatus().getStatusCode() != 400)
+                                progressDialog.setMessage(transactionHistoryResponse.getStatus().getMessage());
+                            else{
+                                List<TransactionHistoryBean> transactionHistoryBeanList=transactionHistoryResponse.getHistory();
+                                for(TransactionHistoryBean historyBean: transactionHistoryBeanList){
+                                    TransactionHistoryBean wHistoryBean = new TransactionHistoryBean(historyBean.getDate(), historyBean.getAmount(), historyBean.getMsisdn(), historyBean.getStatus(),""+historyBean.getStatus().getMessage()+historyBean.getDate()+ historyBean.getAmount()+ historyBean.getMsisdn());
+                                    mHistory.add(wHistoryBean);
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                progressDialog.dismiss();
+                            }
+                        }catch (Exception e){
+                            progressDialog.setMessage(e.getMessage());
+                            e.printStackTrace();
+                            progressDialog.dismiss();
+                        }
+
+                    }else{
+                        progressDialog.setMessage(response.message());
+                        progressDialog.dismiss();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<TransactionHistoryResponse> call, Throwable t) {
+                    // Log error here since request failed
+                    Log.e(tag, t.toString());
+                    progressDialog.setMessage("Connectivity Error");
+                    progressDialog.dismiss();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            progressDialog.setMessage(e.getMessage());
+            progressDialog.dismiss();
+        }
 
         searchText.addTextChangedListener(new TextWatcher() {
 
@@ -158,6 +214,45 @@ public class TransactionHistory extends Fragment {
         onTransactionHistory = null;
     }
 
+    @Override
+    public void onResendAirtimeAdapter(String tel, String amount) {
+        ResendAirtime resendAirtime=new ResendAirtime(this,getActivity(),token,msisdn);
+        resendAirtime.startResend(tel,Double.valueOf(amount));
+    }
+
+    @Override
+    public void onResendAirtimeModule(int statusCode, String message) {
+        String date = new GetCurrentDate(getContext()).getServerDate();
+        if (!TextUtils.isEmpty(message)) {
+            NotificationTable notificationTable = new NotificationTable(date, "AirTime TopUp " + message, msisdn, "0");
+            notificationTable.save();
+        }
+        uiFeed(""+message);
+    }
+
+    private void uiFeed(String message) {
+        if(progressDialog != null)
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
+        try {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(message)
+                    .setTitle(R.string.dialog_title);
+            // Add the buttons
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

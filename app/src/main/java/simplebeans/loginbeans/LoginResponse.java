@@ -2,7 +2,7 @@ package simplebeans.loginbeans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import simplebeans.ResponseStatusSimpleBean;
+import simplebeans.SimpleStatusBean;
 
 /**
  * Created by Owner on 7/9/2016.
@@ -11,15 +11,15 @@ public class LoginResponse {
     @JsonProperty("customerDetails")
     private LoginResponseBean loginResponseBean;
     @JsonProperty("status")
-    private ResponseStatusSimpleBean responseStatusSimpleBean;
+    private SimpleStatusBean simpleStatusBean;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(LoginResponseBean loginResponseBean, ResponseStatusSimpleBean responseStatusSimpleBean) {
+    public LoginResponse(LoginResponseBean loginResponseBean, SimpleStatusBean simpleStatusBean) {
 
         this.setLoginResponseBean(loginResponseBean);
-        this.setResponseStatusSimpleBean(responseStatusSimpleBean);
+        this.setSimpleStatusBean(simpleStatusBean);
     }
 
     public LoginResponseBean getLoginResponseBean() {
@@ -30,11 +30,11 @@ public class LoginResponse {
         this.loginResponseBean = loginResponseBean;
     }
 
-    public ResponseStatusSimpleBean getResponseStatusSimpleBean() {
-        return responseStatusSimpleBean;
+    public SimpleStatusBean getSimpleStatusBean() {
+        return simpleStatusBean;
     }
 
-    public void setResponseStatusSimpleBean(ResponseStatusSimpleBean responseStatusSimpleBean) {
-        this.responseStatusSimpleBean = responseStatusSimpleBean;
+    public void setSimpleStatusBean(SimpleStatusBean simpleStatusBean) {
+        this.simpleStatusBean = simpleStatusBean;
     }
 }

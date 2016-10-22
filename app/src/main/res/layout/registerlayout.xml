@@ -33,7 +33,7 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@null"
                     android:ellipsize="end"
-                    android:hint="Enter your First Name"
+                    android:hint="Enter your first name"
                     android:inputType="textPersonName|text"
                     android:maxLength="20"
                     android:maxLines="1"
@@ -48,13 +48,13 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@null"
                     android:ellipsize="end"
-                    android:hint="Enter your Last Name"
+                    android:hint="Enter your last name"
                     android:inputType="textPersonName|text"
                     android:maxLength="20"
                     android:maxLines="1"
                     android:padding="10dp" />
                 <EditText
-                    android:id="@+id/welcomeUser"
+                    android:id="@+id/histMsisdn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -63,7 +63,7 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@null"
                     android:ellipsize="end"
-                    android:hint="Enter your Number"
+                    android:hint="Enter your number"
                     android:inputType="phone"
                     android:maxLength="20"
                     android:maxLines="1"
@@ -94,9 +94,9 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@null"
                     android:ellipsize="end"
-                    android:hint="Enter your PIN"
+                    android:hint="Enter password (4 digits)"
                     android:inputType="numberPassword"
-                    android:maxLength="5"
+                    android:maxLength="4"
                     android:maxLines="1"
                     android:padding="10dp" />
 
@@ -110,9 +110,9 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@null"
                     android:ellipsize="end"
-                    android:hint="Retype your PIN"
+                    android:hint="Retype password (4 digits)"
                     android:inputType="numberPassword"
-                    android:maxLength="5"
+                    android:maxLength="4"
                     android:maxLines="1"
                     android:padding="10dp" />
 

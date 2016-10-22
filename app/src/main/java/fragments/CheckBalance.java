@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.oltranz.airtime.airtime.R;
-
-import java.text.SimpleDateFormat;
+import com.oltranz.mobilea.mobilea.R;
 
 import client.ClientData;
 import client.ClientServices;
@@ -22,7 +21,9 @@ import config.BaseUrl;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import simplebeans.balancebeans.BalanceRespopnse;
+import simplebeans.SimpleStatusBean;
+import simplebeans.balancebeans.BalanceResponse;
+import utilities.CheckWalletBalance;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,14 +33,15 @@ import simplebeans.balancebeans.BalanceRespopnse;
  * Use the {@link CheckBalance#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CheckBalance extends Fragment {
-    private String tag="AirTime: "+getClass().getSimpleName();
+public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWalletBalanceInteraction {
+    private String tag = "AirTime: " + getClass().getSimpleName();
 
     private CheckBalanceInteraction balanceInteraction;
     private Typeface font;
     private String token;
     private String msisdn;
     private String accountBalance;
+    private CheckWalletBalance checkWalletBalance;
 
     public CheckBalance() {
         // Required empty public constructor
@@ -49,8 +51,8 @@ public class CheckBalance extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param token Parameter 1.
-     * @param msisdn Parameter 2.
+     * @param token   Parameter 1.
+     * @param msisdn  Parameter 2.
      * @param balance Parameter 3.
      * @return A new instance of fragment CheckBalance.
      */
@@ -68,13 +70,14 @@ public class CheckBalance extends Fragment {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         if (getArguments() != null) {
-            if(getArguments().getString("token") != null)
+            if (getArguments().getString("token") != null)
                 token = getArguments().getString("token");
-            if(getArguments().getString("msisdn") != null)
+            if (getArguments().getString("msisdn") != null)
                 msisdn = getArguments().getString("msisdn");
-            if(getArguments().getString("accountBalance") != null)
-                accountBalance =getArguments().getString("accountBalance");
+            if (getArguments().getString("accountBalance") != null)
+                accountBalance = getArguments().getString("accountBalance");
         }
+        checkWalletBalance = new CheckWalletBalance(this, getContext(), token);
         Log.d(tag, "The fragment is created");
     }
 
@@ -85,22 +88,24 @@ public class CheckBalance extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.checkbalancelayout, container, false);
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(tag, "View are finally inflated");
-        final TextView nSign=(TextView) view.findViewById(R.id.nairaSign);
+        final TextView nSign = (TextView) view.findViewById(R.id.nairaSign);
         nSign.setTypeface(font);
-        final TextView lastHistory=(TextView) view.findViewById(R.id.lastHistory);
+        final TextView lastHistory = (TextView) view.findViewById(R.id.lastHistory);
         lastHistory.setTypeface(font);
-        final TextView balance=(TextView) view.findViewById(R.id.balance);
-        balance.setTypeface(font);
-        balance.setTypeface(balance.getTypeface(), Typeface.BOLD);
+        final TextView balance = (TextView) view.findViewById(R.id.balance);
+        balance.setTypeface(font, Typeface.BOLD);
+        final TextView label = (TextView) view.findViewById(R.id.label);
+        label.setTypeface(font, Typeface.BOLD);
 
-        if(accountBalance != null)
+        if (accountBalance != null)
             balance.setText(accountBalance);
 
-        Log.d(tag, "Data to push to the server:\n" + BaseUrl.checkBalanceUrl+"/"+msisdn);
+        Log.d(tag, "Data to push to the server:\n" + BaseUrl.checkBalanceUrl + "/" + msisdn);
 
         //Dummy data
         // loginListener.onLoginInteraction(200, "Success", null);
@@ -108,45 +113,61 @@ public class CheckBalance extends Fragment {
         //making a Balance request
         try {
             ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-            Call<BalanceRespopnse> callService = clientServices.getWalletBalance(msisdn);
-            callService.enqueue(new Callback<BalanceRespopnse>() {
+            Call<BalanceResponse> callService = clientServices.getWalletBalance(token);
+            callService.enqueue(new Callback<BalanceResponse>() {
                 @Override
-                public void onResponse(Call<BalanceRespopnse> call, Response<BalanceRespopnse> response) {
+                public void onResponse(Call<BalanceResponse> call, Response<BalanceResponse> response) {
 
                     //HTTP status code
                     int statusCode = response.code();
-                    BalanceRespopnse balanceRespopnse = response.body();
-                    try{
+                    Log.d(tag, "Data from the server:\n" + new ClientData().mapping(response.body()));
+                    try {
+                        BalanceResponse balanceResponse = response.body();
                         //handle the response from the server
-                        balance.setText(String.valueOf(balanceRespopnse.getNewBalance()));
-                        String mDate=balanceRespopnse.getTransTime().toString();
-                        try{
+                        if (response.body() != null) {
+                            if (balanceResponse.getBalance() != null) {
+                                balance.setText(String.valueOf(balanceResponse.getBalance()));
+                                balanceInteraction.onCheckBalanceInteraction(200, balanceResponse.getStatus().getMessage(), balanceResponse);
 
-                            SimpleDateFormat sdf=new SimpleDateFormat("E, dd-MM-yyyy, HH:mm:ss");
-                            mDate=sdf.format(balanceRespopnse.getTransTime());
-
-                        }catch (Exception e){
+                            } else {
+                                balanceResponse.setBalance("0");
+                                balanceInteraction.onCheckBalanceInteraction(201, "Faillure", balanceResponse);
+                                balance.setText("0");
+                            }
+                        } else {
+                            balanceResponse.setBalance("0");
+                            checkBalance();
+                            balance.setText("0");
+                        }
+                        String mDate;
+                        try {
+                            if (balanceResponse.getLastTxTime() != null) {
+                                mDate = balanceResponse.getLastTxTime();
+                            } else {
+                                mDate = "N/A";
+                            }
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            mDate = "N/A";
                         }
                         lastHistory.setText("Latest Account Balance:" + mDate);
                         //lastHistory.append(mDate);
-                        Log.d(tag, "Data from the server:\n" + new ClientData().mapping(balanceRespopnse));
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        balanceInteraction.onCheckBalanceInteraction(500,e.getMessage(),null);
+                        checkBalance();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<BalanceRespopnse> call, Throwable t) {
+                public void onFailure(Call<BalanceResponse> call, Throwable t) {
                     // Log error here since request failed
                     Log.e(tag, t.toString());
-                    balanceInteraction.onCheckBalanceInteraction(500,t.getMessage(),null);
+                    checkBalance();
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            balanceInteraction.onCheckBalanceInteraction(500, e.getMessage(), null);
+            checkBalance();
         }
     }
 
@@ -174,12 +195,37 @@ public class CheckBalance extends Fragment {
         balanceInteraction = null;
     }
 
+    private void checkBalance() {
+        checkWalletBalance.getBalance();
+    }
+
+    @Override
+    public void onWalletBalanceCheck(String balance) {
+        if (!TextUtils.isEmpty(balance))
+            if (Double.valueOf(balance) > 0) {
+                BalanceResponse balResponse=new BalanceResponse(balance,"00/00/000 00:00", new SimpleStatusBean("Success", 400));
+                balanceInteraction.onCheckBalanceInteraction(200, balResponse.getStatus().getMessage(), balResponse);
+                try {
+                    final TextView lastHistory = (TextView) getView().findViewById(R.id.lastHistory);
+                    lastHistory.setTypeface(font);
+                    lastHistory.setText("Latest Account Balance: 00/00/000 00:00");
+
+                    final TextView balanceView = (TextView) getView().findViewById(R.id.balance);
+                    balanceView.setTypeface(font, Typeface.BOLD);
+                    balanceView.setText(balance);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            } else
+                balanceInteraction.onCheckBalanceInteraction(500, "Failed to load wallet Balance", null);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-import simplebeans.ResponseStatusSimpleBean;
+import simplebeans.SimpleStatusBean;
 
 /**
  * Created by Owner on 8/20/2016.
@@ -15,9 +15,9 @@ public class NotificationResponse {
     List<NotificationBean> history;
     @JsonProperty("status")
     private
-    ResponseStatusSimpleBean status;
+    SimpleStatusBean status;
 
-    public NotificationResponse(List<NotificationBean> history, ResponseStatusSimpleBean status) {
+    public NotificationResponse(List<NotificationBean> history, SimpleStatusBean status) {
         this.setHistory(history);
         this.setStatus(status);
     }
@@ -34,11 +34,11 @@ public class NotificationResponse {
         this.history = history;
     }
 
-    public ResponseStatusSimpleBean getStatus() {
+    public SimpleStatusBean getStatus() {
         return status;
     }
 
-    public void setStatus(ResponseStatusSimpleBean status) {
+    public void setStatus(SimpleStatusBean status) {
         this.status = status;
     }
 }

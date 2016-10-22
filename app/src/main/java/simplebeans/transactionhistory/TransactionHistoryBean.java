@@ -1,48 +1,35 @@
 package simplebeans.transactionhistory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import simplebeans.ResponseStatusSimpleBean;
+import simplebeans.SimpleStatusBean;
 
 /**
  * Created by Owner on 8/20/2016.
  */
 public class TransactionHistoryBean {
-    @JsonProperty("transactionId")
-    private long transactionId;
-    @JsonProperty("date")
+    @JsonProperty("time")
     private String date;
-    @JsonProperty("payType")
-    private String payType;
-    @JsonProperty("payName")
-    private String payName;
     @JsonProperty("amount")
     private long amount;
     @JsonProperty("msisdn")
     private String msisdn;
     @JsonProperty("status")
-    private ResponseStatusSimpleBean status;
+    private SimpleStatusBean status;
+    @JsonIgnore
+    private String searchChain;
 
-    public TransactionHistoryBean(long transactionId, String date, String payType, String payName, long amount, String msisdn, ResponseStatusSimpleBean status) {
-        this.setTransactionId(transactionId);
+    public TransactionHistoryBean(String date, long amount, String msisdn, SimpleStatusBean status, String searchChain) {
         this.setDate(date);
-        this.setPayType(payType);
-        this.setPayName(payName);
         this.setAmount(amount);
         this.setMsisdn(msisdn);
         this.setStatus(status);
+        this.setSearchChain(searchChain);
     }
 
     public TransactionHistoryBean() {
 
-    }
-
-    public long getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(long transactionId) {
-        this.transactionId = transactionId;
     }
 
     public String getDate() {
@@ -53,22 +40,6 @@ public class TransactionHistoryBean {
         this.date = date;
     }
 
-    public String getPayType() {
-        return payType;
-    }
-
-    public void setPayType(String payType) {
-        this.payType = payType;
-    }
-
-    public String getPayName() {
-        return payName;
-    }
-
-    public void setPayName(String payName) {
-        this.payName = payName;
-    }
-
     public long getAmount() {
         return amount;
     }
@@ -77,19 +48,27 @@ public class TransactionHistoryBean {
         this.amount = amount;
     }
 
-    public ResponseStatusSimpleBean getStatus() {
-        return status;
-    }
-
-    public void setStatus(ResponseStatusSimpleBean status) {
-        this.status = status;
-    }
-
     public String getMsisdn() {
         return msisdn;
     }
 
     public void setMsisdn(String msisdn) {
         this.msisdn = msisdn;
+    }
+
+    public SimpleStatusBean getStatus() {
+        return status;
+    }
+
+    public void setStatus(SimpleStatusBean status) {
+        this.status = status;
+    }
+
+    public String getSearchChain() {
+        return searchChain;
+    }
+
+    public void setSearchChain(String searchChain) {
+        this.searchChain = searchChain;
     }
 }

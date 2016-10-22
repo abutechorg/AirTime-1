@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/appWhite"
     android:fitsSystemWindows="true"
-    tools:context="com.oltranz.airtime.airtime.UserHome">
+    tools:context="com.oltranz.mobilea.mobilea.UserHome">
 
 <RelativeLayout
     android:layout_width="match_parent"
@@ -34,7 +34,7 @@ android:id="@+id/RelativeLayoutTopBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Buy AirTime"
+                android:text="MobileA"
                 android:textColor="@color/appBlue"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -61,12 +61,46 @@ android:id="@+id/RelativeLayoutTopBar"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
-
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginTop="2dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_coming"/>
             <RelativeLayout
                 android:id="@+id/mainBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/mainTopBox"
+                    android:background="@drawable/border_light_gray"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:orientation="vertical">
+                    <!-- **** Check Balance Frame **** -->
+                    <FrameLayout
+                        android:id="@+id/checkBalanceFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_gravity="center">
+                    </FrameLayout>
+
+                    <!-- **** Activity context main buttons Frame **** -->
+                    <FrameLayout
+                        android:id="@+id/mainButtonFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/checkBalanceFrame"
+                        android:layout_gravity="center">
+                        <include layout="@layout/mainbuttons"/>
+                    </FrameLayout>
+                </LinearLayout>
                 <!--&lt;!&ndash; **** Welcome Frame **** &ndash;&gt;-->
                 <!--<FrameLayout-->
                 <!--android:layout_width="match_parent"-->
@@ -78,31 +112,14 @@ android:id="@+id/RelativeLayoutTopBar"
                 <!--<include layout="@layout/welcomeheader"/>-->
                 <!--</FrameLayout>-->
 
-                <!-- **** Check Balance Frame **** -->
-                <FrameLayout
-                    android:id="@+id/checkBalanceFrame"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="center">
-                </FrameLayout>
 
-                <!-- **** Activity context main buttons Frame **** -->
-                <FrameLayout
-                    android:id="@+id/mainButtonFrame"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/checkBalanceFrame"
-                    android:layout_gravity="center">
-                    <include layout="@layout/mainbuttons"/>
-                </FrameLayout>
 
                 <!-- **** Activity context main tabs Frame **** -->
                 <LinearLayout
                     android:id="@+id/mainTabFrame"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/mainButtonFrame"
+                    android:layout_below="@+id/mainTopBox"
                     android:layout_gravity="center"
                     android:orientation="vertical">
                     <!--<include layout="@layout/maintabs"/>-->

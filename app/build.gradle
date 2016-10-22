@@ -1,24 +1,37 @@
 apply plugin: 'com.android.application'
 
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
+    lintOptions {
+        disable "ResourceType"
+    }
     signingConfigs {
         config {
-            keyAlias 'MyAndroidKey'
-            keyPassword 'KigaliToday@1'
-            storeFile file('C:/Users/Owner/.android/android.jks')
-            storePassword 'KigaliToday@1'
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file('C:/Users/Hp/.android/keystores/mobileA.jks')
+            storePassword keystoreProperties['storePassword']
         }
     }
 
 
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 24
+    buildToolsVersion '24.0.2'
     defaultConfig {
-        applicationId "com.oltranz.airtime.airtime"
-        minSdkVersion 9
-        targetSdkVersion 23
-        versionCode 1
-        versionName 'v 1.0.0'
+        applicationId "com.oltranz.mobilea.mobilea"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 3
+        versionName 'v 1.0.2'
     }
 
     repositories {
@@ -35,7 +48,11 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
             signingConfig signingConfigs.config
         }
     }
@@ -52,6 +69,7 @@ android {
     productFlavors {
         free {
             signingConfig signingConfigs.config
+            minSdkVersion 15
         }
     }
 }
@@ -72,15 +90,19 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile(name: 'deviceprint-release-2.2.0', ext: 'aar')
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:design:23.3.0'
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:recyclerview-v7:23.3.0'
-    compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:cardview-v7:24.2.1'
+    //braintree for paypal
+    compile 'com.braintreepayments.api:braintree:2.+'
+    compile 'com.braintreepayments.api:drop-in:2.+'
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.interswitchng:payment-android:0.0.6'
+    compile 'com.interswitchng:payment-android:0.0.8'
     compile 'com.vistrav:ask:2.4'
+    compile 'com.github.satyan:sugar:1.4'
 }

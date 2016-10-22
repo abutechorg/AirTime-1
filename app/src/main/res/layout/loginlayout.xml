@@ -28,7 +28,7 @@
                 <!--android:layout_height="60dp"-->
                 <!--android:visibility="invisible"/>-->
             <EditText
-                android:id="@+id/welcomeUser"
+                android:id="@+id/histMsisdn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -37,7 +37,7 @@
                 android:drawablePadding="10dp"
                 android:drawableTint="@null"
                 android:ellipsize="end"
-                android:hint="Enter your Number"
+                android:hint="Enter your number"
                 android:inputType="phone"
                 android:maxLength="20"
                 android:padding="12dp"
@@ -53,7 +53,7 @@
                 android:drawablePadding="10dp"
                 android:drawableTint="@null"
                 android:ellipsize="end"
-                android:hint="Enter your PIN"
+                android:hint="Enter your password"
                 android:inputType="numberPassword"
                 android:maxLength="5"
                 android:padding="12dp"

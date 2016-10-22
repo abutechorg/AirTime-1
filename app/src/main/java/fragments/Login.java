@@ -18,7 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.BuildConfig;
+import com.oltranz.mobilea.mobilea.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,6 +50,7 @@ public class Login extends Fragment {
     private LoginInteractionListener loginListener;
     private Typeface font;
     private ProgressDialog progressDialog;
+    private String appVersion;
 
     public Login() {
         // Required empty public constructor
@@ -80,6 +82,7 @@ public class Login extends Fragment {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        appVersion="versionCode: "+BuildConfig.VERSION_CODE+" versionName: "+BuildConfig.VERSION_NAME;
         Log.d(tag, "The fragment is created");
     }
 
@@ -104,7 +107,7 @@ public class Login extends Fragment {
             }
         });
 
-        final EditText tel = (EditText) view.findViewById(R.id.welcomeUser);
+        final EditText tel = (EditText) view.findViewById(R.id.histMsisdn);
         tel.setTypeface(font);
         final EditText pin=(EditText) view.findViewById(R.id.pin);
         pin.setTypeface(font);
@@ -115,7 +118,6 @@ public class Login extends Fragment {
         progressDialog.setIndeterminate(true);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
-        progressDialog.setMessage("Authenticating...");
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +126,6 @@ public class Login extends Fragment {
 
                 if (!TextUtils.isEmpty(pin.getText().toString()) && !TextUtils.isEmpty(tel.getText().toString())) {
 
-                    progressDialog.show();
                     //get current Time
                     DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                     String currentTime = df.format(Calendar.getInstance().getTime());
@@ -149,41 +150,52 @@ public class Login extends Fragment {
                    // loginListener.onLoginInteraction(400, "Success", null);
 
                     //making a Login request
+                    progressDialog.setMessage("Authenticating...");
+                    progressDialog.show();
                     try {
                         ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-                        Call<LoginResponse> callService = clientServices.loginUser(loginRequest);
+                        Call<LoginResponse> callService = clientServices.loginUser(appVersion, loginRequest);
                         callService.enqueue(new Callback<LoginResponse>() {
                             @Override
                             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
                                 //HTTP status code
                                 int statusCode = response.code();
-                                try{
-                                    final LoginResponse loginResponse = response.body();
 
-                                    progressDialogHide("Contacting Server", false);
-                                    //handle the response from the server
-                                    Log.d(tag, "Server Result:\n" + new ClientData().mapping(loginResponse));
-
-                                    try {
-                                        progressDialogHide(" " + loginResponse.getResponseStatusSimpleBean().getMessage(), true);
-                                        new Handler().postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                loginListener.onLoginInteraction(loginResponse.getResponseStatusSimpleBean().getStatusCode(),
-                                                        loginResponse.getResponseStatusSimpleBean().getMessage(),
-                                                        msisdn,
-                                                        loginResponse);
+                                if(statusCode==200){
+                                    try{
+                                        final LoginResponse loginResponse = response.body();
+                                        //handle the response from the server
+                                        Log.d(tag, "Server Result:\n" + new ClientData().mapping(loginResponse));
+                                        try {
+                                            if(loginResponse.getSimpleStatusBean().getStatusCode() != 400){
+                                                progressDialog.setMessage(loginResponse.getSimpleStatusBean().getMessage());
+                                                uiFeed(loginResponse.getSimpleStatusBean().getMessage());
+                                            }else{
+                                                progressDialog.setMessage(" Successfully  Authenticated");
+                                                new Handler().postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        progressDialog.dismiss();
+                                                        loginListener.onLoginInteraction(loginResponse.getSimpleStatusBean().getStatusCode(),
+                                                                loginResponse.getSimpleStatusBean().getMessage(),
+                                                                msisdn,
+                                                                loginResponse);
+                                                    }
+                                                }, 2000);
                                             }
-                                        }, 3000);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
-                                } catch (final Exception e) {
-                                    progressDialogHide(e.getMessage(), true);
-                                    uiFeed(e.getMessage());
-                                    //loginListener.onLoginInteraction(500, e.getMessage(), msisdn, null);
+                                    } catch (final Exception e) {
+                                        progressDialog.setMessage(e.getMessage()+"");
+                                        uiFeed(e.getMessage());
+                                        //loginListener.onLoginInteraction(500, e.getMessage(), msisdn, null);
+                                    }
+                                }else{
+                                    progressDialog.setMessage(""+response.message());
+                                    uiFeed(""+response.message());
                                 }
                             }
 
@@ -191,14 +203,14 @@ public class Login extends Fragment {
                             public void onFailure(Call<LoginResponse> call, Throwable t) {
                                 // Log error here since request failed
                                 Log.e(tag, t.toString());
-                                progressDialogHide("Connectivity Error", true);
+                                progressDialog.setMessage("Connectivity Error");
                                 uiFeed("Connectivity Error");
                                 //loginListener.onLoginInteraction(500, t.getMessage(), msisdn, null);
                             }
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
-                        progressDialogHide(e.getMessage(), true);
+                        progressDialog.setMessage(e.getMessage());
                         uiFeed(e.getMessage());
                         //loginListener.onLoginInteraction(500, e.getMessage(), msisdn, null);
                     }
@@ -246,28 +258,13 @@ public class Login extends Fragment {
         loginListener = null;
     }
 
-    private void progressDialogHide(final String message, final boolean hide) {
-        if (progressDialog.isShowing()) {
-
-            try {
-                progressDialog.setMessage(message);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (hide)
-                            progressDialog.dismiss();
-                    }
-                }, 3000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void pinRecover() {
         Log.d(tag, "Recover PIN is triggered");
     }
     private void uiFeed(String feedBack){
+        if(progressDialog != null)
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
         try{
             final TextView tv=(TextView) getView().findViewById(R.id.tv);
             if(!TextUtils.isEmpty(feedBack)){

@@ -22,10 +22,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_above="@+id/baseline"
         android:gravity="center">
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="120dp"
+            android:layout_height="110dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/airtime_logo"/>
@@ -48,31 +49,34 @@
             <!--android:textSize="40sp"/>-->
     </TableRow>
 
-    <TextView
-        android:id="@+id/lblWelcome"
+    <TableRow
+        android:id="@+id/baseline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/welcomeUser"
         android:gravity="center_horizontal"
-        android:paddingBottom="4dp"
-        android:text="Welcome"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/appWhite"
-        android:textStyle="bold" />
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/lblWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Welcome"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/appWhite"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/welcomeUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/lblWelcome"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/lblWelcome"
-        android:layout_marginBottom="2dp"
-        android:ellipsize="end"
-        android:gravity="center_horizontal"
-        android:maxLines="1"
-        android:text="CUSTOMER"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#fff" />
+        <TextView
+            android:id="@+id/histMsisdn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="CUSTOMER"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#fff" />
 
+    </TableRow>
 </RelativeLayout>

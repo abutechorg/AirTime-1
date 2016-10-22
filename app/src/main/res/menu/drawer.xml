@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:someNamespace="http://schemas.android.com/tools">
 
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/account"
+            android:id="@+id/accountHome"
             android:checked="false"
-            android:icon="@drawable/ic_icon_menu_account"
+            android:icon="@drawable/ic_home"
             android:title="@string/account" />
 
         <item
@@ -39,8 +38,19 @@
         <item
             android:id="@+id/about"
             android:checked="false"
-            android:icon="@drawable/ic_icon_menu_about"
+            android:icon="@drawable/ic_menu_about"
             android:title="@string/about" />
+        <item
+            android:id="@+id/account"
+            android:checked="false"
+            android:icon="@drawable/ic_icon_menu_account"
+            android:title="@string/mAccount" />
+
+        <item
+            android:id="@+id/settings"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_settings"
+            android:title="@string/settings" />
 
         <item
             android:id="@+id/logout"

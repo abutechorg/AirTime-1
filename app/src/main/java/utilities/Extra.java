@@ -15,8 +15,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.oltranz.airtime.airtime.R;
-import com.oltranz.airtime.airtime.UserHome;
+import com.oltranz.mobilea.mobilea.R;
+import com.oltranz.mobilea.mobilea.UserHome;
 
 import fragments.About;
 import fragments.Notifications;

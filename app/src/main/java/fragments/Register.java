@@ -1,26 +1,22 @@
 package fragments;
 
-import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.text.Html;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -120,7 +116,7 @@ public class Register extends Fragment {
         fName.setTypeface(font);
         final EditText lName=(EditText) view.findViewById(R.id.lname);
         lName.setTypeface(font);
-        final EditText tel = (EditText) view.findViewById(R.id.welcomeUser);
+        final EditText tel = (EditText) view.findViewById(R.id.histMsisdn);
         tel.setTypeface(font);
         final EditText mail=(EditText) view.findViewById(R.id.email);
         mail.setTypeface(font);
@@ -132,8 +128,11 @@ public class Register extends Fragment {
         register.setTypeface(font, Typeface.BOLD);
         register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                if(!pin.getText().toString().equals(rePin.getText().toString())){
+                    pin.setError("Invalid Password");
+                    Toast.makeText(getContext(), "Invalid Password", Toast.LENGTH_LONG).show();
+                }
                 if (!TextUtils.isEmpty(pin.getText().toString()) &&
-                        (pin.getText().toString().equals(rePin.getText().toString())) &&
                         !TextUtils.isEmpty(tel.getText().toString()) &&
                         (pin.getText().toString().equals(rePin.getText().toString())) &&
                         !TextUtils.isEmpty(fName.getText().toString()) &&
@@ -182,129 +181,224 @@ public class Register extends Fragment {
     }
 
     private void proceedRegistration(final String fName, final String lName, final String tel, final String mail, final String pin){
-        final Dialog dialog = new Dialog(getContext());
-        dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
-        dialog.setContentView(R.layout.simplepopup);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
+//        final Dialog dialog = new Dialog(getContext());
+//        dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
+//        dialog.setContentView(R.layout.simplepopup);
+//        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//        dialog.setCancelable(false);
+//        dialog.setCanceledOnTouchOutside(false);
+//
+//        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+//        if (dividerId != 0) {
+//            View divider = dialog.findViewById(dividerId);
+//            if(divider != null)
+//                divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.appOrange));
+//
+//        }
+//        dialog.setTitle(Html.fromHtml("<font color='" + ContextCompat.getColor(getContext(), R.color.appOrange) + "'>Confirm...</font>"));
 
-        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
-        if (dividerId != 0) {
-            View divider = dialog.findViewById(dividerId);
-            if(divider != null)
-                divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.appOrange));
-
-        }
-        dialog.setTitle(Html.fromHtml("<font color='" + ContextCompat.getColor(getContext(), R.color.appOrange) + "'>Confirm...</font>"));
-
-        //ic_dialog_info
-        dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
-        TextView content = (TextView) dialog.findViewById(R.id.dialogContent);
-        content.setTypeface(font);
-        content.setText("First Name: " + fName+ "\n");
-        content.append("Last Name: " + lName + "\n");
-        content.append("Telphone: " + tel+ "\n");
-        content.append("Email: " + mail+ "\n");
-        content.append("PIN: ####");
-
-        Button ok = (Button) dialog.findViewById(R.id.ok);
-        Button cancel = (Button) dialog.findViewById(R.id.cancel);
-
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //get current Time
-                DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-                String currentTime = df.format(Calendar.getInstance().getTime());
-
-                //get device Identity
-                DeviceIdentity deviceIdentity = new DeviceIdentity(getContext());
-
-                //get user Identity
-                RegisterRequest registerRequest = new RegisterRequest(fName,
-                        lName,
-                        tel,
-                        deviceIdentity.getImei(),
-                        currentTime,
-                        pin,
-                        mail,
-                        deviceIdentity.getSerialNumber(),
-                        deviceIdentity.getVersion());
-
-                //Client data to send to the Sever
-                Log.d(tag, "Data to Push to the server:\n" + new ClientData().mapping(registerRequest));
-
-                //making a Register request
-                try {
-                    ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-                    Call<RegisterResponse> callService = clientServices.registerUser(registerRequest);
-                    callService.enqueue(new Callback<RegisterResponse>() {
-                        @Override
-                        public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
-
-                            //HTTP status code
-                            int statusCode = response.code();
-                            RegisterResponse registerResponse = response.body();
-
-                            try{
-                                //handle the response from the server
-                                Log.d(tag, "Server Result:\n" + new ClientData().mapping(registerResponse));
-                                registerListener.onRegisterInteraction(registerResponse.getResponseStatusSimpleBean().getStatusCode(),
-                                        registerResponse.getResponseStatusSimpleBean().getMessage(),
-                                        tel,
-                                        registerResponse);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                                uiFeed(e.getMessage());
-                                //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
-                            }
-                            dialog.dismiss();
-                        }
-
-                        @Override
-                        public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                            // Log error here since request failed
-                            Log.e(tag, t.toString());
-                            uiFeed("Server Error");
-                            //registerListener.onRegisterInteraction(500, t.getMessage(), tel, null);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    uiFeed(e.getMessage());
-                    //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
+        String contentMessage="First Name: " + fName+ "\n"+
+                "Last Name: " + lName + "\n"+
+                "Telphone: " + tel+ "\n"+
+                "Email: " + mail+ "\n"+
+                "PIN: ####\n";
+        try {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(contentMessage)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setTitle(R.string.confirm_title);
+            // Add the buttons
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
                 }
-            }
-        });
+            });
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(final DialogInterface dialog, int id) {
+                    //get current Time
+                    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String currentTime = df.format(Calendar.getInstance().getTime());
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+                    //get device Identity
+                    DeviceIdentity deviceIdentity = new DeviceIdentity(getContext());
 
-        //show the popUp
-        dialog.show();
+                    //get user Identity
+                    RegisterRequest registerRequest = new RegisterRequest(fName,
+                            lName,
+                            tel,
+                            deviceIdentity.getImei(),
+                            currentTime,
+                            pin,
+                            mail,
+                            deviceIdentity.getSerialNumber(),
+                            deviceIdentity.getVersion());
+
+                    //Client data to send to the Sever
+                    Log.d(tag, "Data to Push to the server:\n" + new ClientData().mapping(registerRequest));
+
+                    //making a Register request
+                    try {
+                        ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
+                        Call<RegisterResponse> callService = clientServices.registerUser(registerRequest);
+                        callService.enqueue(new Callback<RegisterResponse>() {
+                            @Override
+                            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+
+                                //HTTP status code
+                                int statusCode = response.code();
+                                RegisterResponse registerResponse = response.body();
+
+                                try{
+                                    //handle the response from the server
+                                    Log.d(tag, "Server Result:\n" + new ClientData().mapping(registerResponse));
+                                    registerListener.onRegisterInteraction(registerResponse.getSimpleStatusBean().getStatusCode(),
+                                            registerResponse.getSimpleStatusBean().getMessage(),
+                                            tel,
+                                            registerResponse);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    uiFeed(e.getMessage());
+                                    dialog.dismiss();
+                                    //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
+                                }
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                                // Log error here since request failed
+                                Log.e(tag, t.toString());
+                                uiFeed("Server Error");
+                                //registerListener.onRegisterInteraction(500, t.getMessage(), tel, null);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        uiFeed(e.getMessage());
+                        //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
+                        dialog.dismiss();
+                    }
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+//        //ic_dialog_info
+//        dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
+//        TextView content = (TextView) dialog.findViewById(R.id.dialogContent);
+//        content.setTypeface(font);
+//        content.setText("First Name: " + fName+ "\n");
+//        content.append("Last Name: " + lName + "\n");
+//        content.append("Telphone: " + tel+ "\n");
+//        content.append("Email: " + mail+ "\n");
+//        content.append("PIN: ####");
+//
+//        Button ok = (Button) dialog.findViewById(R.id.ok);
+//        Button cancel = (Button) dialog.findViewById(R.id.cancel);
+//
+//        ok.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //get current Time
+//                DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//                String currentTime = df.format(Calendar.getInstance().getTime());
+//
+//                //get device Identity
+//                DeviceIdentity deviceIdentity = new DeviceIdentity(getContext());
+//
+//                //get user Identity
+//                RegisterRequest registerRequest = new RegisterRequest(fName,
+//                        lName,
+//                        tel,
+//                        deviceIdentity.getImei(),
+//                        currentTime,
+//                        pin,
+//                        mail,
+//                        deviceIdentity.getSerialNumber(),
+//                        deviceIdentity.getVersion());
+//
+//                //Client data to send to the Sever
+//                Log.d(tag, "Data to Push to the server:\n" + new ClientData().mapping(registerRequest));
+//
+//                //making a Register request
+//                try {
+//                    ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
+//                    Call<RegisterResponse> callService = clientServices.registerUser(registerRequest);
+//                    callService.enqueue(new Callback<RegisterResponse>() {
+//                        @Override
+//                        public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+//
+//                            //HTTP status code
+//                            int statusCode = response.code();
+//                            RegisterResponse registerResponse = response.body();
+//
+//                            try{
+//                                //handle the response from the server
+//                                Log.d(tag, "Server Result:\n" + new ClientData().mapping(registerResponse));
+//                                registerListener.onRegisterInteraction(registerResponse.getSimpleStatusBean().getStatusCode(),
+//                                        registerResponse.getSimpleStatusBean().getMessage(),
+//                                        tel,
+//                                        registerResponse);
+//                            }catch (Exception e){
+//                                e.printStackTrace();
+//                                uiFeed(e.getMessage());
+//                                //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
+//                            }
+//                            dialog.dismiss();
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<RegisterResponse> call, Throwable t) {
+//                            // Log error here since request failed
+//                            Log.e(tag, t.toString());
+//                            uiFeed("Server Error");
+//                            //registerListener.onRegisterInteraction(500, t.getMessage(), tel, null);
+//                        }
+//                    });
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    uiFeed(e.getMessage());
+//                    //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        //show the popUp
+//        dialog.show();
     }
 
     private void uiFeed(String feedBack){
-        try{
-            final TextView tv=(TextView) getView().findViewById(R.id.tv);
-            if(!TextUtils.isEmpty(feedBack)){
-                tv.setVisibility(View.VISIBLE);
-                tv.setText(feedBack);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        tv.setVisibility(View.GONE);
-                    }
-                }, 4000);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        try {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(feedBack)
+                    .setTitle(R.string.dialog_title);
+            // Add the buttons
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Toast.makeText(getContext(), feedBack, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

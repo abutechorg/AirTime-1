@@ -9,8 +9,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:onClick="onAccountTabClick"
+            android:padding="3dp"
+            android:text="Fund Wallet"
+            android:textColor="@color/appOrange"
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/amount"
@@ -26,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Proceed Payment with..." />
+            android:text="Payment with(Only OTP enabled card are supported)..." />
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
@@ -46,7 +57,7 @@
 
                 <TableRow>
 
-                    <LinearLayout android:paddingLeft="4dip">
+                    <LinearLayout>
 
                         <TableRow
                             android:layout_width="match_parent"
@@ -55,16 +66,16 @@
 
                             <ImageView
                                 android:id="@+id/visaButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="34dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:adjustViewBounds="true"
                                 android:clickable="true"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/ic_icon_payment_visa" />
+                                android:scaleType="fitXY"
+                                android:background="@drawable/visa_selector"/>
                         </TableRow>
                     </LinearLayout>
 
-                    <LinearLayout android:paddingLeft="4dip">
+                    <LinearLayout>
 
                         <TableRow
                             android:layout_width="match_parent"
@@ -73,34 +84,32 @@
 
                             <ImageView
                                 android:id="@+id/mcButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="34dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:adjustViewBounds="true"
                                 android:clickable="true"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/ic_icon_payment_mastercard" />
+                                android:scaleType="fitXY"
+                                android:background="@drawable/mc_selector" />
                         </TableRow>
                     </LinearLayout>
 
 
                     <LinearLayout
-                        android:gravity="center"
-                        android:paddingLeft="4dip">
+                        android:gravity="center">
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/border_gray"
                             android:gravity="center">
 
                             <ImageView
                                 android:id="@+id/verveButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="34dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:adjustViewBounds="true"
                                 android:clickable="true"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/ic_icon_payment_verve" />
+                                android:scaleType="fitXY"
+                                android:background="@drawable/verve_selector" />
                         </TableRow>
                     </LinearLayout>
 
@@ -116,11 +125,11 @@
 
                             <ImageView
                                 android:id="@+id/otherButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="34dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:adjustViewBounds="true"
                                 android:clickable="true"
-                                android:scaleType="centerCrop"
+                                android:scaleType="fitXY"
                                 android:src="@drawable/ic_icon_payment_others" />
 
                         </TableRow>

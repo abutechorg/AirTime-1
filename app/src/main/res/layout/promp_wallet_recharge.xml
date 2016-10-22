@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/appWhite"
+    android:orientation="vertical">
+
+    <TableRow
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/appWhite">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/underline_textview"
+            android:gravity="center"
+            android:text="Fund wallet"
+            android:textColor="@color/appOrange" />
+    </TableRow>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/boxMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Fund your wallet first"
+            android:textColor="@color/appOrange"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/amount"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/border_gray"
+                android:hint="Enter Amount"
+                android:inputType="number"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Proceed payment with..." />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true">
+
+                <TableLayout
+                    android:id="@+id/tabGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:stretchColumns="*">
+
+                    <TableRow>
+
+                        <LinearLayout>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:id="@+id/visaButton"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:adjustViewBounds="true"
+                                    android:background="@drawable/visa_selector"
+                                    android:clickable="true"
+                                    android:scaleType="fitXY" />
+                            </TableRow>
+                        </LinearLayout>
+
+                        <LinearLayout>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:id="@+id/mcButton"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:adjustViewBounds="true"
+                                    android:background="@drawable/mc_selector"
+                                    android:clickable="true"
+                                    android:scaleType="fitXY" />
+                            </TableRow>
+                        </LinearLayout>
+
+
+                        <LinearLayout android:gravity="center">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:id="@+id/verveButton"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:adjustViewBounds="true"
+                                    android:background="@drawable/verve_selector"
+                                    android:clickable="true"
+                                    android:scaleType="fitXY" />
+                            </TableRow>
+                        </LinearLayout>
+                    </TableRow>
+                </TableLayout>
+            </HorizontalScrollView>
+            <TextView
+                android:id="@+id/close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/buttonred"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="15dp"
+                android:text="CANCEL"
+                android:textColor="@drawable/text_button_red"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

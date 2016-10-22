@@ -6,10 +6,15 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="6dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <TableLayout
         android:id="@+id/walletTabGroup"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_gravity="center_vertical"
         android:stretchColumns="*">
         <TableRow>
@@ -44,5 +49,5 @@
             </LinearLayout>
         </TableRow>
     </TableLayout>
-
+    </LinearLayout>
 </FrameLayout>

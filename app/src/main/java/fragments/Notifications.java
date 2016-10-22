@@ -11,12 +11,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
 
-import com.oltranz.airtime.airtime.R;
+import com.oltranz.mobilea.mobilea.R;
+import com.orm.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import simplebeans.ResponseStatusSimpleBean;
+import entity.NotificationTable;
+import simplebeans.SimpleStatusBean;
 import simplebeans.notifications.NotificationBean;
 import utilities.NotificationAdapter;
 
@@ -91,15 +93,23 @@ public class Notifications extends Fragment {
 
         nList = (ListView) view.findViewById(R.id.notificationList);
 
-        //____________Dummy Datas______________\\
         List<NotificationBean> mNotification = new ArrayList<>();
 
-        ResponseStatusSimpleBean status = new ResponseStatusSimpleBean("success", 400);
-        NotificationBean nBean = new NotificationBean("10/09/2016 10:00", "Your AirTime TopUp Transaction Is Successfully Passed. Thank You!", status);
-        mNotification.add(nBean);
+        List<NotificationTable> notifications=Select.from(NotificationTable.class).orderBy("id DESC").list();
+//        List<NotificationTable> notifications=SugarRecord.listAll(NotificationTable.class);
+        if(notifications.isEmpty()){
+            return;
+        }
+        for(NotificationTable notification: notifications){
+            if(notification != null){
+                SimpleStatusBean status = new SimpleStatusBean("success", 400);
+                NotificationBean nBean = new NotificationBean(notification.getDate(), notification.getMessage(), status);
+                mNotification.add(nBean);
 
-        nBean = new NotificationBean("10/10/2016 10:00", "Wallet Credit Transaction Failed, Cause: Not Sufficient Funds On Main Account, Please Try Again. Thank You!", status);
-        mNotification.add(nBean);
+                notification.setSeen("1");
+                NotificationTable.save(notification);
+            }
+        }
 
         adapter = new NotificationAdapter(getActivity(), mNotification);
 

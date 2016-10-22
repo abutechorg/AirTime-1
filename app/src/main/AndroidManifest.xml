@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.oltranz.airtime.airtime">
+    package="com.oltranz.mobilea.mobilea">
 
     <uses-sdk tools:overrideLibrary="com.interswitchng.sdk.android, com.vistrav.ask, com.vistrav.pop" />
 
@@ -21,13 +21,20 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name="entity.AppDB"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="DATABASE" android:value="mobilea_db.db" />
+        <meta-data android:name="VERSION" android:value="1" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="entity"/>
+
         <activity
-            android:name=".Home"
+            android:name="com.oltranz.mobilea.mobilea.Home"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
@@ -39,22 +46,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserHome"
+            android:name="com.oltranz.mobilea.mobilea.UserHome"
             android:label="@string/title_activity_user_home"
             android:screenOrientation="portrait"
+            android:exported="false"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan"/>
         <activity
             android:name="utilities.ContactsPickerActivity"
             android:screenOrientation="portrait"
+            android:exported="false"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan"/>
         <activity
             android:name="utilities.Extra"
             android:label="@string/title_activity_about"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan"/>
     </application>
 
 </manifest>
