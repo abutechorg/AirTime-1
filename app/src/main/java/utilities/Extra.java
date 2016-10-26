@@ -1,7 +1,10 @@
 package utilities;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,18 +15,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.oltranz.mobilea.mobilea.R;
 import com.oltranz.mobilea.mobilea.UserHome;
 
 import fragments.About;
+import fragments.ContactUs;
 import fragments.Notifications;
+import fragments.Offers;
 import fragments.TransactionHistory;
 import utilities.utilitiesbeans.MySessionData;
 
-public class Extra extends AppCompatActivity implements About.AboutListener, Notifications.NotificationInteraction, TransactionHistory.TransactionHistoryInteraction {
+public class Extra extends AppCompatActivity implements About.AboutListener, Notifications.NotificationInteraction, TransactionHistory.TransactionHistoryInteraction, ContactUs.ContactUsInteraction, Offers.OffersInteraction {
     private static final String sessionData = "sessionData";
     private final String tag="AirTime: "+getClass().getSimpleName();
     private TextView titleBar;
@@ -81,6 +90,14 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
                 //TransactionHistory
                 titleBar.setText("Transactions History");
                 transactionHistoryFrag();
+            }else if (bundle.getString("what").equals(Offers.class.getSimpleName())) {
+                //TransactionHistory
+                titleBar.setText("Our Offers");
+                offersFrag();
+            }else if (bundle.getString("what").equals(ContactUs.class.getSimpleName())) {
+                //TransactionHistory
+                titleBar.setText("Contact Us");
+                contactFrag();
             }
         }
     }
@@ -120,6 +137,18 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
         TransactionHistory transactionHistory = new TransactionHistory();
         transactionHistory.setArguments(setArgs());
         fragmentHandler(transactionHistory, R.id.extra);
+    }
+
+    private void offersFrag() {
+        Offers offers = new Offers();
+        offers.setArguments(setArgs());
+        fragmentHandler(offers, R.id.extra);
+    }
+
+    private void contactFrag() {
+        ContactUs contactUs = new ContactUs();
+        contactUs.setArguments(setArgs());
+        fragmentHandler(contactUs, R.id.extra);
     }
 
     private Bundle setArgs(){
@@ -175,6 +204,14 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
             //TransactionHistory
             titleBar.setText("Transactions History");
             transactionHistoryFrag();
+        }else if (bundle.getString("what").equals(Offers.class.getSimpleName())) {
+            //TransactionHistory
+            titleBar.setText("Our offers");
+            offersFrag();
+        }else if (bundle.getString("what").equals(ContactUs.class.getSimpleName())) {
+            //TransactionHistory
+            titleBar.setText("Contact Us");
+            contactFrag();
         }
     }
 
@@ -199,6 +236,16 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
             if (currentFragment.getClass().getSimpleName().equals(Notifications.class.getSimpleName())) {
                 //notifications
                 titleBar.setText("Notifications");
+            }
+
+            if (currentFragment.getClass().getSimpleName().equals(Offers.class.getSimpleName())) {
+                //notifications
+                titleBar.setText("Our offers");
+            }
+
+            if (currentFragment.getClass().getSimpleName().equals(ContactUs.class.getSimpleName())) {
+                //notifications
+                titleBar.setText("Contact Us");
             }
 
             Log.d(tag, "Current Fragment " + currentFragment.getClass().getSimpleName());
@@ -226,23 +273,24 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
     }
 
     private void onHomeActivity() {
-        try {
-            Intent intent = new Intent(this, UserHome.class);
-            Bundle bundle = new Bundle();
-
-            bundle.putString("userName", mSession.getUserName());
-            bundle.putString("token", mSession.getToken());
-            bundle.putString("msisdn", mSession.getMsisdn());
-            intent.putExtras(bundle);
-
-            intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-            //uiFeed(e.getMessage());
-            this.finish();
-        }
+        finish();
+//        try {
+//            Intent intent = new Intent(this, UserHome.class);
+//            Bundle bundle = new Bundle();
+//
+//            bundle.putString("userName", mSession.getUserName());
+//            bundle.putString("token", mSession.getToken());
+//            bundle.putString("msisdn", mSession.getMsisdn());
+//            intent.putExtras(bundle);
+//
+//            intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//            finish();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            //uiFeed(e.getMessage());
+//            this.finish();
+//        }
     }
 
     @Override
@@ -252,15 +300,35 @@ public class Extra extends AppCompatActivity implements About.AboutListener, Not
     }
     @Override
     public void onAboutInteraction(int statusCode, String message, Object object) {
-
+        if(statusCode == 403){
+            onHomeActivity();
+        }
     }
     @Override
     public void onNotificationInteraction(int statusCode, String message, Object object) {
-
+        if(statusCode == 403){
+            onHomeActivity();
+        }
     }
 
     @Override
     public void onTransactionHistoryInteraction(int statusCode, String message, Object object) {
+        if(statusCode == 403){
+            onHomeActivity();
+        }
+    }
 
+    @Override
+    public void onContactUsInteraction(int statusCode, String message, Object object) {
+        if(statusCode == 403){
+            onHomeActivity();
+        }
+    }
+
+    @Override
+    public void onOffersInteraction(int statusCode, String message, Object object) {
+        if(statusCode == 403){
+            onHomeActivity();
+        }
     }
 }

@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oltranz.mobilea.mobilea.R;
@@ -32,6 +33,7 @@ import entity.NotificationTable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import simplebeans.favorite.FavoriteResponseBean;
 import simplebeans.transactionhistory.TransactionHistoryBean;
 import simplebeans.transactionhistory.TransactionHistoryResponse;
 import utilities.GetCurrentDate;
@@ -111,6 +113,10 @@ public class TransactionHistory extends Fragment implements TransactionHistoryAd
         mHistoryList = (ListView) view.findViewById(R.id.mHistory);
         searchText = (EditText) view.findViewById(R.id.searchTerm);
         searchButton = (ImageView) view.findViewById(R.id.searchIcon);
+
+        final TextView label=(TextView) view.findViewById(R.id.label);
+        label.setTypeface(font, Typeface.BOLD);
+
         final List<TransactionHistoryBean> mHistory = new ArrayList<>();
 
         adapter = new TransactionHistoryAdapter(this, getActivity(), mHistory);
@@ -135,17 +141,25 @@ public class TransactionHistory extends Fragment implements TransactionHistoryAd
                     if(statusCode==200){
                         TransactionHistoryResponse transactionHistoryResponse=response.body();
                         try{
-                            if(transactionHistoryResponse.getStatus().getStatusCode() != 400)
-                                progressDialog.setMessage(transactionHistoryResponse.getStatus().getMessage());
-                            else{
-                                List<TransactionHistoryBean> transactionHistoryBeanList=transactionHistoryResponse.getHistory();
-                                for(TransactionHistoryBean historyBean: transactionHistoryBeanList){
-                                    TransactionHistoryBean wHistoryBean = new TransactionHistoryBean(historyBean.getDate(), historyBean.getAmount(), historyBean.getMsisdn(), historyBean.getStatus(),""+historyBean.getStatus().getMessage()+historyBean.getDate()+ historyBean.getAmount()+ historyBean.getMsisdn());
-                                    mHistory.add(wHistoryBean);
-                                    adapter.notifyDataSetChanged();
-                                }
 
+
+                            if (transactionHistoryResponse.getStatus().getStatusCode() != 400) {
+                                progressDialog.setMessage(transactionHistoryResponse.getStatus().getMessage());
+                                label.setVisibility(View.VISIBLE);
                                 progressDialog.dismiss();
+                            } else {
+                                List<TransactionHistoryBean> transactionHistoryBeanList = transactionHistoryResponse.getHistory();
+                                if(!transactionHistoryBeanList.isEmpty()){
+                                    for(TransactionHistoryBean historyBean: transactionHistoryBeanList){
+                                        TransactionHistoryBean wHistoryBean = new TransactionHistoryBean(historyBean.getDate(), historyBean.getAmount(), historyBean.getMsisdn(), historyBean.getStatus(),""+historyBean.getStatus().getMessage()+historyBean.getDate()+ historyBean.getAmount()+ historyBean.getMsisdn());
+                                        mHistory.add(wHistoryBean);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                    progressDialog.dismiss();
+                                }else{
+                                    label.setVisibility(View.VISIBLE);
+                                    progressDialog.dismiss();
+                                }
                             }
                         }catch (Exception e){
                             progressDialog.setMessage(e.getMessage());
@@ -154,8 +168,8 @@ public class TransactionHistory extends Fragment implements TransactionHistoryAd
                         }
 
                     }else{
-                        progressDialog.setMessage(response.message());
                         progressDialog.dismiss();
+                        onTransactionHistory.onTransactionHistoryInteraction(403, "Failure", null);
                     }
                 }
 

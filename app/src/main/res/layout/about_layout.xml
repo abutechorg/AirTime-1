@@ -20,6 +20,18 @@
         android:adjustViewBounds="true"
         android:src="@drawable/airtime_logo"/>
 
+            <TextView
+                android:id="@+id/owner"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/owner"
+                android:textColor="@color/appBlue" />
+
     <TableLayout
         android:id="@+id/tabGroup"
         android:layout_width="match_parent"

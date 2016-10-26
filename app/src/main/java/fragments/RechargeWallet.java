@@ -165,7 +165,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                 //WalletHistory.this.adapter.getFilter().filter(cs);
                 try {
                     if (amount.getText().toString().length() > 0) {
-                        if (Double.valueOf(amount.getText().toString().trim().toLowerCase(Locale.getDefault())) < 50) {
+                        if (Double.valueOf(amount.getText().toString().trim().toLowerCase(Locale.getDefault())) < MPay.minWallet) {
                             amount.setBackgroundResource(R.drawable.border_orange);
                             amount.setTextColor(ContextCompat.getColor(getContext(),R.color.appOrange));
                         } else {
@@ -326,8 +326,11 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                                 }
 
                         } else {
-                            onRechargeWallet.onRechargeWalletInteraction(0, response.message(), msisdn, null);
-                            uiFeed(response.message());
+                            if (progressDialog != null)
+                                if (progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                            onRechargeWallet.onRechargeWalletInteraction(403, response.message(), msisdn, null);
                         }
                     } catch (final Exception e) {
                         onRechargeWallet.onRechargeWalletInteraction(0, e.getMessage(), msisdn, null);
@@ -387,7 +390,11 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                                 }
 
                         } else {
-                            uiFeed(response.message());
+                            if (progressDialog != null)
+                                if (progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                            onRechargeWallet.onRechargeWalletInteraction(403, response.message(), msisdn, null);
                         }
                     } catch (final Exception e) {
                         uiFeed(e.getMessage());
@@ -440,8 +447,11 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                                     onRechargeWallet.onRechargeWalletInteraction(0, "Faillure: " + status.getStatus().getMessage(), msisdn, null);
                                 }
                         } else {
-                            onRechargeWallet.onRechargeWalletInteraction(0, "Faillure: " + response.message(), msisdn, null);
-                            uiFeed(response.message());
+                            if (progressDialog != null)
+                                if (progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                            onRechargeWallet.onRechargeWalletInteraction(403, response.message(), msisdn, null);
                         }
                     } catch (final Exception e) {
                         onRechargeWallet.onRechargeWalletInteraction(0, "Faillure: " + response.message(), msisdn, null);
@@ -467,6 +477,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
 
 
     private void uiFeed(String message) {
+        if(progressDialog !=null)
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
@@ -535,7 +546,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                         amount.setError("Revise the Amount");
                     }
 
-                    if (checkAmount >= MPay.minAmount) {
+                    if (checkAmount >= MPay.minWallet) {
                         //initiate wallet recharge
                         InitiateWalletRecharge initiateWalletRecharge = new InitiateWalletRecharge(MPay.InterswitchSDK,
                                 String.valueOf(checkAmount),
@@ -548,7 +559,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
                         progressDialog.show();
                         initiateRecharge(initiateWalletRecharge);
                     } else {
-                        uiFeed("Amount should not be lower than 1");
+                        uiFeed("Amount should not be lower than "+MPay.minWallet);
                         amount.setError("Revise the Amount");
                     }
                 } catch (Exception e) {

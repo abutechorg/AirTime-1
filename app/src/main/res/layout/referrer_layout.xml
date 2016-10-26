@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="Provide a phone number of the person who referred you please" />
+
+    <TextView
+        android:id="@+id/lblHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Referrer phone number"
+        android:textStyle="bold" />
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_gray"
+        android:gravity="center"
+        android:padding="10dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/caller"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_phone" />
+
+            <EditText
+                android:id="@+id/tel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/caller"
+                android:layout_toLeftOf="@+id/getNumber"
+                android:layout_toRightOf="@+id/caller"
+                android:layout_toStartOf="@+id/getNumber"
+                android:background="@color/appTransparent"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:hint="Enter a phone number"
+                android:inputType="phone"
+                android:maxLength="20"
+                android:padding="4dp"
+                android:textColor="@android:color/background_dark" />
+
+            <ImageButton
+                android:id="@+id/getNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tel"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:adjustViewBounds="true"
+                android:background="@drawable/imagebuttonblue"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_icon_main_contactbrowse"/>
+        </RelativeLayout>
+
+    </TableRow>
+</LinearLayout>

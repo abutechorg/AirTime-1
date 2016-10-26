@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,29 +23,30 @@ import android.widget.TextView;
 import com.oltranz.mobilea.mobilea.R;
 
 import config.BaseUrl;
+import config.WebContent;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AboutListener} interface
+ * {@link OffersInteraction} interface
  * to handle interaction events.
- * Use the {@link About#newInstance} factory method to
+ * Use the {@link Offers#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class About extends Fragment {
+public class Offers extends Fragment {
     private static final String msisdn_param = "msisdn";
     private static final String token_param = "token";
     private String tag = "AirTime: " + getClass().getSimpleName();
     private String msisdn;
     private String token;
     private Typeface font;
+    private WebView mWebView;
     private ProgressBar progress;
 
-    private TextView terms;
 
-    private AboutListener aboutListener;
+    private OffersInteraction offersInteraction;
 
-    public About() {
+    public Offers() {
         // Required empty public constructor
     }
 
@@ -53,12 +55,12 @@ public class About extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param msisdn Parameter 1.
-     * @param token Parameter 2.
+     * @param token  Parameter 2.
      * @return A new instance of fragment About.
      */
-    public static About newInstance(String msisdn, String token) {
+    public static Offers newInstance(String msisdn, String token) {
         Log.d("AirTime: About", "New Instance is creating");
-        About fragment = new About();
+        Offers fragment = new Offers();
         Bundle args = new Bundle();
         args.putString(msisdn_param, msisdn);
         args.putString(token_param, token);
@@ -71,9 +73,9 @@ public class About extends Fragment {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         if (getArguments() != null) {
-            if(getArguments().getString(token_param) != null)
+            if (getArguments().getString(token_param) != null)
                 token = getArguments().getString(token_param);
-            if(getArguments().getString(msisdn_param) != null)
+            if (getArguments().getString(msisdn_param) != null)
                 msisdn = getArguments().getString(msisdn_param);
         }
         Log.d(tag, "The fragment is created");
@@ -84,20 +86,22 @@ public class About extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(tag, "The fragment view are being created");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.about_layout, container, false);
+        return inflater.inflate(R.layout.offers_layout, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        terms = (TextView) view.findViewById(R.id.terms);
-        terms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog("TERMS & CONDITIONS", BaseUrl.termsUrl);
-            }
-        });
+        mWebView = (WebView) view.findViewById(R.id.webview);
+        progress = (ProgressBar) view.findViewById(R.id.progressBar);
+        progress.setVisibility(View.GONE);
+
+        //mWebView.loadData(WebContent.offers, "text/html", "utf-8");
+       //mWebView.loadUrl("file:///android_asset/localwebpage/offers.html");
+        mWebView.setWebViewClient(new MyWebViewClient());
+        mWebView.loadUrl(BaseUrl.offerUrl);
+
 
         Log.d(tag, "View are finally inflated");
     }
@@ -138,8 +142,8 @@ public class About extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof AboutListener) {
-            aboutListener = (AboutListener) context;
+        if (context instanceof OffersInteraction) {
+            offersInteraction = (OffersInteraction) context;
             font = Typeface.createFromAsset(context.getAssets(), "font/ubuntu.ttf");
         } else {
             throw new RuntimeException(context.toString()
@@ -150,9 +154,8 @@ public class About extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        aboutListener = null;
+        offersInteraction = null;
     }
-
 
     private class MyWebViewClient extends WebViewClient {
 
@@ -196,12 +199,12 @@ public class About extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface AboutListener {
-        void onAboutInteraction(int statusCode, String message, Object object);
+    public interface OffersInteraction {
+        void onOffersInteraction(int statusCode, String message, Object object);
     }
 }

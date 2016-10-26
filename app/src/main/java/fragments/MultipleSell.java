@@ -1,5 +1,6 @@
 package fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -40,6 +41,9 @@ import android.widget.Toast;
 
 import com.oltranz.mobilea.mobilea.BuildConfig;
 import com.oltranz.mobilea.mobilea.R;
+import com.vistrav.ask.Ask;
+import com.vistrav.ask.annotations.AskDenied;
+import com.vistrav.ask.annotations.AskGranted;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -52,6 +56,7 @@ import client.ClientData;
 import client.ClientServices;
 import client.ServerClient;
 import config.DeviceIdentity;
+import config.MPay;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,6 +66,7 @@ import simplebeans.topupbeans.TopUpBean;
 import simplebeans.topupbeans.TopUpRequest;
 import simplebeans.topupbeans.TopUpResponse;
 import utilities.CheckWalletBalance;
+import utilities.IsGranted;
 import utilities.RechargeWalletUtil;
 import utilities.RecycleViewAdapter;
 import utilities.TopUpConfirmAdapter;
@@ -188,7 +194,16 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
                             numbers.add(topUpNumber);
                         }
                     }
-                    topUpProceed(numbers, amountToSend);
+
+                    if(amountToSend>= MPay.minTopUp){
+                        try {
+                            topUpProceed(numbers, amountToSend);
+                        } catch (Exception e) {
+                            uiFeed("Revise the amount");
+                        }
+                    }else{
+                        uiFeed("Revise the amount");
+                    }
                 }
 
             }
@@ -304,7 +319,7 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
                                             if (loginResponse.getSimpleStatusBean().getStatusCode() == 400) {
 
                                                 //making a transaction Request
-                                                onTopUpRequest(numbers);
+                                                onTopUpRequest(numbers, loginResponse.getLoginResponseBean().getToken());
 
                                                 //Clear Amount list
                                                 final EditText amount = (EditText) getView().findViewById(R.id.amount);
@@ -591,7 +606,9 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
         }
     }
 
-    private void onTopUpRequest(List<TopUpNumber> numbers) {
+    private void onTopUpRequest(List<TopUpNumber> numbers, String newToken) {
+        if(newToken == null)
+            newToken=token;
         //validation passed, initiation of topUp Object
         List<TopUpBean> destined = new ArrayList<TopUpBean>();
         for (TopUpNumber topUpNumber : numbers) {
@@ -607,7 +624,7 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
         //making a Login request
         try {
             ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-            Call<TopUpResponse> callService = clientServices.topUp(token, topUpRequest);
+            Call<TopUpResponse> callService = clientServices.topUp(newToken, topUpRequest);
             callService.enqueue(new Callback<TopUpResponse>() {
                 @Override
                 public void onResponse(Call<TopUpResponse> call, Response<TopUpResponse> response) {
@@ -638,7 +655,10 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
                             onMultipleSell.onMultipleSellListener(1, e.getMessage(), null);
                         }
                     } else {
-                        uiFeed(response.message());
+                        if (progressDialog != null)
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        onMultipleSell.onMultipleSellListener(403, "Failure", null);
                     }
 
 //                                loginListener.onLoginInteraction(loginResponse.getSimpleStatusBean().getStatusCode(),
@@ -752,10 +772,30 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
             EditText amount = (EditText) view.findViewById(R.id.amount);
             amount.setText("");
         } else if (v.getId() == R.id.getNumber) {
-            Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
-            pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
-            startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+            if(new IsGranted(getContext()).checkReadContacts()) {
+                Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+                pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+                startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+            }else{
+                Ask.on(getActivity())
+                        .forPermissions(Manifest.permission.READ_CONTACTS)
+                        .withRationales("In Order to make your life easy for contact pick up application needs Read Contact permission") //optional
+                        .go();
+            }
         }
+    }
+
+    //optional
+    @AskGranted(Manifest.permission.READ_CONTACTS)
+    public void readContactAllowed() {
+        Log.i(tag, "READ CONTACTS GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.READ_CONTACTS)
+    public void readContactDenied() {
+        Log.i(tag, "READ CONTACTS DENIED");
+        Toast.makeText(getContext(), "Sorry, Without READ_CONTACTS Permission the application workflow can be easily compromised", Toast.LENGTH_LONG).show();
     }
 
     public void populateData(int position, View v, String msisdn) {

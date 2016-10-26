@@ -1,12 +1,15 @@
 package fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oltranz.mobilea.mobilea.R;
@@ -31,6 +36,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import simplebeans.registerbeans.RegisterRequest;
 import simplebeans.registerbeans.RegisterResponse;
+import utilities.CheckWalletBalance;
+import utilities.UserPrimaryMail;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,8 +48,10 @@ import simplebeans.registerbeans.RegisterResponse;
  * create an instance of this fragment.
  */
 public class Register extends Fragment {
-    private String tag="AirTime: "+getClass().getSimpleName();
+    private String tag = "AirTime: " + getClass().getSimpleName();
     private Typeface font;
+    private AlertDialog dialog;
+    private ProgressDialog progressDialog;
 
     private RegisterInteractionListener registerListener;
 
@@ -77,17 +86,20 @@ public class Register extends Fragment {
 
     //validate Phone Field
     private final static boolean isValidMobile(String phone) {
-        if (TextUtils.isEmpty(phone))
+        if(!TextUtils.isEmpty(phone)){
+            if(phone.length()>9){
+                    return android.util.Patterns.PHONE.matcher(phone).matches();
+            } else
+                return false;
+        }else
             return false;
-        else
-            return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        Log.d(tag,"Fragment created");
+        Log.d(tag, "Fragment created");
         if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
@@ -103,7 +115,7 @@ public class Register extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(tag,"Fragment view are being created");
+        Log.d(tag, "Fragment view are being created");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.registerlayout, container, false);
     }
@@ -111,24 +123,30 @@ public class Register extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(tag,"View are created");
-        final EditText fName=(EditText) view.findViewById(R.id.fname);
+        Log.d(tag, "View are created");
+        final EditText fName = (EditText) view.findViewById(R.id.fname);
         fName.setTypeface(font);
-        final EditText lName=(EditText) view.findViewById(R.id.lname);
+        final EditText lName = (EditText) view.findViewById(R.id.lname);
         lName.setTypeface(font);
         final EditText tel = (EditText) view.findViewById(R.id.histMsisdn);
         tel.setTypeface(font);
-        final EditText mail=(EditText) view.findViewById(R.id.email);
+        final EditText mail = (EditText) view.findViewById(R.id.email);
         mail.setTypeface(font);
-        final EditText pin=(EditText) view.findViewById(R.id.pin);
+        String primaryMail = new UserPrimaryMail().getEmail(getContext());
+        if (primaryMail != null)
+            if (isValidEmail(primaryMail)){
+                mail.setText(primaryMail);
+            }
+
+        final EditText pin = (EditText) view.findViewById(R.id.pin);
         pin.setTypeface(font);
-        final EditText rePin=(EditText) view.findViewById(R.id.repin);
+        final EditText rePin = (EditText) view.findViewById(R.id.repin);
         rePin.setTypeface(font);
-        final Button register=(Button) view.findViewById(R.id.register);
+        final Button register = (Button) view.findViewById(R.id.register);
         register.setTypeface(font, Typeface.BOLD);
         register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if(!pin.getText().toString().equals(rePin.getText().toString())){
+                if (!pin.getText().toString().equals(rePin.getText().toString())) {
                     pin.setError("Invalid Password");
                     Toast.makeText(getContext(), "Invalid Password", Toast.LENGTH_LONG).show();
                 }
@@ -144,7 +162,7 @@ public class Register extends Fragment {
 
                             //validation completed
                             proceedRegistration(fName.getText().toString(), lName.getText().toString(), tel.getText().toString().trim(), mail.getText().toString().trim(), pin.getText().toString());
-                        }else{
+                        } else {
                             tel.setError("Invalid Telephone");
 
                             Toast.makeText(getContext(), "Invalid Telephone", Toast.LENGTH_LONG).show();
@@ -163,7 +181,7 @@ public class Register extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(tag,"Fragment is attaching");
+        Log.d(tag, "Fragment is attaching");
         if (context instanceof RegisterInteractionListener) {
             registerListener = (RegisterInteractionListener) context;
             font = Typeface.createFromAsset(context.getAssets(), "font/ubuntu.ttf");
@@ -180,7 +198,7 @@ public class Register extends Fragment {
         registerListener = null;
     }
 
-    private void proceedRegistration(final String fName, final String lName, final String tel, final String mail, final String pin){
+    private void proceedRegistration(final String fName, final String lName, final String tel, final String mail, final String pin) {
 //        final Dialog dialog = new Dialog(getContext());
 //        dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
 //        dialog.setContentView(R.layout.simplepopup);
@@ -197,11 +215,16 @@ public class Register extends Fragment {
 //        }
 //        dialog.setTitle(Html.fromHtml("<font color='" + ContextCompat.getColor(getContext(), R.color.appOrange) + "'>Confirm...</font>"));
 
-        String contentMessage="First Name: " + fName+ "\n"+
-                "Last Name: " + lName + "\n"+
-                "Telphone: " + tel+ "\n"+
-                "Email: " + mail+ "\n"+
-                "PIN: ####\n";
+        String contentMessage = "First Name: " + fName + "\n" +
+                "Last Name: " + lName + "\n" +
+                "Telphone: " + tel + "\n" +
+                "Email: " + mail + "\n" +
+                "Password: ####\n";
+        progressDialog = new ProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+
         try {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(contentMessage)
@@ -216,6 +239,8 @@ public class Register extends Fragment {
             });
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(final DialogInterface dialog, int id) {
+                    progressDialog.setMessage("Sending...");
+                    progressDialog.show();
                     //get current Time
                     DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                     String currentTime = df.format(Calendar.getInstance().getTime());
@@ -244,19 +269,21 @@ public class Register extends Fragment {
                         callService.enqueue(new Callback<RegisterResponse>() {
                             @Override
                             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
-
+                                if(progressDialog != null)
+                                    if(progressDialog.isShowing())
+                                        progressDialog.dismiss();
                                 //HTTP status code
                                 int statusCode = response.code();
                                 RegisterResponse registerResponse = response.body();
 
-                                try{
+                                try {
                                     //handle the response from the server
                                     Log.d(tag, "Server Result:\n" + new ClientData().mapping(registerResponse));
                                     registerListener.onRegisterInteraction(registerResponse.getSimpleStatusBean().getStatusCode(),
                                             registerResponse.getSimpleStatusBean().getMessage(),
                                             tel,
                                             registerResponse);
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                     uiFeed(e.getMessage());
                                     dialog.dismiss();
@@ -267,6 +294,9 @@ public class Register extends Fragment {
 
                             @Override
                             public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                                if(progressDialog != null)
+                                    if(progressDialog.isShowing())
+                                        progressDialog.dismiss();
                                 // Log error here since request failed
                                 Log.e(tag, t.toString());
                                 uiFeed("Server Error");
@@ -274,6 +304,9 @@ public class Register extends Fragment {
                             }
                         });
                     } catch (Exception e) {
+                        if(progressDialog != null)
+                            if(progressDialog.isShowing())
+                                progressDialog.dismiss();
                         e.printStackTrace();
                         uiFeed(e.getMessage());
                         //registerListener.onRegisterInteraction(500, e.getMessage(), tel, null);
@@ -286,6 +319,9 @@ public class Register extends Fragment {
             dialog.show();
 
         } catch (Exception e) {
+            if(progressDialog != null)
+                if(progressDialog.isShowing())
+                    progressDialog.dismiss();
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
@@ -381,7 +417,7 @@ public class Register extends Fragment {
 //        dialog.show();
     }
 
-    private void uiFeed(String feedBack){
+    private void uiFeed(String feedBack) {
         try {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(feedBack)

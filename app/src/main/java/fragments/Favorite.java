@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oltranz.mobilea.mobilea.R;
@@ -46,7 +47,7 @@ import utilities.ResendAirtime;
  * create an instance of this fragment.
  */
 public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapterInteraction, ResendAirtime.ResendAirtimeInteraction {
-    private String tag="AirTime: "+getClass().getSimpleName();
+    private String tag = "AirTime: " + getClass().getSimpleName();
 
     private FavoriteInteraction favoriteInteraction;
     private Typeface font;
@@ -63,7 +64,7 @@ public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapt
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param token Parameter 1.
+     * @param token  Parameter 1.
      * @param msisdn Parameter 2.
      * @return A new instance of fragment CheckBalance.
      */
@@ -82,9 +83,9 @@ public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapt
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         if (getArguments() != null) {
-            if(getArguments().getString("token") != null)
+            if (getArguments().getString("token") != null)
                 token = getArguments().getString("token");
-            if(getArguments().getString("msisdn") != null)
+            if (getArguments().getString("msisdn") != null)
                 msisdn = getArguments().getString("msisdn");
         }
         Log.d(tag, "The fragment is created");
@@ -97,10 +98,13 @@ public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapt
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.favorite_layout, container, false);
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        final TextView label=(TextView) view.findViewById(R.id.label);
+        label.setTypeface(font, Typeface.BOLD);
         //__________Initialize List______________\\
         final List<FavoriteResponseBean> mFavorite = new ArrayList<>();
         adapter = new FavoriteAdapter(this, getActivity(), mFavorite);
@@ -125,30 +129,37 @@ public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapt
 
                     //HTTP status code
                     int statusCode = response.code();
-                    if(statusCode==200){
-                        TransactionHistoryResponse transactionHistoryResponse=response.body();
-                        try{
-                            if(transactionHistoryResponse.getStatus().getStatusCode() != 400)
+                    if (statusCode == 200) {
+                        TransactionHistoryResponse transactionHistoryResponse = response.body();
+                        try {
+                            if (transactionHistoryResponse.getStatus().getStatusCode() != 400) {
                                 progressDialog.setMessage(transactionHistoryResponse.getStatus().getMessage());
-                            else{
-                                List<TransactionHistoryBean> transactionHistoryBeanList=transactionHistoryResponse.getHistory();
-                                for(TransactionHistoryBean historyBean: transactionHistoryBeanList){
-                                    TransactionHistoryBean wHistoryBean = new TransactionHistoryBean(historyBean.getDate(), historyBean.getAmount(), historyBean.getMsisdn(), historyBean.getStatus(),""+historyBean.getStatus().getMessage()+historyBean.getDate()+ historyBean.getAmount()+ historyBean.getMsisdn());
-                                    FavoriteResponseBean favorite = new FavoriteResponseBean(wHistoryBean.getMsisdn(), wHistoryBean.getAmount());
-                                    mFavorite.add(favorite);
-                                    adapter.notifyDataSetChanged();
-                                }
+                                label.setVisibility(View.VISIBLE);
                                 progressDialog.dismiss();
+                            } else {
+                                List<TransactionHistoryBean> transactionHistoryBeanList = transactionHistoryResponse.getHistory();
+                                if(!transactionHistoryBeanList.isEmpty()){
+                                    for (TransactionHistoryBean historyBean : transactionHistoryBeanList) {
+                                        TransactionHistoryBean wHistoryBean = new TransactionHistoryBean(historyBean.getDate(), historyBean.getAmount(), historyBean.getMsisdn(), historyBean.getStatus(), "" + historyBean.getStatus().getMessage() + historyBean.getDate() + historyBean.getAmount() + historyBean.getMsisdn());
+                                        FavoriteResponseBean favorite = new FavoriteResponseBean(wHistoryBean.getMsisdn(), wHistoryBean.getAmount());
+                                        mFavorite.add(favorite);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                    progressDialog.dismiss();
+                                }else{
+                                    label.setVisibility(View.VISIBLE);
+                                    progressDialog.dismiss();
+                                }
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             progressDialog.setMessage(e.getMessage());
                             e.printStackTrace();
                             progressDialog.dismiss();
                         }
 
-                    }else{
-                        progressDialog.setMessage(response.message());
+                    } else {
                         progressDialog.dismiss();
+                        favoriteInteraction.onFavoriteInteraction(403, "Failure", null);
                     }
                 }
 
@@ -189,8 +200,8 @@ public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapt
 
     @Override
     public void onResendAirtimeAdapter(String tel, String amount) {
-        ResendAirtime resendAirtime=new ResendAirtime(this,getActivity(),token,msisdn);
-        resendAirtime.startResend(tel,Double.valueOf(amount));
+        ResendAirtime resendAirtime = new ResendAirtime(this, getActivity(), token, msisdn);
+        resendAirtime.startResend(tel, Double.valueOf(amount));
     }
 
     @Override
@@ -200,12 +211,12 @@ public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapt
             NotificationTable notificationTable = new NotificationTable(date, "AirTime TopUp " + message, msisdn, "0");
             notificationTable.save();
         }
-        uiFeed(""+message);
+        uiFeed("" + message);
     }
 
     private void uiFeed(String message) {
-        if(progressDialog != null)
-            if(progressDialog.isShowing())
+        if (progressDialog != null)
+            if (progressDialog.isShowing())
                 progressDialog.dismiss();
         try {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -226,7 +237,7 @@ public class Favorite extends Fragment implements FavoriteAdapter.FavoritesAdapt
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        favoriteInteraction.onFavoriteInteraction(0,"refresh",null);
+        favoriteInteraction.onFavoriteInteraction(0, "refresh", null);
     }
 
     /**

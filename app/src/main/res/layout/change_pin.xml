@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="4dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="4dp">
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:gravity="center_horizontal"
+        android:text="Do you really want to change your Password?"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/lblpw1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Password"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/currentPw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25sp"
+        android:drawableLeft="@drawable/icon_password"
+        android:drawablePadding="10dp"
+        android:drawableTint="@null"
+        android:ellipsize="end"
+        android:inputType="numberPassword"
+        android:maxLength="5" />
+
+    <TextView
+        android:id="@+id/lblpw2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New password (4 digits)"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/newPw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/icon_password"
+        android:drawablePadding="10dp"
+        android:drawableTint="@null"
+        android:ellipsize="end"
+        android:inputType="numberPassword"
+        android:maxLength="5" />
+
+    <TextView
+        android:id="@+id/lblrepw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retype new password (4 digits)"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/retypePw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/icon_password"
+        android:drawablePadding="10dp"
+        android:drawableTint="@null"
+        android:ellipsize="end"
+        android:inputType="numberPassword"
+        android:maxLength="5" />
+
+    <TextView
+        android:id="@+id/TextView_PwdProblem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold" />
+</LinearLayout>

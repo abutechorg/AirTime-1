@@ -1,5 +1,6 @@
 package fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import java.util.Calendar;
 import client.ClientData;
 import client.ClientServices;
 import client.ServerClient;
+import config.BaseUrl;
 import config.DeviceIdentity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -257,9 +260,39 @@ public class Login extends Fragment {
         super.onDetach();
         loginListener = null;
     }
+    private void showDialog(String mTitle, String url) {
+        TextView close;
+        TextView title;
+        WebView mWeb;
 
+        final Dialog dialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.web_dialog);
+
+        close = (TextView) dialog.findViewById(R.id.close);
+        close.setTypeface(font, Typeface.BOLD);
+        title = (TextView) dialog.findViewById(R.id.title);
+        title.setTypeface(font, Typeface.BOLD);
+        mWeb = (WebView) dialog.findViewById(R.id.webView);
+
+        title.setText(mTitle);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mWeb.getSettings().setJavaScriptEnabled(true);
+        mWeb.loadUrl(url);
+
+        dialog.show();
+    }
     private void pinRecover() {
         Log.d(tag, "Recover PIN is triggered");
+        showDialog("HELP", BaseUrl.helpUrl);
     }
     private void uiFeed(String feedBack){
         if(progressDialog != null)

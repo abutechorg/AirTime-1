@@ -1,5 +1,6 @@
 package fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -15,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -36,6 +36,9 @@ import android.widget.Toast;
 
 import com.oltranz.mobilea.mobilea.BuildConfig;
 import com.oltranz.mobilea.mobilea.R;
+import com.vistrav.ask.Ask;
+import com.vistrav.ask.annotations.AskDenied;
+import com.vistrav.ask.annotations.AskGranted;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -48,6 +51,7 @@ import client.ClientData;
 import client.ClientServices;
 import client.ServerClient;
 import config.DeviceIdentity;
+import config.MPay;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +62,7 @@ import simplebeans.topupbeans.TopUpRequest;
 import simplebeans.topupbeans.TopUpResponse;
 import utilities.CheckWalletBalance;
 import utilities.DataFactory;
+import utilities.IsGranted;
 import utilities.RechargeWalletUtil;
 import utilities.TopUpConfirmAdapter;
 import utilities.utilitiesbeans.TopUpNumber;
@@ -163,9 +168,16 @@ public class SingleSell extends Fragment implements CheckWalletBalance.CheckWall
         getNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
-                pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
-                startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+                if(new IsGranted(getContext()).checkReadContacts()) {
+                    Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+                    pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+                    startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+                }else{
+                    Ask.on(getActivity())
+                            .forPermissions(Manifest.permission.READ_CONTACTS)
+                            .withRationales("In Order to make your life easy for contact pick up application needs Read Contact permission") //optional
+                            .go();
+                }
             }
         });
 
@@ -178,13 +190,21 @@ public class SingleSell extends Fragment implements CheckWalletBalance.CheckWall
                         (TextUtils.isDigitsOnly(amount.getText().toString().trim())) &&
                         (isValidMobile(tel.getText().toString()))) {
 
-                    try {
-                        topUpProceed(tel.getText().toString().trim(), Double.parseDouble(amount.getText().toString().trim()));
-                    } catch (Exception e) {
+                    if(Double.valueOf(amount.getText().toString())>= MPay.minTopUp){
+                        try {
+                            topUpProceed(tel.getText().toString().trim(), Double.parseDouble(amount.getText().toString().trim()));
+                        } catch (Exception e) {
+                            amount.setFocusable(true);
+                            amount.requestFocus();
+                            amount.setError("Revise the amount");
+                        }
+                    }else{
                         amount.setFocusable(true);
                         amount.requestFocus();
                         amount.setError("Revise the amount");
                     }
+
+
                 } else {
                     if ((!TextUtils.isEmpty(amount.getText().toString())) &&
                             (new DataFactory().isValidAmount(amount.getText().toString()))) {
@@ -198,6 +218,18 @@ public class SingleSell extends Fragment implements CheckWalletBalance.CheckWall
         });
     }
 
+    //optional
+    @AskGranted(Manifest.permission.READ_CONTACTS)
+    public void readContactAllowed() {
+        Log.i(tag, "READ CONTACTS GRANTED");
+    }
+
+    //optional
+    @AskDenied(Manifest.permission.READ_CONTACTS)
+    public void readContactDenied() {
+        Log.i(tag, "READ CONTACTS DENIED");
+        Toast.makeText(getContext(), "Sorry, Without READ_CONTACTS Permission the application workflow can be easily compromised", Toast.LENGTH_LONG).show();
+    }
     private void checkBalance() {
         checkWalletBalance.getBalance();
     }
@@ -302,7 +334,7 @@ public class SingleSell extends Fragment implements CheckWalletBalance.CheckWall
                                             progressDialog.setMessage("Sending Airtime...");
 
                                             //making a transaction Request
-                                            onTopUpRequest(numbers);
+                                            onTopUpRequest(numbers, loginResponse.getLoginResponseBean().getToken());
 
                                         } else {
                                             uiFeed(loginResponse.getSimpleStatusBean().getMessage());
@@ -491,7 +523,9 @@ public class SingleSell extends Fragment implements CheckWalletBalance.CheckWall
         }
     }
 
-    private void onTopUpRequest(List<TopUpNumber> numbers) {
+    private void onTopUpRequest(List<TopUpNumber> numbers, String newToken) {
+        if(newToken == null)
+            newToken=token;
         //validation passed, initiation of topUp Object
         List<TopUpBean> destined = new ArrayList<TopUpBean>();
         for (TopUpNumber topUpNumber : numbers) {
@@ -507,7 +541,7 @@ public class SingleSell extends Fragment implements CheckWalletBalance.CheckWall
         //making a Login request
         try {
             ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-            Call<TopUpResponse> callService = clientServices.topUp(token, topUpRequest);
+            Call<TopUpResponse> callService = clientServices.topUp(newToken, topUpRequest);
             callService.enqueue(new Callback<TopUpResponse>() {
                 @Override
                 public void onResponse(Call<TopUpResponse> call, Response<TopUpResponse> response) {
@@ -537,7 +571,10 @@ public class SingleSell extends Fragment implements CheckWalletBalance.CheckWall
                             onSingleSell.onSingleSell(1, e.getMessage(), null);
                         }
                     } else {
-                        uiFeed(response.message());
+                        if (progressDialog != null)
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        onSingleSell.onSingleSell(403, "Failure", null);
                     }
 
 //                                loginListener.onLoginInteraction(loginResponse.getSimpleStatusBean().getStatusCode(),

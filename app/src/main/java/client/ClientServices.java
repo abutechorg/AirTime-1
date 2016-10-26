@@ -7,6 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import simplebeans.SimpleStatusBean;
 import simplebeans.StatusUsage;
 import simplebeans.balancebeans.BalanceResponse;
 import simplebeans.loginbeans.LoginRequest;
@@ -27,6 +28,10 @@ public interface ClientServices {
     //login client service
     @POST(BaseUrl.loginUrl)
     Call<LoginResponse> loginUser(@Header(BaseUrl.appVersion) String version, @Body LoginRequest loginRequest);
+
+    //referrer client service
+    @POST(BaseUrl.referrerurl+"/{number}")
+    Call<SimpleStatusBean> referrer(@Header(BaseUrl.appVersion) String version, @Header(BaseUrl.headerToken) String token, @Path("number") String number);
 
     //register client service
     @POST(BaseUrl.registerUrl)
