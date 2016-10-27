@@ -249,6 +249,8 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
 
     private void processPayment(final String uId, final long paymentType, final String amount, String currency) {
 
+
+
         options = RequestOptions.builder().setClientId(Interswitching.CLIENT_ID)
                 .setClientSecret(Interswitching.CLIENT_SECRET)
                 .build();

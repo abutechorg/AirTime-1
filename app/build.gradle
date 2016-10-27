@@ -81,7 +81,8 @@ repositories {
     }
     maven {
         url 'http://dl.bintray.com/techquest/maven-repo'
-    }
+        }
+//    maven { url 'https://dl.bintray.com/paystack/maven/' }
 }
 
 
@@ -90,6 +91,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile(name: 'deviceprint-release-2.2.0', ext: 'aar')
+//    compile 'co.paystack.android:paystack:2.0.1'
     //braintree for paypal
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
