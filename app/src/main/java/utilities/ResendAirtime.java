@@ -312,7 +312,7 @@ public class ResendAirtime implements CheckWalletBalance.CheckWalletBalanceInter
     }
 
     @Override
-    public void onWalletBalanceCheck(String balance) {
+    public void onWalletBalanceCheck(String balance, String date) {
 
     }
 

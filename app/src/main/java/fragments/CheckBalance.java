@@ -43,7 +43,8 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
     private String msisdn;
     private String accountBalance;
     private CheckWalletBalance checkWalletBalance;
-    private ProgressDialog progressDialog;
+    private String loginBalance, loginWalletDate;
+//    private ProgressDialog progressDialog;
 
     public CheckBalance() {
         // Required empty public constructor
@@ -76,11 +77,15 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
                 token = getArguments().getString("token");
             if (getArguments().getString("msisdn") != null)
                 msisdn = getArguments().getString("msisdn");
+            if (getArguments().getString("walletBalance") != null)
+                loginBalance = getArguments().getString("walletBalance");
+            if (getArguments().getString("walletBalanceDate") != null)
+                loginWalletDate = getArguments().getString("walletBalanceDate");
         }
-        progressDialog = new ProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(true);
+//        progressDialog = new ProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
+//        progressDialog.setIndeterminate(false);
+//        progressDialog.setCanceledOnTouchOutside(false);
+//        progressDialog.setCancelable(true);
         checkWalletBalance = new CheckWalletBalance(this, getContext(), token);
         Log.d(tag, "The fragment is created");
     }
@@ -101,8 +106,10 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
         nSign.setTypeface(font);
         final TextView lastHistory = (TextView) view.findViewById(R.id.lastHistory);
         lastHistory.setTypeface(font);
+        lastHistory.setText("Latest Account Balance: "+loginWalletDate);
         final TextView balance = (TextView) view.findViewById(R.id.balance);
         balance.setTypeface(font, Typeface.BOLD);
+        balance.setText(loginBalance);
         final TextView label = (TextView) view.findViewById(R.id.label);
         label.setTypeface(font, Typeface.BOLD);
 
@@ -110,80 +117,70 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
 
         //Dummy data
         // loginListener.onLoginInteraction(200, "Success", null);
+//
+//        //making a Balance request
+//        try {
+//            progressDialog.setMessage("Checking wallet balance...");
+//            progressDialog.show();
+//
+//            ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
+//            Call<BalanceResponse> callService = clientServices.getWalletBalance(token);
+//            callService.enqueue(new Callback<BalanceResponse>() {
+//                @Override
+//                public void onResponse(Call<BalanceResponse> call, Response<BalanceResponse> response) {
+//                    if (progressDialog != null)
+//                        if (progressDialog.isShowing())
+//                            progressDialog.dismiss();
+//                    //HTTP status code
+//                    int statusCode = response.code();
+//                    if (statusCode == 200) {
+//                        Log.d(tag, "Data from the server:\n" + new ClientData().mapping(response.body()));
+//                        try {
+//                            BalanceResponse balanceResponse = response.body();
+//                            //handle the response from the server
+//                            if (response.body() != null) {
+//                                String mDate="N/A";
+//                                balance.setText(balanceResponse.getBalance());
+//                                balanceInteraction.onCheckBalanceInteraction(200, balanceResponse.getStatus().getMessage(), balanceResponse);
+//                                if (balanceResponse.getLastTxTime() != null)
+//                                    mDate = balanceResponse.getLastTxTime();
+//                                lastHistory.setText("Latest Account Balance: " + mDate);
+//                            } else {
+//                                checkBalanceComponent();
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            checkBalanceComponent();
+//                        }
+//                    } else {
+//                        balanceInteraction.onCheckBalanceInteraction(403, "Faillure", null);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<BalanceResponse> call, Throwable t) {
+//                    if (progressDialog != null)
+//                        if (progressDialog.isShowing())
+//                            progressDialog.dismiss();
+//                    Log.e(tag, t.toString());
+//                    checkBalanceComponent();
+//                }
+//            });
+//        } catch (Exception e) {
+//            if (progressDialog != null)
+//                if (progressDialog.isShowing())
+//                    progressDialog.dismiss();
+//            e.printStackTrace();
+//            checkBalanceComponent();
+//        }
 
-        //making a Balance request
-        try {
-            progressDialog.setMessage("Checking wallet balance...");
-            progressDialog.show();
+//        try{
+//            checkBalanceComponent();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            balanceInteraction.onCheckBalanceInteraction(403, "Faillure", null);
+//        }
 
-            ClientServices clientServices = ServerClient.getClient().create(ClientServices.class);
-            Call<BalanceResponse> callService = clientServices.getWalletBalance(token);
-            callService.enqueue(new Callback<BalanceResponse>() {
-                @Override
-                public void onResponse(Call<BalanceResponse> call, Response<BalanceResponse> response) {
-                    if (progressDialog != null)
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
-                    //HTTP status code
-                    int statusCode = response.code();
-                    if (statusCode == 200) {
-                        Log.d(tag, "Data from the server:\n" + new ClientData().mapping(response.body()));
-                        try {
-                            BalanceResponse balanceResponse = response.body();
-                            //handle the response from the server
-                            if (response.body() != null) {
-                                if (balanceResponse.getBalance() != null) {
-                                    balance.setText(String.valueOf(balanceResponse.getBalance()));
-                                    balanceInteraction.onCheckBalanceInteraction(200, balanceResponse.getStatus().getMessage(), balanceResponse);
-                                } else {
-                                    progressDialog.dismiss();
-                                    balanceResponse.setBalance("0");
-                                    balanceInteraction.onCheckBalanceInteraction(201, "Faillure", balanceResponse);
-                                    balance.setText("0");
-                                }
-                            } else {
-                                balanceResponse.setBalance("0");
-                                checkBalanceComponent();
-                                balance.setText("0");
-                            }
-                            String mDate;
-                            try {
-                                if (balanceResponse.getLastTxTime() != null) {
-                                    mDate = balanceResponse.getLastTxTime();
-                                } else {
-                                    mDate = "N/A";
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                mDate = "N/A";
-                            }
-                            lastHistory.setText("Latest Account Balance:" + mDate);
-                            //lastHistory.append(mDate);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            checkBalanceComponent();
-                        }
-                    } else {
-                        balanceInteraction.onCheckBalanceInteraction(403, "Faillure", null);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<BalanceResponse> call, Throwable t) {
-                    if (progressDialog != null)
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
-                    Log.e(tag, t.toString());
-                    checkBalanceComponent();
-                }
-            });
-        } catch (Exception e) {
-            if (progressDialog != null)
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-            e.printStackTrace();
-            checkBalanceComponent();
-        }
     }
 
     @Override
@@ -194,43 +191,50 @@ public class CheckBalance extends Fragment implements CheckWalletBalance.CheckWa
             font = Typeface.createFromAsset(context.getAssets(), "font/ubuntu.ttf");
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement FavoriteInteraction");
+                    + " must implement CheckBalanceInteraction");
         }
-        if (progressDialog != null)
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+//        if (progressDialog != null)
+//            if (progressDialog.isShowing())
+//                progressDialog.dismiss();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (progressDialog != null)
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+//        if (progressDialog != null)
+//            if (progressDialog.isShowing())
+//                progressDialog.dismiss();
         balanceInteraction = null;
     }
 
-    private void checkBalanceComponent() {
-        if (progressDialog != null)
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+    public void checkBalanceComponent() {
+//        if (progressDialog != null)
+//            if (progressDialog.isShowing())
+//                progressDialog.dismiss();
         checkWalletBalance.getBalance();
     }
 
     @Override
-    public void onWalletBalanceCheck(String balance) {
-        if (progressDialog != null)
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+    public void onWalletBalanceCheck(String balance, String date) {
+//        if (progressDialog != null)
+//            if (progressDialog.isShowing())
+//                progressDialog.dismiss();
+
+        if(balanceInteraction == null)
+            return;
+
+        String mDate="00/00/000 00:00";
+        if(date != null && (!TextUtils.isEmpty(date)))
+            mDate=date;
 
         if (!TextUtils.isEmpty(balance))
             if (Double.valueOf(balance) > 0) {
-                BalanceResponse balResponse = new BalanceResponse(balance, "00/00/000 00:00", new SimpleStatusBean("Success", 400));
+                BalanceResponse balResponse = new BalanceResponse(balance, mDate, new SimpleStatusBean("Success", 400));
                 balanceInteraction.onCheckBalanceInteraction(200, balResponse.getStatus().getMessage(), balResponse);
                 try {
                     final TextView lastHistory = (TextView) getView().findViewById(R.id.lastHistory);
                     lastHistory.setTypeface(font);
-                    lastHistory.setText("Latest Account Balance: 00/00/000 00:00");
+                    lastHistory.setText("Latest Account Balance: "+mDate);
 
                     final TextView balanceView = (TextView) getView().findViewById(R.id.balance);
                     balanceView.setTypeface(font, Typeface.BOLD);

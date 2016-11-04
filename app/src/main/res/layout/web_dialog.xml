@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/appWhite"
+    android:padding="2dp">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/appWhite"
+        android:id="@+id/header"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:paddingTop="4dp"
+            android:background="@drawable/buttonstrokeoutred"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:clickable="true"
+            android:drawableTop="@drawable/icon_transactpage_failed"
+            android:drawableTint="@null"
+            android:id="@+id/close"
+            android:textColor="@drawable/text_button_red"
+            android:text="CLOSE"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/title"
+            android:text="Title Bar"
+            android:textSize="20sp"
+            android:textColor="@color/appBlue"
+            android:gravity="center"/>
+    </TableRow>
+
+    <ProgressBar
+        style="@style/AppTheme.WebProgress"
+        android:background="@color/appWhite"
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header" />
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/appWhite"
+        android:id="@+id/webView"
+        android:layout_below="@+id/progressBar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

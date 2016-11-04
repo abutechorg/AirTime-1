@@ -821,7 +821,7 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
     }
 
     @Override
-    public void onWalletBalanceCheck(String balance) {
+    public void onWalletBalanceCheck(String balance, String date) {
         double walletBalance = 0;
         if (!TextUtils.isEmpty(balance))
             walletBalance = Double.valueOf(balance);

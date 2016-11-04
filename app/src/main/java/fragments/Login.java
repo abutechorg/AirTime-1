@@ -164,6 +164,14 @@ public class Login extends Fragment {
 
                                 //HTTP status code
                                 int statusCode = response.code();
+                                String balance="0";
+                                String lDate="000-00-00 00:00";
+                                try{
+                                    if(response.headers().get("Balance") != null)
+                                        balance = response.headers().get("Balance");
+                                    if(response.headers().get("LastDate") != null)
+                                        lDate = response.headers().get("LastDate");
+                                }catch (Exception e){e.printStackTrace();}
 
                                 if(statusCode==200){
                                     try{
@@ -176,6 +184,8 @@ public class Login extends Fragment {
                                                 uiFeed(loginResponse.getSimpleStatusBean().getMessage());
                                             }else{
                                                 progressDialog.setMessage(" Successfully  Authenticated");
+                                                final String finalBalance = balance;
+                                                final String finalLDate = lDate;
                                                 new Handler().postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -183,6 +193,8 @@ public class Login extends Fragment {
                                                         loginListener.onLoginInteraction(loginResponse.getSimpleStatusBean().getStatusCode(),
                                                                 loginResponse.getSimpleStatusBean().getMessage(),
                                                                 msisdn,
+                                                                finalBalance,
+                                                                finalLDate,
                                                                 loginResponse);
                                                     }
                                                 }, 2000);
@@ -323,6 +335,6 @@ public class Login extends Fragment {
      */
     public interface LoginInteractionListener {
         // passing the Message and Staus code to mother activity
-        void onLoginInteraction(int statusCode, String message, String msisdn, LoginResponse loginResponse);
+        void onLoginInteraction(int statusCode, String message, String msisdn, String balance, String lDate, LoginResponse loginResponse);
     }
 }
