@@ -90,7 +90,6 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
     private View populateView;
     private RecyclerView mRecycle;
     private RecycleViewAdapter adapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private String msisdn;
     private String token;
     private Button send;
@@ -164,7 +163,7 @@ public class MultipleSell extends Fragment implements RecycleViewAdapter.Recycle
 
         mRecycle = (RecyclerView) view.findViewById(R.id.recyclerView);
         mRecycle.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecycle.setLayoutManager(mLayoutManager);
         adapter = new RecycleViewAdapter(getContext(), initRecycler());
         mRecycle.setAdapter(adapter);

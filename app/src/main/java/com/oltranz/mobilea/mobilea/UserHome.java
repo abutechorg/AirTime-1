@@ -1105,10 +1105,10 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             sideBadge.setText(""+newCount);
      */
     private void onHomeActivity() {
-        Intent intent = new Intent(this, Home.class);
-        intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+//        Intent intent = new Intent(this, Home.class);
+//        intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
         this.finish();
-        startActivity(intent);
+//        startActivity(intent);
     }
 
     private void showDialog(String mTitle, String url) {

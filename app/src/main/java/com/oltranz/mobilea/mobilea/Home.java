@@ -263,7 +263,6 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
                 intent.putExtras(bundle);
 
                 intent.setFlags(IntentCompat.FLAG_ACTIVITY_TASK_ON_HOME | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-                endActivity();
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
