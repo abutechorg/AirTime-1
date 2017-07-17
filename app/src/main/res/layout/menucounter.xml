@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="50dp"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:padding="4dp"
-    android:layout_gravity="right" >
+    android:layout_gravity="end" >
     <!-- Badge Count -->
     <TextView
         android:id="@+id/actionbar_notifcation_textview"
@@ -12,7 +12,7 @@
         android:padding="6dp"
         android:clickable="true"
         android:text="0"
-        android:background="@drawable/bage_circle"
+        android:background="@color/appOrange"
         android:textColor="@color/appWhite" />
 
 </RelativeLayout>

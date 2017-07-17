@@ -307,7 +307,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
         try {
             Log.d(tag, "Data to Post on Server:\n" + new ClientData().mapping(failedPayment));
             PaymentInterface paymentInterface = PaymentServerClient.getClient().create(PaymentInterface.class);
-            Call<StatusUsage> callService = paymentInterface.failedPayment(failedPayment);
+            Call<StatusUsage> callService = paymentInterface.failedPayment(token, failedPayment);
             callService.enqueue(new Callback<StatusUsage>() {
                 @Override
                 public void onResponse(Call<StatusUsage> call, Response<StatusUsage> response) {
@@ -363,7 +363,7 @@ public class RechargeWallet extends Fragment implements View.OnClickListener {
         try {
             Log.d(tag, "Data to Post on Server:\n" + new ClientData().mapping(initiateWalletRecharge));
             PaymentInterface paymentInterface = PaymentServerClient.getClient().create(PaymentInterface.class);
-            Call<InitiateResponse> callService = paymentInterface.initPayment(initiateWalletRecharge);
+            Call<InitiateResponse> callService = paymentInterface.initPayment(token, initiateWalletRecharge);
             callService.enqueue(new Callback<InitiateResponse>() {
                 @Override
                 public void onResponse(Call<InitiateResponse> call, Response<InitiateResponse> response) {

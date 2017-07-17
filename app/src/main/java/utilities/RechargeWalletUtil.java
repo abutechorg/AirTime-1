@@ -122,7 +122,7 @@ public class RechargeWalletUtil {
         try {
             Log.d(tag, "Data to Post on Server:\n" + new ClientData().mapping(initiateWalletRecharge));
             PaymentInterface paymentInterface = PaymentServerClient.getClient().create(PaymentInterface.class);
-            Call<InitiateResponse> callService = paymentInterface.initPayment(initiateWalletRecharge);
+            Call<InitiateResponse> callService = paymentInterface.initPayment(token, initiateWalletRecharge);
             callService.enqueue(new Callback<InitiateResponse>() {
                 @Override
                 public void onResponse(Call<InitiateResponse> call, Response<InitiateResponse> response) {
@@ -170,6 +170,14 @@ public class RechargeWalletUtil {
             uiFeed(e.getMessage());
         }
     }
+
+    /**
+     * The call of of interswitch payment gateway
+     * @param uId Server provided transaction ID
+     * @param paymentType interswitch supported payment Type
+     * @param amount amount to be debited to customer
+     * @param currency transaction allowed currency
+     */
     private void processPayment(final String uId, final long paymentType, final String amount, String currency) {
 
         options = RequestOptions.builder().setClientId(Interswitching.CLIENT_ID)
@@ -284,7 +292,7 @@ public class RechargeWalletUtil {
         try {
             Log.d(tag, "Data to Post on Server:\n" + new ClientData().mapping(failedPayment));
             PaymentInterface paymentInterface = PaymentServerClient.getClient().create(PaymentInterface.class);
-            Call<StatusUsage> callService = paymentInterface.failedPayment(failedPayment);
+            Call<StatusUsage> callService = paymentInterface.failedPayment(token, failedPayment);
             callService.enqueue(new Callback<StatusUsage>() {
                 @Override
                 public void onResponse(Call<StatusUsage> call, Response<StatusUsage> response) {

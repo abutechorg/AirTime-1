@@ -60,9 +60,11 @@ import simplebeans.StatusUsage;
 import simplebeans.loginbeans.LoginResponse;
 import simplebeans.registerbeans.RegisterResponse;
 import utilities.IsGranted;
-
+/**
+ * Created by Eng. ISHIMWE Aubain Consolateur email: iaubain@yahoo.fr / aubain.c.ishimwe@oltranz.com Tel: (250) 785 534 672.
+ * application Home activity or main activity
+ */
 public class Home extends AppCompatActivity implements Login.LoginInteractionListener, Register.RegisterInteractionListener {
-    //experimenting
     static final int PICK_CONTACT_REQUEST = 1;
     private String tag = "AirTime: " + getClass().getSimpleName();
     private TextView titleBar;
@@ -85,6 +87,10 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
     private WebView webView;
     private ProgressBar progress;
 
+    /**
+     *
+     * @param savedInstanceState application saved instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +181,11 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         }
     }
 
+    /**
+     * Show popup dialog
+     * @param mTitle popup title
+     * @param url requesting url for webview
+     */
     private void showDialog(String mTitle, String url) {
         TextView close;
         TextView title;
@@ -208,6 +219,9 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         dialog.show();
     }
 
+    /**
+     * Permission access manager for different android version
+     */
     private void rightManager() {
         int currentVersion = 0;
         try {
@@ -231,6 +245,15 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         }
     }
 
+    /**
+     * LoginInteraction callback
+     * @param statusCode link status code
+     * @param message notification message
+     * @param msisdn user msisdn
+     * @param balance current wallet balance
+     * @param lDate last account activity date
+     * @param loginResponse loginResponse data
+     */
     @Override
     public void onLoginInteraction(int statusCode, String message, String msisdn, String balance, String lDate, LoginResponse loginResponse) {
         if (statusCode != 400) {
@@ -271,6 +294,13 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         }
     }
 
+    /**
+     * RegistrationListener callback
+     * @param statusCode link status code
+     * @param message notification message
+     * @param msisdn user msisdn
+     * @param registerResponse register response
+     */
     @Override
     public void onRegisterInteraction(int statusCode, String message, String msisdn, RegisterResponse registerResponse) {
         //fragmentHandler(loginFrag);
@@ -304,6 +334,11 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         }
     }
 
+    /**
+     * Setting the refferer msisdn
+     * @param intent intent instacne that hold the next activity
+     * @param token session token
+     */
     private void setRefferreer(final Intent intent, final String token) {
         final ProgressDialog progressDialog;
         progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
@@ -481,6 +516,10 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         Toast.makeText(Home.this, "Sorry, Without READ_CONTACTS Permission the application workflow can be easily compromised", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * UI popup feedback
+     * @param message message to sho on popup
+     */
     private void uiFeed(String message) {
         try {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -563,6 +602,9 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         fragmentManager = getSupportFragmentManager();
     }
 
+    /**
+     * Handle soft back key processes
+     */
     @Override
     public void onBackPressed() {
         if (fragmentManager.getBackStackEntryCount() == 1) {
@@ -610,6 +652,10 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
 
     }
 
+    /**
+     * Activity fragment manager
+     * @param object an instance of fragment
+     */
     private void fragmentHandler(Object object) {
         Fragment fragment = (Fragment) object;
         String backStateName = fragment.getClass().getSimpleName();
@@ -628,6 +674,12 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         titleBar.setText(fragmentTag);
     }
 
+    /**
+     * Getting result from other activities such as getting the msisdn from phone book
+     * @param requestCode internal activity request code
+     * @param resultCode external activity result codes
+     * @param data imported data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -671,10 +723,16 @@ public class Home extends AppCompatActivity implements Login.LoginInteractionLis
         }
     }
 
+    /**
+     * Common application end
+     */
     private void endActivity() {
         finish();
     }
 
+    /**
+     * Web client for handling web pages
+     */
     private class MyWebViewClient extends WebViewClient {
 
         @SuppressWarnings("deprecation")

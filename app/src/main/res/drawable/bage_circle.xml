@@ -1,7 +1,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="ring"
     android:useLevel="false"
-    android:thickness="9dp"
+    android:thickness="90dp"
     android:innerRadius="0dp"
     >
 
@@ -9,7 +9,7 @@
         android:color="@color/appOrange"
         />
     <stroke
-        android:width="1dip"
+        android:width="0dip"
         android:color="@color/appWhite" />
 
     <padding

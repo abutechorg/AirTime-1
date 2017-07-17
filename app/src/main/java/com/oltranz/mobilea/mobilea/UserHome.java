@@ -49,6 +49,8 @@ import com.vistrav.ask.Ask;
 import com.vistrav.ask.annotations.AskDenied;
 import com.vistrav.ask.annotations.AskGranted;
 
+import java.util.List;
+
 import config.BaseUrl;
 import entity.NotificationTable;
 import fragments.About;
@@ -69,6 +71,10 @@ import utilities.Extra;
 import utilities.GetCurrentDate;
 import utilities.utilitiesbeans.MySessionData;
 
+/**
+ * Created by Eng. ISHIMWE Aubain Consolateur email: iaubain@yahoo.fr / aubain.c.ishimwe@oltranz.com Tel: (250) 785 534 672.
+ * Application Logged user's portal
+ */
 public class UserHome extends AppCompatActivity implements CheckBalance.CheckBalanceInteraction, SingleSell.SingleSellInteractionListener, MultipleSell.MultipleSellInteraction, RechargeWallet.RechargeWalletListener, WalletHistory.WalletHistoryInteraction, Favorite.FavoriteInteraction {
     private static final String sessionData = "sessionData";
     private String tag = "AirTime: " + getClass().getSimpleName();
@@ -91,6 +97,10 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
     private ProgressBar progress;
     private String loginBalance, loginWalletDate;
 
+    /**
+     *
+     * @param savedInstanceState application saved instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,7 +171,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             counter();
         }
     }
-
+    /**
+     * Permission access manager for different android version
+     */
     private void rightManager() {
         int currentVersion = 0;
         try {
@@ -181,6 +193,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * Handle menu drawer and menu actions
+     */
     private void menuHandle() {
         //Initializing NavigationView
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -255,6 +270,10 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
     }
 
+    /**
+     * Add amount to wallet
+     * @param v View where this method is being called from
+     */
     public void walletAddAmount(View v) {
         Fragment currentFrag = fragmentManager.findFragmentById(R.id.salesFrame);
         if (currentFrag.getClass().getSimpleName().equals(SingleSell.class.getSimpleName()) ||
@@ -268,6 +287,10 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * Request wallet history
+     * @param v View where this method is being called from
+     */
     public void walletViewHistory(View v) {
         Fragment currentFrag = fragmentManager.findFragmentById(R.id.salesFrame);
         if (currentFrag.getClass().getSimpleName().equals(RechargeWallet.class.getSimpleName()) ||
@@ -282,6 +305,10 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * handle application main tab
+     * @param v View where this method is being called from
+     */
     public void onAccountTabClick(View v) {
         if (v.getId() == R.id.sendOne) {
             singleTopUpFrag();
@@ -294,6 +321,10 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * Handle wallet tab click and touch
+     * @param v View, on which this method is being called from
+     */
     public void onWalletTabClick(View v) {
         if (v.getId() == R.id.addAirtime) {
             walletTopUpFrag();
@@ -303,6 +334,13 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * RechargeWalletListener callback
+     * @param statusCode link status code
+     * @param message notification message
+     * @param msisdn user msisdn
+     * @param object recharger wallet result object
+     */
     @Override
     public void onRechargeWalletInteraction(int statusCode, String message, String msisdn, Object object) {
         String date = new GetCurrentDate(this).getServerDate();
@@ -319,6 +357,12 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             singleTopUpFrag();
     }
 
+    /**
+     * SingleSellListener callback
+     * @param statusCode link status
+     * @param message notification message
+     * @param object singleSellResponse object
+     */
     @Override
     public void onSingleSell(int statusCode, String message, Object object) {
         if(statusCode == 403){
@@ -348,6 +392,12 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             singleTopUpFrag();
     }
 
+    /**
+     * MultipleSellListener callback
+     * @param statusCode link status
+     * @param message notification message
+     * @param object MultipleSellResponse object
+     */
     @Override
     public void onMultipleSellListener(int statusCode, String message, Object object) {
         if(statusCode == 403){
@@ -377,6 +427,12 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
             multipleTopUpFrag();
     }
 
+    /**
+     * CheckBalanceListener callback
+     * @param statusCode link status
+     * @param message notification message
+     * @param object CheckBalanceResponse object
+     */
     @Override
     public void onCheckBalanceInteraction(int statusCode, String message, Object object) {
         if(statusCode == 403){
@@ -389,6 +445,12 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * FavoriteListener callback
+     * @param statusCode link status
+     * @param message notification message
+     * @param object FavoriteResponse object
+     */
     @Override
     public void onFavoriteInteraction(int statusCode, String message, Object object) {
         if(statusCode == 403){
@@ -469,7 +531,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         //Toast.makeText(this, "Sorry, Without SEND_SMS Permission the application workflow can be easily compromised", Toast.LENGTH_LONG).show();
         //onHomeActivity();
     }
-
+    /**
+     * Handle soft back key processes
+     */
     @Override
     public void onBackPressed() {
         try {
@@ -511,6 +575,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         currentFrag();
     }
 
+    /**
+     * Activity's Fragment manager
+     */
     private void currentFrag() {
         try {
 
@@ -557,6 +624,12 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         mSession = savedInstanceState.getParcelable(sessionData);
     }
 
+    /**
+     * Soft key handler
+     * @param keyCode Key pressed
+     * @param event key event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -580,6 +653,11 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * Activity tab manager
+     * @param tabLabel requested tab
+     * @param currentTab current tab
+     */
     private void onTabChanged(int tabLabel, String currentTab) {
         if (tabLabel == R.id.mainTabGroup) {
             //check the tab holder
@@ -719,6 +797,11 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * main fragment manager
+     * @param object instance of fragment
+     * @param fragId fragment container id
+     */
     //_________Fragments manager___________\\
     private void fragmentHandler(Object object, int fragId) {
         Fragment fragment = (Fragment) object;
@@ -737,6 +820,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * Produce SingleSell instance
+     */
     private void singleTopUpFrag() {
         onTabChanged(R.id.mainTabGroup, SingleSell.class.getSimpleName());
         SingleSell singleSell = new SingleSell();
@@ -744,6 +830,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         fragmentHandler(singleSell, R.id.salesFrame);
     }
 
+    /**
+     * Produce MultipleSell instance
+     */
     private void multipleTopUpFrag() {
         onTabChanged(R.id.mainTabGroup, MultipleSell.class.getSimpleName());
         MultipleSell multipleSell = new MultipleSell();
@@ -752,6 +841,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
     }
 
+    /**
+     * Produce Favorite instance
+     */
     private void favoriteFrag() {
         onTabChanged(R.id.mainTabGroup, Favorite.class.getSimpleName());
         Favorite favorite = new Favorite();
@@ -759,6 +851,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         fragmentHandler(favorite, R.id.salesFrame);
     }
 
+    /**
+     * Produce RechargeWallet instance
+     */
     private void walletTopUpFrag() {
         onTabChanged(R.id.walletTabGroup, RechargeWallet.class.getSimpleName());
         RechargeWallet rechargeWallet = new RechargeWallet();
@@ -766,12 +861,18 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         fragmentHandler(rechargeWallet, R.id.salesFrame);
     }
 
+    /**
+     * Produce CheckBalance instance
+     */
     private void checkBalanceFrag() {
         CheckBalance checkBalance = new CheckBalance();
         checkBalance.setArguments(setArgs());
         fragmentHandler(checkBalance, R.id.checkBalanceFrame);
     }
 
+    /**
+     * Refresh the wallet balance
+     */
     private void refreshBalance() {
 
         try{
@@ -789,6 +890,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 //        ft.commit();
     }
 
+    /**
+     * Produce WalletHistory instance
+     */
     private void walletHistoryFrag() {
         onTabChanged(R.id.walletTabGroup, WalletHistory.class.getSimpleName());
         WalletHistory walletHistory = new WalletHistory();
@@ -800,6 +904,10 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
     }
 
+    /**
+     * Setting of common fragments arguments
+     * @return Bundle containing common params
+     */
     private Bundle setArgs() {
         try {
             Bundle bundle = new Bundle();
@@ -816,6 +924,11 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         }
     }
 
+    /**
+     * Menu creation
+     * @param menu menu
+     * @return true if menu created else false
+     */
     //__________Menu Item Click handling_____________\\
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -843,6 +956,11 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
         return true;
     }
 
+    /**
+     * Handle menu selection
+     * @param menuId requested menu ID
+     * @return true if action is effected else false
+     */
     public boolean menuSelected(int menuId) {
         //Check to see which item was being clicked and perform appropriate action
         switch (menuId) {
@@ -1111,6 +1229,11 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 //        startActivity(intent);
     }
 
+    /**
+     * Show popup dialog
+     * @param mTitle popup title
+     * @param url requesting url for webview
+     */
     private void showDialog(String mTitle, String url) {
         TextView close;
         TextView title;
@@ -1149,6 +1272,9 @@ public class UserHome extends AppCompatActivity implements CheckBalance.CheckBal
 
     }
 
+    /**
+     * Web client for handling web pages
+     */
     private class MyWebViewClient extends WebViewClient {
 
         @SuppressWarnings("deprecation")
